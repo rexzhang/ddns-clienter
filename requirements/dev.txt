@@ -1,0 +1,5 @@
+-r base.txt
+-r pypi.txt
+-r test.txt
+
+# extend 3rd package
