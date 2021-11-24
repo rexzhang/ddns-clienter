@@ -1,4 +1,6 @@
 # base 3rd package
 
+django
+
 ## CLI
 click
