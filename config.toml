@@ -1,18 +1,18 @@
 # DDNS Clienter config.toml example
 
 [addresses]
-[addresses.mibox3]
-provider = "hostname"
-parameter = "mibox3"
-
 [addresses.gateway_ipv4_only]
-provider = "noip"
+provider = "ipify"
 ipv6 = false
+
+[addresses.self_public_ipv6_only]
+provider = "ipify"
+ipv4 = false
+#ipv6_match_rule = "^240e:xxxx"
 
 [addresses.rex_mbp]
 provider = "hostname"
 parameter = "rex-mbp"
-ipv4 =false
 ipv6_match_rule = "^240e:"
 
 

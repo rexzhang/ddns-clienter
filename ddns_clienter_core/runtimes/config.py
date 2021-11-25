@@ -7,8 +7,8 @@ import toml
 @dataclass
 class Address:
     name: str
-    provider: str
-    parameter: str = ""  # for DNS provider
+    provider: str  # ip address detect provider's name
+    parameter: str = ""  # for ip address detect provider
 
     ipv4: bool = True
     ipv6: bool = True
