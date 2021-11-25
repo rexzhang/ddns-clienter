@@ -11,7 +11,7 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         address_info = Address(name="test", provider="hostname")
         detect = IPAddressDetectProviderHostName(address_info)
-        detect.get_ip_address()
+        detect._detect_ip_address()
         self.assertEqual(detect.ipv4_address, "127.0.0.1")
         # self.assertRaises(
         #     ExceptionIPAddressDetect, detect.get_ip_address("not-real-device")
