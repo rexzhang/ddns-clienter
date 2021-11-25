@@ -1,6 +1,10 @@
 # base 3rd package
 
 django
+djangorestframework
+
+toml
+requests
 
 ## CLI
 click

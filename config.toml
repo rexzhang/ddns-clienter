@@ -1,0 +1,22 @@
+# DDNS Clienter config.toml example
+
+[address]
+[address.lan_device_01]
+provider = "hostname"
+parameter = "device_name"
+
+[address.gateway_ipv4]
+provider = "noip"
+ipv6 = false
+
+
+[tasks]
+[tasks.task_01]
+dns_provider = "dynv6"
+dns_token = "this-is-token-for-this-zone"
+
+domain = "example.com"
+host = "@"
+
+address = "lan_device_01"
+ipv6 = true
