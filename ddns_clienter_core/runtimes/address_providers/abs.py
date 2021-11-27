@@ -45,7 +45,6 @@ class AddressProviderAbs:
         address = models.Address.objects.filter(name=self._config_address.name).first()
         if address is None:
             address = models.Address(**dataclasses.asdict(self._config_address))
-            address.save()
 
         if self.ipv4_address != address.ipv4_address:
             address.ipv4_last_address = address.ipv4_address
@@ -59,9 +58,8 @@ class AddressProviderAbs:
             address.ipv6_address = self.ipv6_address
             address.ipv6_last_change_time = timezone.now()
 
-            self.changed_address_s_id = address.id
-
         address.save()
+        self.changed_address_s_id = address.id
 
     def __repr__(self):
         return "{}:{} {}".format(self.name, self.ipv4_address, self.ipv6_address)

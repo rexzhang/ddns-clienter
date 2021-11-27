@@ -44,8 +44,8 @@ class Domain(models.Model):
     ipv4 = models.BooleanField()
     ipv6 = models.BooleanField()
 
-    # from Dynamic DNS provider
-    last_ip_addresses = models.TextField(max_length=62)
+    # from Dynamic DNS provider's response
+    last_ip_addresses = models.TextField(max_length=62, null=True)
     ip_addresses = models.CharField(max_length=62)
     ip_addresses_is_up_to_date = models.BooleanField()
 

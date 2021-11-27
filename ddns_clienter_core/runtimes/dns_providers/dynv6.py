@@ -44,7 +44,6 @@ class DDNSProvider:
         db_domain = models.Domain.objects.filter(name=self._config_domain.name).first()
         if db_domain is None:
             db_domain = models.Domain(**dataclasses.asdict(self._config_domain))
-            db_domain.save()
 
         if self._push_success:
             db_domain.last_ip_addresses = db_domain.ip_addresses
