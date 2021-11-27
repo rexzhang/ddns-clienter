@@ -25,19 +25,18 @@ SECRET_KEY = "django-insecure-mamh*np-ny)gqurc^wup8z_ee^kp@nwvq5$@f-%87qk54he&x$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    # 'django.contrib.auth',
-    # 'django.contrib.contenttypes',
+    # "django.contrib.auth",
+    # "django.contrib.contenttypes",
     # "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
     "ddns_clienter_core",
 ]
 
@@ -62,7 +61,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
+                # "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -78,8 +77,8 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        "NAME": ":memory:",
+        "NAME": BASE_DIR / "db.sqlite3",
+        # "NAME": ":memory:",
     }
 }
 

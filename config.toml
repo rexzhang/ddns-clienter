@@ -6,7 +6,7 @@ provider = "ipify"
 ipv6 = false
 
 [addresses.self_public_ipv6_only]
-provider = "ipify"
+provider = "noip"
 ipv4 = false
 #ipv6_match_rule = "^240e:xxxx"
 

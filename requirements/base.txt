@@ -1,7 +1,7 @@
 # base 3rd package
 
 django
-djangorestframework
+django-ninja
 
 toml
 requests
