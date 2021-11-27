@@ -1,12 +1,13 @@
+from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI, Router
 from ninja.orm import create_schema
 
 from ddns_clienter_core.models import Status, Address, Domain
 
 
-StatusSchema = create_schema(Status, exclude=[])
-AddressSchema = create_schema(Address, exclude=[])
-DomainSchema = create_schema(Domain, exclude=["provider_token"])
+StatusSchema = create_schema(Status, exclude=["id"])
+AddressSchema = create_schema(Address, exclude=["id"])
+DomainSchema = create_schema(Domain, exclude=["id", "provider_token"])
 
 
 def auth_local_host(request):
@@ -50,22 +51,22 @@ def list_status(request):
 
 @router_web_ui.get("/addresses", response=list[AddressSchema])
 def list_addresses(request):
-    addresses = Domain.objects.all()
+    addresses = Address.objects.order_by("name").all()
     return addresses
 
 
-@router_web_ui.post("/domains", response=DomainSchema, deprecated=True)
-def upset_domain(request, payload: DomainSchema):
-    domains = Domain.objects.create(**payload.dict())
-    return domains
+@router_web_ui.get("/addresses/{address_id}", response=AddressSchema)
+def get_address(request, address_id: int):
+    address = get_object_or_404(AddressSchema, id=address_id)
+    return address
 
 
 @router_web_ui.get("/domains", response=list[DomainSchema])
 def list_domains(request):
-    tasks = Domain.objects.all()
-    return tasks
+    domains = Domain.objects.all()
+    return domains
 
 
-api = NinjaAPI()
+api = NinjaAPI(title="DDNS Clienter API")
 api.add_router("", router_inside)
 api.add_router("", router_web_ui)

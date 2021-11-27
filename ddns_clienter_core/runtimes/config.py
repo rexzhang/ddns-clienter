@@ -15,17 +15,13 @@ class Address:
     ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
 
-    # update in ip_address_detect_providers
-    ipv4_address: Optional[str] = None
-    ipv6_address: Optional[str] = None
-
 
 @dataclass
-class Task:
+class Domain:
     name: str
 
-    dns_provider: str
-    dns_token: str
+    provider: str
+    provider_token: str
 
     domain: str
     host: str
@@ -37,7 +33,7 @@ class Task:
 
 class Config:
     addresses = dict()
-    tasks = list()
+    domains = list()
 
     def __init__(self, file_name: str):
         self._file_name = file_name
@@ -46,7 +42,7 @@ class Config:
     def load_from_file(self):
         obj = toml.load(self._file_name)
         addresses_obj: dict = obj.get("addresses")
-        tasks_obj: dict = obj.get("tasks")
+        tasks_obj: dict = obj.get("domains")
         if addresses_obj is None or tasks_obj is None:
             raise
 
@@ -58,8 +54,8 @@ class Config:
             self.addresses.update({name: address_info})
 
         for name, data in tasks_obj.items():
-            task = Task(name=name, **data)
+            task = Domain(name=name, **data)
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.tasks.append(task)
+            self.domains.append(task)

@@ -4,14 +4,12 @@ from logging import getLogger
 
 import requests
 
-from ddns_clienter_core.runtimes.ip_address_detect_providers.abs import (
-    DetectAddressProviderAbs,
-)
+from .abs import AddressProviderAbs
 
 logger = getLogger(__name__)
 
 
-class DetectAddressProviderHttpGetAbs(DetectAddressProviderAbs):
+class AddressProviderHttpGetAbs(AddressProviderAbs):
     @property
     def _ipv4_url(self):
         raise NotImplemented
@@ -42,15 +40,15 @@ class DetectAddressProviderHttpGetAbs(DetectAddressProviderAbs):
 
         return ip_address
 
-    def _detect_ip_address(self):
-        if self._address_info.ipv4 and self._ipv4_url:
+    def _detect_ip_address(self) -> None:
+        if self._config_address.ipv4 and self._ipv4_url:
             self.ipv4_address = self._detect_process(self._ipv4_url, self._match_ipv4)
 
-        if self._address_info.ipv6:
+        if self._config_address.ipv6:
             self.ipv6_address = self._detect_process(self._ipv6_url, self._match_ipv6)
 
 
-class DetectAddressProviderIpify(DetectAddressProviderHttpGetAbs):
+class AddressProviderIpify(AddressProviderHttpGetAbs):
     @property
     def name(self):
         return "ipify"
@@ -64,7 +62,7 @@ class DetectAddressProviderIpify(DetectAddressProviderHttpGetAbs):
         return "https://api6.ipify.org/"
 
 
-class DetectAddressProviderNoip(DetectAddressProviderHttpGetAbs):
+class AddressProviderNoip(AddressProviderHttpGetAbs):
     @property
     def name(self):
         return "noip"

@@ -16,19 +16,19 @@ parameter = "rex-mbp"
 ipv6_match_rule = "^240e:"
 
 
-[tasks]
-[tasks.update_ipv4_public_address]
-dns_provider = "dynv6"
-dns_token = "this-is-token-for-this-zone"
+[domains]
+[domains.update_ipv4_public_address]
+provider = "dynv6"
+provider_token = "this-is-token-for-this-zone"
 domain = "example.com"
 host = "@"
 
 address_name = "gateway_ipv4_only"
 ipv6 = false
 
-[tasks.update_ipv6_public_address]
-dns_provider = "dynv6"
-dns_token = "this-is-token-for-this-zone"
+[domains.update_ipv6_public_address]
+provider = "dynv6"
+provider_token = "this-is-token-for-this-zone"
 domain = "example.com"
 host = "@"
 
