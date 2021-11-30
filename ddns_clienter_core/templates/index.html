@@ -1,0 +1,63 @@
+<!DOCTYPE html>{% load static %}{% load bootstrap4 %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css" rel="stylesheet">
+
+    <title>{{ name }}</title>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand mb-0 h1">{{ name }} <small>v{{ version }}</small></span>
+</nav>
+
+<table id="table-addresses" data-show-refresh="true" data-auto-refresh="true" data-url="/api/addresses">
+    <caption>Address List</caption>
+    <thead class="thead-light">
+    <tr>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="provider" data-sortable="true">Provider</th>
+        <th data-field="parameter">Parameter</th>
+        <th data-field="ipv4_address">IPv4 Address</th>
+        <th data-field="ipv4_last_change_time" data-sortable="true">IPv4 Change Time</th>
+        <th data-field="ipv6_address">IPv6 Address</th>
+        <th data-field="ipv6_last_change_time" data-sortable="true">IPv6 Change Time</th>
+        <th data-field="time" data-sortable="true">Timestamp</th>
+    </tr>
+    </thead>
+</table>
+
+<table id="table-domains" data-show-refresh="true" data-auto-refresh="true" data-url="/api/domains">
+    <caption>Domain/Task List</caption>
+    <thead class="thead-light">
+    <tr>
+        <th data-field="domain" data-sortable="true">Domain</th>
+        <th data-field="ip_addresses_is_up_to_date">Up To Data</th>
+        <th data-field="address_name">Address Name</th>
+        <th data-field="provider" data-sortable="true">Provider</th>
+        <th data-field="ipv4" data-sortable="true">IPv4</th>
+        <th data-field="ipv6" data-sortable="true">IPv6</th>
+        <th data-field="ip_addresses">IP Addresses</th>
+        <th data-field="last_ip_addresses" data-sortable="true">Last Addresses</th>
+        <th data-field="time" data-sortable="true">Timestamp</th>
+    </tr>
+    </thead>
+</table>
+
+<footer>
+    <hr>
+    <a href="/api/docs">OpenAPI Docs </a> | <a href="{{ project_url }}">Github Repos</a>
+</footer>
+
+{% bootstrap_javascript jquery='full' %}
+<script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+<script>
+    $('#table-addresses').bootstrapTable()
+    $('#table-domains').bootstrapTable()
+</script>
+</body>
+</html>

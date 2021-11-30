@@ -2,6 +2,7 @@
 
 django
 django-ninja
+django-bootstrap4
 
 toml
 requests

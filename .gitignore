@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # project
+staticfiles
 config.dev.toml

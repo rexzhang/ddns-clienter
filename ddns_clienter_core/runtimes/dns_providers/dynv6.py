@@ -47,7 +47,16 @@ class DDNSProvider:
 
         if self._push_success:
             db_domain.last_ip_addresses = db_domain.ip_addresses
-            db_domain.ip_addresses = ""
+
+            if self._ipv4_address is not None:
+                db_domain.ip_addresses = self._ipv4_address
+            else:
+                db_domain.ip_addresses = ""
+            if self._ipv6_address is not None:
+                if len(db_domain.ip_addresses) != 0:
+                    db_domain.ip_addresses += ","
+                db_domain.ip_addresses += self._ipv6_address
+
             db_domain.ip_addresses_is_up_to_date = True
         else:
             db_domain.ip_addresses_is_up_to_date = False

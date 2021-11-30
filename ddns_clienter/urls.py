@@ -16,10 +16,17 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 
+from ddns_clienter_core.views import index_view
 from ddns_clienter_core.api import api
 
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path("", index_view),
     path("api/", api.urls),
 ]
+
+from django.conf import settings
+
+print(settings.STATIC_URL)
+print(settings.STATIC_ROOT)
