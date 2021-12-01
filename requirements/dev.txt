@@ -1,6 +1,7 @@
 -r base.txt
 -r pypi.txt
 -r test.txt
+-r docker.txt
 
 # extend 3rd package
 icecream

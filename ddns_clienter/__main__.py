@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding=utf-8
-
-
 """
 The main entry point. Invoke as `python_module_project' or `python -m python_module_project'.
 """

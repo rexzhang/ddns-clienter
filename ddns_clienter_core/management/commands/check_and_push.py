@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = "Check the IP Address and push it to DDNS provider if there is a change"
 
     def add_arguments(self, parser):
-        parser.add_argument("-c", "--config", type=str, required=True)
+        parser.add_argument("-C", "--config", type=str, required=True)
 
     def handle(self, *args, **options):
         check_and_push(options["config"])
