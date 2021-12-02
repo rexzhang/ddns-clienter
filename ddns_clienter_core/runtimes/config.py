@@ -1,7 +1,10 @@
 from typing import Optional
 from dataclasses import dataclass
+from logging import getLogger
 
 import toml
+
+logger = getLogger(__name__)
 
 
 @dataclass
@@ -40,7 +43,12 @@ class Config:
         self.load_from_file()
 
     def load_from_file(self):
-        obj = toml.load(self._file_name)
+        try:
+            obj = toml.load(self._file_name)
+        except FileNotFoundError as e:
+            logger.error(e)
+            exit(1)
+
         addresses_obj: dict = obj.get("addresses")
         tasks_obj: dict = obj.get("domains")
         if addresses_obj is None or tasks_obj is None:

@@ -7,4 +7,4 @@ docker build -t ray1ex/ddns-clienter .
 # shellcheck disable=SC2046
 docker rmi -f $(docker images -qa -f "dangling=true")
 
-docker run -dit -p 0.0.0.0:8000:80 -v /Users/rex/p/ddns-clienter:/data --name ddns-clienter ray1ex/ddns-clienter
+docker run -dit -p 0.0.0.0:8000:80 -v /tmp:/data --name ddns-clienter ray1ex/ddns-clienter
