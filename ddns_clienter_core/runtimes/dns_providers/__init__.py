@@ -1,6 +1,11 @@
 from ddns_clienter_core import models
 from ddns_clienter_core.runtimes import config
-from ddns_clienter_core.runtimes.dns_providers.dynv6 import DDNSProviderDynv6
+from ddns_clienter_core.runtimes.dns_providers.dynv6 import (
+    DDNSProviderDynv6,
+    DDNSProviderException,
+)
+
+__all__ = ["DDNSProviderException", "push_address_to_dns_provider"]
 
 
 def push_address_to_dns_provider(config_domain: config.Domain, real_push: bool = True):
@@ -10,7 +15,7 @@ def push_address_to_dns_provider(config_domain: config.Domain, real_push: bool =
         provider_class = DDNSProviderDynv6
 
     else:
-        raise
+        raise DDNSProviderException("Can not match DNS provider")
 
     provider = provider_class(
         config_domain, db_address.ipv4_address, db_address.ipv6_address, real_push

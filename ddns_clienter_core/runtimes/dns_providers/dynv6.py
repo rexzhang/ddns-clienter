@@ -11,6 +11,10 @@ from ddns_clienter_core.runtimes import config
 logger = getLogger(__name__)
 
 
+class DDNSProviderException(Exception):
+    pass
+
+
 class DDNSProvider:
     _push_success: bool
 

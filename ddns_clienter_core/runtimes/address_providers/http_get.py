@@ -4,7 +4,7 @@ from logging import getLogger
 
 import requests
 
-from .abs import AddressProviderAbs
+from .abs import AddressProviderAbs, AddressProviderException
 
 logger = getLogger(__name__)
 
@@ -21,7 +21,11 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
     @staticmethod
     def _detect_process(server_url: str, match_func: Callable) -> Optional[str]:
 
-        r = requests.get(server_url)
+        try:
+            r = requests.get(server_url)
+        except requests.exceptions.RequestException as e:
+            raise AddressProviderException(e)
+
         if r.status_code != 200:
             return None
 
@@ -59,7 +63,7 @@ class AddressProviderIpify(AddressProviderHttpGetAbs):
 
     @property
     def _ipv6_url(self):
-        return "https://api6.ipify.org/"
+        return "https://api64.ipify.org/"
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):
@@ -73,4 +77,4 @@ class AddressProviderNoip(AddressProviderHttpGetAbs):
 
     @property
     def _ipv6_url(self):
-        return "https://api6.ipify.org/"
+        return "https://api64.ipify.org/"

@@ -3,12 +3,13 @@ import re
 import dataclasses
 
 from django.utils import timezone
+from asgiref.sync import sync_to_async
 
 from ddns_clienter_core import models
 from ddns_clienter_core.runtimes import config
 
 
-class ExceptionIPAddressDetect(Exception):
+class AddressProviderException(Exception):
     pass
 
 

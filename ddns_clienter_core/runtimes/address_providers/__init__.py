@@ -1,5 +1,6 @@
 from typing import Optional
 from ddns_clienter_core.runtimes import config
+from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderException
 from ddns_clienter_core.runtimes.address_providers.host_name import (
     AddressProviderHostName,
 )
@@ -9,6 +10,7 @@ from ddns_clienter_core.runtimes.address_providers.http_get import (
 )
 
 __all__ = [
+    "AddressProviderException",
     "detect_ip_address_from_provider",
     "AddressProviderHostName",
     "AddressProviderIpify",
@@ -18,14 +20,15 @@ __all__ = [
 
 def detect_ip_address_from_provider(address: config.Address) -> Optional[int]:
     if address.provider == "hostname":
-        provider = AddressProviderHostName(address)
+        provider_class = AddressProviderHostName
     elif address.provider == "ipify":
-        provider = AddressProviderIpify(address)
+        provider_class = AddressProviderIpify
     elif address.provider == "noip":
-        provider = AddressProviderNoip(address)
+        provider_class = AddressProviderNoip
 
     else:
         raise
 
+    provider = provider_class(address)
     provider.update_to_db()
     return provider.changed_address_s_id

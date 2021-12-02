@@ -18,7 +18,8 @@ def init_crontab():
 
     cron = CronTab(user="root")
     job = cron.new(
-        command="django-admin check_and_push --config /data/config.toml --send-event"
+        # command="django-admin check_and_push --config /data/config.toml --send-event"
+        command="wget http://127.0.0.1/api/check_and_push -o /dev/null"
     )
     job.minute.every(settings.CHECK_INTERVALS)
     cron.write()

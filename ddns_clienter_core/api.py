@@ -3,20 +3,22 @@ from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
 
 from ddns_clienter_core.models import Status, Address, Domain, Event, EventLevel
-from ddns_clienter_core.runtimes.event import send_event
+from ddns_clienter_core.runtimes.check_and_update import check_and_push
 
 StatusSchema = create_schema(Status, exclude=["id"])
 AddressSchema = create_schema(Address, exclude=["id"])
 DomainSchema = create_schema(Domain, exclude=["id", "provider_token"])
-EventSchemaRetrieve = create_schema(Event, exclude=["id"])
 
 
-class EventCreate(ModelSchema):
+# EventSchemaRetrieve = create_schema(Event, exclude=["id"])
+
+
+class EventSchema(ModelSchema):
     level: EventLevel
 
     class Config:
         model = Event
-        model_exclude = ["id", "time"]
+        model_exclude = ["id"]
 
 
 def auth_local_host(request):
@@ -27,7 +29,7 @@ def auth_local_host(request):
 api_public = Router(tags=["Public"])
 
 
-@api_public.get("/events", response=list[EventSchemaRetrieve])
+@api_public.get("/events", response=list[EventSchema])
 def get_events(request):
     events = Event.objects.order_by("-time").all()
     return events
@@ -60,11 +62,10 @@ def list_domains(request):
 api_inside = Router(auth=auth_local_host, tags=["Inside"])
 
 
-@api_inside.post("/events/create")
-def create_event(request, payload: EventCreate):
-    # 接受内部提交，接受提交后 console 输出，并且到数据库，可以 api 获取
-    event = Event.objects.create(**payload.dict())
-    return {"id": event.id}
+@api_inside.get("/check_and_push")
+def api_check_and_push(request):
+    check_and_push()
+    return
 
 
 api = NinjaAPI(title="DDNS Clienter API")

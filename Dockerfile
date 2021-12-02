@@ -13,9 +13,10 @@ RUN pip install --no-cache-dir -r /app/requirements/docker.txt
 WORKDIR /app
 EXPOSE 80
 VOLUME /data
+ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 ENV PYTHONPATH=/app
 ENV DATA_DIR=/data
-ENV  DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
+ENV CONFIG_FILE_NAME="config.toml"
 
 CMD django-admin init \
     && python -m ddns_clienter runserver --host 0.0.0.0 --port 80

@@ -162,4 +162,8 @@ LOGGING = {
     },
 }
 
-CHECK_INTERVALS = getenv("INTERVALS", 5)
+# DDNS Clienter
+CONFIG_FILE_NAME = getenv("CONFIG_FILE_NAME", "config.toml")
+
+CHECK_INTERVALS = getenv("INTERVALS", 5)  # minutes
+PUSH_INTERVALS = getenv("INTERVALS", 1440)  # minutes, 1day

@@ -1,10 +1,7 @@
 from logging import getLogger
-import os
-import sys
 
 import click
 import uvicorn
-from django.core import management
 
 logger = getLogger(__name__)
 
@@ -25,6 +22,7 @@ def cli(**cli_kwargs):
 @click.option(
     "-P", "--port", default=8000, help="Bind socket to this port.  [default: 8000]"
 )
+@click.option("--reload", is_flag=True)
 def runserver(**cli_kwargs):
     kwargs = {
         "app": "ddns_clienter.asgi:application",
