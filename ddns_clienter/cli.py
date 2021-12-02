@@ -4,6 +4,7 @@ import sys
 
 import click
 import uvicorn
+from django.core import management
 
 logger = getLogger(__name__)
 
@@ -12,21 +13,6 @@ logger = getLogger(__name__)
 def cli(**cli_kwargs):
     # do something
     return
-
-
-@cli.command("init", help="Init DDDNS Clienter database and crontab")
-def init(**cli_kwargs):
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ddns_clienter.settings")
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-
-    execute_from_command_line(sys.argv)
 
 
 @cli.command("runserver", help="Startup web UI server")
@@ -51,27 +37,6 @@ def runserver(**cli_kwargs):
     kwargs.update(cli_kwargs)
 
     return uvicorn.run(**kwargs)
-
-
-@cli.command(
-    "check_and_push", help="Check IP address, push new address to DNS provider"
-)
-@click.option("-C", "--config", required=True, type=str, default="config.toml")
-def check_and_push(**cli_kwargs):
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ddns_clienter.settings")
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-
-    argv = sys.argv
-    if len(argv) == 2:
-        argv += ["--config", cli_kwargs.get("config")]
-    execute_from_command_line(argv)
 
 
 def main():

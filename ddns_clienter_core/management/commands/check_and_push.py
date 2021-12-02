@@ -8,6 +8,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("-C", "--config", type=str, required=True)
+        parser.add_argument("--send-event", action="store_true")
 
     def handle(self, *args, **options):
-        check_and_push(options["config"])
+        check_and_push(config_file=options["config"], send_event=options["send_event"])

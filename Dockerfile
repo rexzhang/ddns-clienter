@@ -15,8 +15,9 @@ EXPOSE 80
 VOLUME /data
 ENV PYTHONPATH=/app
 ENV DATA_DIR=/data
+ENV  DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 
-CMD python -m ddns_clienter init \
+CMD django-admin init \
     && python -m ddns_clienter runserver --host 0.0.0.0 --port 80
 
 LABEL org.opencontainers.image.title="DDNS Clienter"

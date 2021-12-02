@@ -1,13 +1,19 @@
-from ddns_clienter_core.runtimes.config import Config
+from ddns_clienter_core.models import Address
+from ddns_clienter_core.runtimes.config import Config, ConfigException
 from ddns_clienter_core.runtimes.address_providers import (
     detect_ip_address_from_provider,
 )
 from ddns_clienter_core.runtimes.dns_providers import push_address_to_dns_provider
-from ddns_clienter_core.models import Address
+from ddns_clienter_core.runtimes import event
 
 
-def check_and_push(config_file: str, real_push: bool = True):
-    config = Config(config_file)
+def check_and_push(config_file: str, send_event: bool, real_push: bool = True):
+    try:
+        config = Config(config_file)
+    except ConfigException as e:
+        if send_event:
+            event.send_event(str(e), level=event.EventLevel.CRITICAL)
+        return
 
     # get ip address, update ip address info into config.addresses
     changed_address_s_ids = list()

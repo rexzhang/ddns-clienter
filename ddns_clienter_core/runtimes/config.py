@@ -4,7 +4,7 @@ from logging import getLogger
 import toml
 
 from ddns_clienter_core.models import EventLevel
-from ddns_clienter_core.runtimes.call_inside_api import send_event
+from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
 
@@ -36,6 +36,10 @@ class Domain:
     ipv6: bool = True
 
 
+class ConfigException(Exception):
+    pass
+
+
 class Config:
     addresses = dict()
     domains = list()
@@ -53,7 +57,7 @@ class Config:
                 "Can not open config file:{}".format(self._file_name),
                 level=EventLevel.CRITICAL,
             )
-            raise e
+            raise ConfigException(e)
 
         addresses_obj: dict = obj.get("addresses")
         tasks_obj: dict = obj.get("domains")

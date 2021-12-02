@@ -137,6 +137,7 @@ if DEBUG:
     logging_level = "DEBUG"
 else:
     logging_level = "INFO"
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
