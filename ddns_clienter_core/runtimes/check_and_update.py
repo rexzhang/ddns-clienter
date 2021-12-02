@@ -43,6 +43,7 @@ def check_and_push(config_file_name: Optional[str] = None, real_push: bool = Tru
 
         except AddressProviderException as e:
             event.send_event(str(e), level=event.EventLevel.ERROR)
+
     logger.debug("changed_address_s_ids:{}".format(changed_address_s_ids))
 
     address_names = set(
