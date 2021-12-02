@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management.commands.migrate import Command as MigrateCommand
 from crontab import CronTab
 
-from ddns_clienter_core.runtimes.config import Config
+from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
 
@@ -21,7 +21,7 @@ def init_crontab():
     )
     job.minute.every(settings.CHECK_INTERVALS)
     cron.write()
-    logger.info("crontab created.")
+    send_event("crontab created.")
 
 
 def init_db():
@@ -41,7 +41,7 @@ def init_db():
         "fake_initial": None,
     }
     command.handle(**migrate_options)
-    logger.info("database init finished.")
+    send_event("database init finished.")
 
 
 class Command(BaseCommand):

@@ -1,8 +1,10 @@
-from typing import Optional
 from dataclasses import dataclass
 from logging import getLogger
 
 import toml
+
+from ddns_clienter_core.models import EventLevel
+from ddns_clienter_core.runtimes.call_inside_api import send_event
 
 logger = getLogger(__name__)
 
@@ -47,7 +49,11 @@ class Config:
             obj = toml.load(self._file_name)
         except FileNotFoundError as e:
             logger.error(e)
-            exit(1)
+            send_event(
+                "Can not open config file:{}".format(self._file_name),
+                level=EventLevel.CRITICAL,
+            )
+            raise e
 
         addresses_obj: dict = obj.get("addresses")
         tasks_obj: dict = obj.get("domains")

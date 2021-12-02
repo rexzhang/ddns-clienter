@@ -18,14 +18,14 @@
     <caption>Address List</caption>
     <thead class="thead-light">
     <tr>
-        <th data-field="name" data-sortable="true">Name</th>
-        <th data-field="provider" data-sortable="true">Provider</th>
+        <th data-field="name">Name</th>
+        <th data-field="provider">Provider</th>
         <th data-field="parameter">Parameter</th>
         <th data-field="ipv4_address">IPv4 Address</th>
-        <th data-field="ipv4_last_change_time" data-sortable="true">IPv4 Change Time</th>
+        <th data-field="ipv4_last_change_time">IPv4 Change Time</th>
         <th data-field="ipv6_address">IPv6 Address</th>
-        <th data-field="ipv6_last_change_time" data-sortable="true">IPv6 Change Time</th>
-        <th data-field="time" data-sortable="true">Timestamp</th>
+        <th data-field="ipv6_last_change_time">IPv6 Change Time</th>
+        <th data-field="time">Timestamp</th>
     </tr>
     </thead>
 </table>
@@ -34,15 +34,26 @@
     <caption>Domain/Task List</caption>
     <thead class="thead-light">
     <tr>
-        <th data-field="domain" data-sortable="true">Domain</th>
+        <th data-field="domain">Domain</th>
         <th data-field="ip_addresses_is_up_to_date">Up To Data</th>
         <th data-field="address_name">Address Name</th>
-        <th data-field="provider" data-sortable="true">Provider</th>
-        <th data-field="ipv4" data-sortable="true">IPv4</th>
-        <th data-field="ipv6" data-sortable="true">IPv6</th>
+        <th data-field="provider">Provider</th>
+        <th data-field="ipv4">IPv4</th>
+        <th data-field="ipv6">IPv6</th>
         <th data-field="ip_addresses">IP Addresses</th>
-        <th data-field="last_ip_addresses" data-sortable="true">Last Addresses</th>
-        <th data-field="time" data-sortable="true">Timestamp</th>
+        <th data-field="last_ip_addresses">Last Addresses</th>
+        <th data-field="time">Timestamp</th>
+    </tr>
+    </thead>
+</table>
+
+<table id="table-events" data-show-refresh="true" data-auto-refresh="true" data-url="/api/events">
+    <caption>Domain/Task List</caption>
+    <thead class="thead-light">
+    <tr>
+        <th data-field="time">Timestamp</th>
+        <th data-field="level">Level</th>
+        <th data-field="message">Message</th>
     </tr>
     </thead>
 </table>
@@ -58,6 +69,7 @@
 <script>
     $('#table-addresses').bootstrapTable()
     $('#table-domains').bootstrapTable()
+    $('#table-events').bootstrapTable()
 </script>
 </body>
 </html>

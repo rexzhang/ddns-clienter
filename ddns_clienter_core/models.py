@@ -51,3 +51,18 @@ class Domain(models.Model):
 
     # record's last update datetime
     time = models.DateTimeField(auto_now=True)
+
+
+class EventLevel(models.TextChoices):
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
+
+
+class Event(models.Model):
+    level = models.TextField(choices=EventLevel.choices)
+    message = models.TextField()
+
+    # timestamp
+    time = models.DateTimeField(auto_now=True)
