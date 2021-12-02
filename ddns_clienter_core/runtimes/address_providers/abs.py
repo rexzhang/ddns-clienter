@@ -65,7 +65,7 @@ class AddressProviderAbs:
             if now is not None:
                 address.ipv4_last_address = address.ipv4_address
                 address.ipv4_address = self.ipv4_address
-                address.ipv4_last_change_time = now()
+                address.ipv4_last_change_time = now
 
                 ip_address_is_changed = True
 
@@ -74,7 +74,7 @@ class AddressProviderAbs:
             if now is not None:
                 address.ipv6_last_address = address.ipv6_address
                 address.ipv6_address = self.ipv6_address
-                address.ipv6_last_change_time = timezone.now()
+                address.ipv6_last_change_time = now
 
                 ip_address_is_changed = True
 
