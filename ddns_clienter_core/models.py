@@ -40,11 +40,12 @@ class Domain(models.Model):
     ipv6 = models.BooleanField()
 
     # from Dynamic DNS provider's response
-    last_ip_addresses = models.TextField(max_length=62, null=True)
     ip_addresses = models.CharField(max_length=62)
-    ip_addresses_is_up_to_date = models.BooleanField()
+    last_ip_addresses = models.TextField(max_length=62, null=True)
+    last_update_is_success = models.BooleanField()
+    last_update_time = models.DateTimeField()
 
-    # record's last update datetime
+    # last run task timestamp
     time = models.DateTimeField(auto_now=True)
 
 

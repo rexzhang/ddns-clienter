@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from logging import getLogger
 
 import toml
@@ -10,30 +10,31 @@ logger = getLogger(__name__)
 
 
 @dataclass
-class Address:
+class ConfigAddress:
     name: str
-    provider: str  # ip address detect provider's name
-    parameter: str = ""  # for ip address detect provider
 
     ipv4: bool = False
     ipv6: bool = False
     ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
 
+    provider: str = field(default=None)  # ip address detect provider's name
+    parameter: str = ""  # for ip address detect provider
+
 
 @dataclass
-class Domain:
+class ConfigDomain:
     name: str
-
-    provider: str
-    provider_token: str
-
-    domain: str
-    host: str
 
     address_name: str
     ipv4: bool = False
     ipv6: bool = False
+
+    domain: str = field(default=None)
+    host: str = field(default=None)
+
+    provider: str = field(default=None)
+    provider_token: str = field(default=None)
 
 
 class ConfigException(Exception):
@@ -65,15 +66,17 @@ class Config:
             raise
 
         for name, data in addresses_obj.items():
-            address_info = Address(name=name, **data)
+            address_info = ConfigAddress(name=name, **data)
             if not address_info.ipv4 and not address_info.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
             self.addresses.update({name: address_info})
 
         for name, data in tasks_obj.items():
-            task = Domain(name=name, **data)
+            task = ConfigDomain(name=name, **data)
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
             self.domains.append(task)
+
+        # TODO: check

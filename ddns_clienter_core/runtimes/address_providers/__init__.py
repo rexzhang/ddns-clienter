@@ -18,17 +18,18 @@ __all__ = [
 ]
 
 
-def detect_ip_address_from_provider(address: config.Address) -> Optional[int]:
-    if address.provider == "hostname":
+def detect_ip_address_from_provider(
+    address_config: config.ConfigAddress,
+) -> (Optional[str], Optional[str]):
+    if address_config.provider == "hostname":
         provider_class = AddressProviderHostName
-    elif address.provider == "ipify":
+    elif address_config.provider == "ipify":
         provider_class = AddressProviderIpify
-    elif address.provider == "noip":
+    elif address_config.provider == "noip":
         provider_class = AddressProviderNoip
 
     else:
         raise
 
-    provider = provider_class(address)
-    provider.update_to_db()
-    return provider.changed_address_s_id
+    provider = provider_class(address_config)
+    return provider.ipv4_address, provider.ipv6_address

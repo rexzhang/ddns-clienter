@@ -5,9 +5,9 @@
 [addresses.from_hostname]
 ipv4 = true
 ipv6 = true
+ipv6_match_rule = "^240e:"
 provider = "hostname"
 parameter = "ds216plus"
-ipv6_match_rule = "^240e:"
 
 [addresses.from_ipify]
 ipv4 = true
@@ -25,18 +25,18 @@ provider = "noip"
 ipv4 = true
 address_name = "from_ipify"
 
-provider = "dynv6"
-provider_token = "this-is-token-for-this-zone"
-
 domain = "example.com"
 host = "@"
+
+provider = "dynv6"
+provider_token = "this-is-token-for-this-zone"
 
 [domains.ipv6_to_dynv6]
 ipv6 = true
 address_name = "from_hostname"
 
-provider = "dynv6"
-provider_token = "this-is-token-for-this-zone"
-
 domain = "example.com"
 host = "@"
+
+provider = "dynv6"
+provider_token = "this-is-token-for-this-zone"
