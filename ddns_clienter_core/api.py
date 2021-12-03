@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.utils import timezone
 from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
@@ -33,7 +34,9 @@ api_public = Router(tags=["Public"])
 @api_public.get("/addresses", response=list[AddressSchema])
 def list_addresses(request):
     addresses = (
-        Address.objects.filter(time__gt=(timezone.now() - timedelta(days=1)))
+        Address.objects.filter(
+            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 3))
+        )
         .order_by("name")
         .all()
     )
@@ -48,7 +51,13 @@ def get_address(request, address_id: int):
 
 @api_public.get("/domains", response=list[DomainSchema])
 def list_domains(request):
-    domains = Domain.objects.order_by("name").all()
+    domains = (
+        Domain.objects.filter(
+            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 3))
+        )
+        .order_by("name")
+        .all()
+    )
     return domains
 
 
