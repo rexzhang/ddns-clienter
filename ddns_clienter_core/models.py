@@ -1,11 +1,6 @@
 from django.db import models
 
 
-class Status(models.Model):
-    key = models.CharField(max_length=255, unique=True)
-    value = models.TextField()
-
-
 class Address(models.Model):
     # from config
     name = models.CharField(max_length=255, unique=True)
@@ -58,6 +53,11 @@ class EventLevel(models.TextChoices):
     WARNING = "WARNING"
     ERROR = "ERROR"
     CRITICAL = "CRITICAL"
+
+
+class Status(models.Model):
+    key = models.CharField(max_length=255, unique=True)
+    value = models.TextField()
 
 
 class Event(models.Model):

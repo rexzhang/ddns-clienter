@@ -162,6 +162,9 @@ LOGGING = {
     },
 }
 
+# django-ninja
+NINJA_PAGINATION_PER_PAGE = 10
+
 # DDNS Clienter
 CONFIG_FILE_NAME = getenv("CONFIG_FILE_NAME", "config.toml")
 

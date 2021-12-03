@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
+from ninja.pagination import paginate, PageNumberPagination
 
 from ddns_clienter_core.models import Status, Address, Domain, Event, EventLevel
 from ddns_clienter_core.runtimes.check_and_update import check_and_push
@@ -8,9 +12,6 @@ from ddns_clienter_core.runtimes.check_and_update import check_and_push
 StatusSchema = create_schema(Status, exclude=["id"])
 AddressSchema = create_schema(Address, exclude=["id"])
 DomainSchema = create_schema(Domain, exclude=["id", "provider_token"])
-
-
-# EventSchemaRetrieve = create_schema(Event, exclude=["id"])
 
 
 class EventSchema(ModelSchema):
@@ -29,21 +30,13 @@ def auth_local_host(request):
 api_public = Router(tags=["Public"])
 
 
-@api_public.get("/events", response=list[EventSchema])
-def get_events(request):
-    events = Event.objects.order_by("-time").all()
-    return events
-
-
-@api_public.get("/status", response=list[StatusSchema])
-def list_status(request):
-    status = Domain.objects.all()
-    return status
-
-
 @api_public.get("/addresses", response=list[AddressSchema])
 def list_addresses(request):
-    addresses = Address.objects.order_by("name").all()
+    addresses = (
+        Address.objects.filter(time__gt=(timezone.now() - timedelta(days=1)))
+        .order_by("name")
+        .all()
+    )
     return addresses
 
 
@@ -55,8 +48,26 @@ def get_address(request, address_id: int):
 
 @api_public.get("/domains", response=list[DomainSchema])
 def list_domains(request):
-    domains = Domain.objects.all()
+    domains = Domain.objects.order_by("name").all()
     return domains
+
+
+@api_public.get("/status", response=list[StatusSchema])
+def list_status(request):
+    status = Status.objects.order_by("key").all()
+    return status
+
+
+def _get_pagination_range(page: int) -> [int, int]:
+    return [(page - 1) * 50, page * 50]
+
+
+@api_public.get("/events", response=list[EventSchema])
+@paginate(PageNumberPagination)
+def get_events(request, **kwargs):
+    page_range = _get_pagination_range(kwargs.get("pagination").page)
+    events = Event.objects.order_by("-time")[page_range[0] : page_range[1]]
+    return events
 
 
 api_inside = Router(auth=auth_local_host, tags=["Inside"])

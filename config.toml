@@ -1,6 +1,7 @@
 # DDNS Clienter config.toml example
 
 [addresses]
+
 [addresses.gateway_ipv4_only]
 provider = "ipify"
 ipv6 = false
@@ -17,6 +18,7 @@ ipv6_match_rule = "^240e:"
 
 
 [domains]
+
 [domains.update_ipv4_public_address]
 provider = "dynv6"
 provider_token = "this-is-token-for-this-zone"
