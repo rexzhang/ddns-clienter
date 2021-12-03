@@ -15,8 +15,8 @@ class Address:
     provider: str  # ip address detect provider's name
     parameter: str = ""  # for ip address detect provider
 
-    ipv4: bool = True
-    ipv6: bool = True
+    ipv4: bool = False
+    ipv6: bool = False
     ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
 
@@ -32,8 +32,8 @@ class Domain:
     host: str
 
     address_name: str
-    ipv4: bool = True
-    ipv6: bool = True
+    ipv4: bool = False
+    ipv6: bool = False
 
 
 class ConfigException(Exception):

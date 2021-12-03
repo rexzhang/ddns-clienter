@@ -2,37 +2,41 @@
 
 [addresses]
 
-[addresses.gateway_ipv4_only]
-provider = "ipify"
-ipv6 = false
-
-[addresses.self_public_ipv6_only]
-provider = "noip"
-ipv4 = false
-#ipv6_match_rule = "^240e:xxxx"
-
-[addresses.rex_mbp]
+[addresses.from_hostname]
+ipv4 = true
+ipv6 = true
 provider = "hostname"
-parameter = "rex-mbp"
+parameter = "ds216plus"
 ipv6_match_rule = "^240e:"
+
+[addresses.from_ipify]
+ipv4 = true
+ipv6 = true
+provider = "ipify"
+
+[addresses.from_noip]
+ipv4 = true
+provider = "noip"
 
 
 [domains]
 
-[domains.update_ipv4_public_address]
+[domains.ipv4_to_dynv6]
+ipv4 = true
+address_name = "from_ipify"
+
 provider = "dynv6"
 provider_token = "this-is-token-for-this-zone"
+
 domain = "example.com"
 host = "@"
 
-address_name = "gateway_ipv4_only"
-ipv6 = false
+[domains.ipv6_to_dynv6]
+ipv6 = true
+address_name = "from_hostname"
 
-[domains.update_ipv6_public_address]
 provider = "dynv6"
 provider_token = "this-is-token-for-this-zone"
+
 domain = "example.com"
 host = "@"
-
-address_name = "rex_mbp"
-ipv4 = false
