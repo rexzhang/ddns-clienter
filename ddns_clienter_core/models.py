@@ -3,7 +3,8 @@ from django.db import models
 
 class Address(models.Model):
     # from config
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, primary_key=True)
+
     provider = models.CharField(max_length=255)
     parameter = models.TextField()
 
@@ -25,9 +26,9 @@ class Address(models.Model):
     time = models.DateTimeField(auto_now=True)
 
 
-class Domain(models.Model):
+class Task(models.Model):
     # from config
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, primary_key=True)
 
     provider = models.CharField(max_length=255)
     provider_token = models.TextField()
@@ -57,7 +58,7 @@ class EventLevel(models.TextChoices):
 
 
 class Status(models.Model):
-    key = models.CharField(max_length=255, unique=True)
+    key = models.CharField(max_length=255, primary_key=True)
     value = models.TextField()
 
 

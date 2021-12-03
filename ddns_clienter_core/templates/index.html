@@ -30,18 +30,19 @@
     </thead>
 </table>
 
-<table id="table-domains" data-show-refresh="true" data-auto-refresh="true" data-url="/api/domains">
-    <caption>Domain/Task List</caption>
+<table id="table-tasks" data-show-refresh="true" data-auto-refresh="true" data-url="/api/tasks">
+    <caption>Task List</caption>
     <thead class="thead-light">
     <tr>
+        <th data-field="name">Name</th>
+        <th data-field="last_update_is_success">Success</th>
         <th data-field="domain">Domain</th>
-        <th data-field="ip_addresses_is_up_to_date">Up To Data</th>
-        <th data-field="address_name">Address Name</th>
-        <th data-field="provider">Provider</th>
-        <th data-field="ipv4">IPv4</th>
-        <th data-field="ipv6">IPv6</th>
         <th data-field="ip_addresses">IP Addresses</th>
         <th data-field="last_ip_addresses">Last Addresses</th>
+        <th data-field="address_name">Address Name</th>
+        <th data-field="ipv4">IPv4</th>
+        <th data-field="ipv6">IPv6</th>
+        <th data-field="provider">Provider</th>
         <th data-field="time">Timestamp</th>
     </tr>
     </thead>
@@ -68,7 +69,7 @@
 <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
 <script>
     $('#table-addresses').bootstrapTable()
-    $('#table-domains').bootstrapTable()
+    $('#table-tasks').bootstrapTable()
     $('#table-events').bootstrapTable()
 </script>
 </body>

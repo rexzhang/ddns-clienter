@@ -17,19 +17,19 @@ class DDNSProvider:
 
     def __init__(
         self,
-        config_domain: config.ConfigDomain,
+        config_task: config.ConfigTask,
         ipv4_address: Optional[str],
         ipv6_address: Optional[str],
         real_push: bool,
     ):
-        self._config_domain = config_domain
+        self._config_task = config_task
 
-        if self._config_domain.ipv4 and ipv4_address:
+        if self._config_task.ipv4 and ipv4_address:
             self._ipv4_address = ipv4_address
         else:
             self._ipv4_address = None
 
-        if self._config_domain.ipv6 and ipv6_address:
+        if self._config_task.ipv6 and ipv6_address:
             self._ipv6_address = ipv6_address
         else:
             self._ipv6_address = None
@@ -47,12 +47,12 @@ class DDNSProviderDynv6(DDNSProvider):
 
     def _push_to_provider(self):
         params = {
-            "zone": self._config_domain.domain,
-            "token": self._config_domain.provider_token,
+            "zone": self._config_task.domain,
+            "token": self._config_task.provider_token,
         }
-        if self._config_domain.ipv4 and self._ipv4_address:
+        if self._config_task.ipv4 and self._ipv4_address:
             params.update({"ipv4": self._ipv4_address})
-        if self._config_domain.ipv6 and self._ipv6_address:
+        if self._config_task.ipv6 and self._ipv6_address:
             params.update({"ipv6": self._ipv6_address})
 
         logger.debug(params)

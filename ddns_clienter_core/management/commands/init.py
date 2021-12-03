@@ -21,7 +21,7 @@ def init_crontab():
     cron = CronTab(user="root")
     cron.remove_all(comment=_CRON_COMMENT_TAG)
     job = cron.new(
-        command="/usr/bin/wget http://127.0.0.1/api/check_and_push -o /dev/null",
+        command="/usr/bin/wget http://127.0.0.1/api/check_and_update -o /dev/null",
         comment=_CRON_COMMENT_TAG,
     )
     job.minute.every(settings.CHECK_INTERVALS)

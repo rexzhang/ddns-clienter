@@ -23,7 +23,7 @@ class ConfigAddress:
 
 
 @dataclass
-class ConfigDomain:
+class ConfigTask:
     name: str
 
     address_name: str
@@ -43,7 +43,7 @@ class ConfigException(Exception):
 
 class Config:
     addresses = dict()
-    domains = list()
+    tasks = list()
 
     def __init__(self, file_name: str):
         self._file_name = file_name
@@ -61,7 +61,7 @@ class Config:
             raise ConfigException(e)
 
         addresses_obj: dict = obj.get("addresses")
-        tasks_obj: dict = obj.get("domains")
+        tasks_obj: dict = obj.get("tasks")
         if addresses_obj is None or tasks_obj is None:
             raise
 
@@ -73,10 +73,10 @@ class Config:
             self.addresses.update({name: address_info})
 
         for name, data in tasks_obj.items():
-            task = ConfigDomain(name=name, **data)
+            task = ConfigTask(name=name, **data)
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.domains.append(task)
+            self.tasks.append(task)
 
         # TODO: check

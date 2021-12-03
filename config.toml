@@ -19,9 +19,9 @@ ipv4 = true
 provider = "noip"
 
 
-[domains]
+[tasks]
 
-[domains.ipv4_to_dynv6]
+[tasks.ipv4_to_dynv6]
 ipv4 = true
 address_name = "from_ipify"
 
@@ -31,7 +31,7 @@ host = "@"
 provider = "dynv6"
 provider_token = "this-is-token-for-this-zone"
 
-[domains.ipv6_to_dynv6]
+[tasks.ipv6_to_dynv6]
 ipv6 = true
 address_name = "from_hostname"
 

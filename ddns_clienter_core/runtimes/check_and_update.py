@@ -10,7 +10,7 @@ from ddns_clienter_core import models
 from ddns_clienter_core.runtimes.config import (
     Config,
     ConfigAddress,
-    ConfigDomain,
+    ConfigTask,
     ConfigException,
 )
 from ddns_clienter_core.runtimes.address_providers import (
@@ -90,12 +90,12 @@ class AddressChangeMaster:
         db_address.save()
 
     def get_new_addresses(
-        self, config_domain: ConfigDomain
+        self, config_task: ConfigTask
     ) -> (Optional[str], Optional[str]):
-        address_status = self._address_status.get(config_domain.address_name)
+        address_status = self._address_status.get(config_task.address_name)
 
-        db_domain = models.Domain.objects.filter(name=config_domain.name).first()
-        if db_domain is None:
+        db_task = models.Task.objects.filter(name=config_task.name).first()
+        if db_task is None:
             # can't found task record
             return (
                 address_status.ipv4_newest_address,
@@ -103,7 +103,7 @@ class AddressChangeMaster:
             )
 
         if (
-            db_domain.last_update_time + timedelta(minutes=settings.PUSH_INTERVALS)
+            db_task.last_update_time + timedelta(minutes=settings.PUSH_INTERVALS)
             < timezone.now()
         ):
             # PUSH_INTERVALS timeout
@@ -112,15 +112,15 @@ class AddressChangeMaster:
                 address_status.ipv6_newest_address,
             )
 
-        if db_domain.ipv4 and (
-            address_status.ipv4_is_changed or not db_domain.last_update_is_success
+        if db_task.ipv4 and (
+            address_status.ipv4_is_changed or not db_task.last_update_is_success
         ):
             ipv4_new_address = address_status.ipv4_newest_address
         else:
             ipv4_new_address = None
 
-        if db_domain.ipv6 and (
-            address_status.ipv6_is_changed or not db_domain.last_update_is_success
+        if db_task.ipv6 and (
+            address_status.ipv6_is_changed or not db_task.last_update_is_success
         ):
             ipv6_new_address = address_status.ipv6_newest_address
         else:
@@ -129,39 +129,39 @@ class AddressChangeMaster:
         return ipv4_new_address, ipv6_new_address
 
     @staticmethod
-    def update_domain_info_to_db(
-        config_domain: ConfigDomain,
+    def update_task_info_to_db(
+        config_task: ConfigTask,
         ipv4_new_address: Optional[str],
         ipv6_new_address: Optional[str],
         push_success: bool,
     ):
-        db_domain = models.Domain.objects.filter(name=config_domain.name).first()
-        if db_domain is None:
-            db_domain = models.Domain(**dataclass_asdict(config_domain))
+        db_task = models.Task.objects.filter(name=config_task.name).first()
+        if db_task is None:
+            db_task = models.Task(**dataclass_asdict(config_task))
 
         if push_success:
             new_addresses = str()
-            if config_domain.ipv4 and ipv4_new_address is not None:
+            if config_task.ipv4 and ipv4_new_address is not None:
                 new_addresses += ipv4_new_address
 
-            if config_domain.ipv6 and ipv6_new_address is not None:
+            if config_task.ipv6 and ipv6_new_address is not None:
                 if len(new_addresses) != 0:
                     new_addresses += ","
 
                 new_addresses += ipv6_new_address
 
-            db_domain.last_ip_addresses = db_domain.ip_addresses
-            db_domain.ip_addresses = new_addresses
-            db_domain.last_update_is_success = True
-            db_domain.last_update_time = timezone.now()
+            db_task.last_ip_addresses = db_task.ip_addresses
+            db_task.ip_addresses = new_addresses
+            db_task.last_update_is_success = True
+            db_task.last_update_time = timezone.now()
 
         else:
-            db_domain.last_update_is_success = False
+            db_task.last_update_is_success = False
 
-        db_domain.save()
+        db_task.save()
 
 
-def check_and_push(config_file_name: Optional[str] = None, real_push: bool = True):
+def check_and_update(config_file_name: Optional[str] = None, real_push: bool = True):
     # load config
     if config_file_name is None:
         config_file_name = settings.BASE_DATA_DIR.joinpath(
@@ -200,22 +200,20 @@ def check_and_push(config_file_name: Optional[str] = None, real_push: bool = Tru
         )
 
     # put A/AAAA record to DNS provider
-    for config_domain in config.domains:
-        ipv4_newest_address, ipv6_newest_address = master.get_new_addresses(
-            config_domain
-        )
+    for config_task in config.tasks:
+        ipv4_newest_address, ipv6_newest_address = master.get_new_addresses(config_task)
         if ipv4_newest_address is None and ipv6_newest_address is None:
-            logger.debug("Skip task:{}".format(config_domain.name))
+            logger.debug("Skip task:{}".format(config_task.name))
             continue
 
         try:
             push_success = push_address_to_dns_provider(
-                config_domain, ipv4_newest_address, ipv6_newest_address, real_push
+                config_task, ipv4_newest_address, ipv6_newest_address, real_push
             )
         except DDNSProviderException as e:
             event.send_event(str(e), level=event.EventLevel.ERROR)
             continue
 
-        master.update_domain_info_to_db(
-            config_domain, ipv4_newest_address, ipv6_newest_address, push_success
+        master.update_task_info_to_db(
+            config_task, ipv4_newest_address, ipv6_newest_address, push_success
         )

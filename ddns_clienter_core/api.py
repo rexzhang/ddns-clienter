@@ -7,12 +7,12 @@ from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
 from ninja.pagination import paginate, PageNumberPagination
 
-from ddns_clienter_core.models import Status, Address, Domain, Event, EventLevel
-from ddns_clienter_core.runtimes.check_and_update import check_and_push
+from ddns_clienter_core.models import Status, Address, Task, Event, EventLevel
+from ddns_clienter_core.runtimes.check_and_update import check_and_update
 
-StatusSchema = create_schema(Status, exclude=["id"])
-AddressSchema = create_schema(Address, exclude=["id"])
-DomainSchema = create_schema(Domain, exclude=["id", "provider_token"])
+AddressSchema = create_schema(Address, exclude=[])
+TaskSchema = create_schema(Task, exclude=["provider_token"])
+StatusSchema = create_schema(Status, exclude=[])
 
 
 class EventSchema(ModelSchema):
@@ -20,7 +20,7 @@ class EventSchema(ModelSchema):
 
     class Config:
         model = Event
-        model_exclude = ["id"]
+        model_fields = ["id", "level", "message", "time"]
 
 
 def auth_local_host(request):
@@ -49,16 +49,16 @@ def get_address(request, address_id: int):
     return address
 
 
-@api_public.get("/domains", response=list[DomainSchema])
-def list_domains(request):
-    domains = (
-        Domain.objects.filter(
+@api_public.get("/tasks", response=list[TaskSchema])
+def list_tasks(request):
+    tasks = (
+        Task.objects.filter(
             time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 3))
         )
         .order_by("name")
         .all()
     )
-    return domains
+    return tasks
 
 
 @api_public.get("/status", response=list[StatusSchema])
@@ -82,9 +82,9 @@ def get_events(request, **kwargs):
 api_inside = Router(auth=auth_local_host, tags=["Inside"])
 
 
-@api_inside.get("/check_and_push")
-def api_check_and_push(request):
-    check_and_push()
+@api_inside.get("/check_and_update")
+def api_check_and_update(request):
+    check_and_update()
     return
 
 
