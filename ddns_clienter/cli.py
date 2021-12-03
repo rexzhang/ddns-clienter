@@ -1,3 +1,4 @@
+from os import getenv
 from logging import getLogger
 
 import click
@@ -22,17 +23,19 @@ def cli(**cli_kwargs):
 @click.option(
     "-P", "--port", default=8000, help="Bind socket to this port.  [default: 8000]"
 )
-@click.option("--reload", is_flag=True)
+@click.option("--debug", is_flag=True)
 def runserver(**cli_kwargs):
     kwargs = {
         "app": "ddns_clienter.asgi:application",
-        # "host": host,
-        # "port": port,
         "lifespan": "off",
         "log_level": "info",
         "access_log": False,
     }
     kwargs.update(cli_kwargs)
+
+    debug = getenv("DEBUG")
+    if debug is not None:
+        kwargs.update({"debug": debug})
 
     return uvicorn.run(**kwargs)
 
