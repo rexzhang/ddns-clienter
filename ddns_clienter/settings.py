@@ -150,7 +150,7 @@ NINJA_PAGINATION_PER_PAGE = 10
 # DDNS Clienter
 CONFIG_FILE_NAME = getenv("CONFIG_FILE_NAME", "config.toml")
 
-CHECK_INTERVALS = getenv("INTERVALS", 5)  # minutes
-PUSH_INTERVALS = getenv("INTERVALS", 1440)  # minutes, 1day
+CHECK_INTERVALS = getenv("CHECK_INTERVALS", 5)  # minutes
+FORCE_UPDATE_INTERVALS = getenv("FORCE_UPDATE_INTERVALS", 1440)  # minutes, 1day
 
 DISABLE_CRON = getenv("DISABLE_CRON", False)  # for dev

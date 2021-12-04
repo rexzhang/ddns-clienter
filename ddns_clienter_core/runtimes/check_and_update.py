@@ -114,8 +114,9 @@ class AddressChangeMaster:
                 False,
             )
 
-        if (
-            db_task.last_update_time + timedelta(minutes=settings.PUSH_INTERVALS)
+        if db_task.last_update_time is None or (
+            db_task.last_update_time
+            + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
             < timezone.now()
         ):
             # PUSH_INTERVALS timeout
