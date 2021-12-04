@@ -44,7 +44,7 @@ class Task(models.Model):
     ip_addresses = models.CharField(max_length=62)
     last_ip_addresses = models.TextField(max_length=62, null=True)
     last_update_is_success = models.BooleanField()
-    last_update_time = models.DateTimeField()
+    last_update_time = models.DateTimeField(null=True)
 
     # last run task timestamp
     time = models.DateTimeField(auto_now=True)
