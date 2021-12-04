@@ -112,6 +112,21 @@ class AddressChangeMaster:
                 address_status.ipv6_newest_address,
             )
 
+        if (
+            (config_task.provider != db_task.provider)
+            or (config_task.provider_token != db_task.provider_token)
+            or (config_task.domain != db_task.domain)
+            or (config_task.host != db_task.host)
+            or (config_task.address_name != db_task.address_name)
+            or (config_task.ipv4 != db_task.ipv4)
+            or (config_task.ipv6 != db_task.ipv6)
+        ):
+            # task config changed
+            return (
+                address_status.ipv4_newest_address,
+                address_status.ipv6_newest_address,
+            )
+
         if db_task.ipv4 and (
             address_status.ipv4_is_changed or not db_task.last_update_is_success
         ):
