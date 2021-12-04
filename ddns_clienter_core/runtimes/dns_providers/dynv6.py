@@ -187,7 +187,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
                 real_update=self.real_update,
             )
             call_rest_api.process()
-            update_success = True
+            update_success = True  # TODO: more logging, more try/expect
             message = ""
 
         self.update_success = update_success
