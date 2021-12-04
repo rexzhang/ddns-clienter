@@ -1,5 +1,6 @@
 """
-The main entry point. Invoke as `python_module_project' or `python -m python_module_project'.
+The main entry point. Invoke as `python_module_project' or
+ `python -m python_module_project'.
 """
 
 import sys

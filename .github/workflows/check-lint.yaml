@@ -27,4 +27,4 @@ jobs:
           pip install -U flake8
       - name: Lint with flake8
         run: |
-          flake8 --verbose asgi_webdav
+          flake8 --verbose ddns_clienter
