@@ -18,7 +18,7 @@ from ddns_clienter_core.runtimes.address_providers import (
     AddressProviderException,
 )
 from ddns_clienter_core.runtimes.dns_providers import (
-    push_address_to_dns_provider,
+    update_address_to_dns_provider,
     DDNSProviderException,
 )
 from ddns_clienter_core.runtimes import event
@@ -129,17 +129,22 @@ class AddressChangeMaster:
         return ipv4_new_address, ipv6_new_address
 
     @staticmethod
-    def update_task_info_to_db(
+    def update_task_skipped_to_db(config_task: ConfigTask):
+        db_task = models.Task.objects.filter(name=config_task.name).first()
+        db_task.save()
+
+    @staticmethod
+    def update_task_success_to_db(
         config_task: ConfigTask,
         ipv4_new_address: Optional[str],
         ipv6_new_address: Optional[str],
-        push_success: bool,
+        task_success: bool,
     ):
         db_task = models.Task.objects.filter(name=config_task.name).first()
         if db_task is None:
             db_task = models.Task(**dataclass_asdict(config_task))
 
-        if push_success:
+        if task_success:
             new_addresses = str()
             if config_task.ipv4 and ipv4_new_address is not None:
                 new_addresses += ipv4_new_address
@@ -203,17 +208,19 @@ def check_and_update(config_file_name: Optional[str] = None, real_push: bool = T
     for config_task in config.tasks:
         ipv4_newest_address, ipv6_newest_address = master.get_new_addresses(config_task)
         if ipv4_newest_address is None and ipv6_newest_address is None:
+            master.update_task_skipped_to_db(config_task)
+
             logger.debug("Skip task:{}".format(config_task.name))
             continue
 
         try:
-            push_success = push_address_to_dns_provider(
+            task_success = update_address_to_dns_provider(
                 config_task, ipv4_newest_address, ipv6_newest_address, real_push
             )
         except DDNSProviderException as e:
             event.send_event(str(e), level=event.EventLevel.ERROR)
             continue
 
-        master.update_task_info_to_db(
-            config_task, ipv4_newest_address, ipv6_newest_address, push_success
+        master.update_task_success_to_db(
+            config_task, ipv4_newest_address, ipv6_newest_address, task_success
         )

@@ -4,10 +4,10 @@ from ddns_clienter_core.runtimes.dns_providers.dynv6 import (
     DDNSProviderException,
 )
 
-__all__ = ["DDNSProviderException", "push_address_to_dns_provider"]
+__all__ = ["DDNSProviderException", "update_address_to_dns_provider"]
 
 
-def push_address_to_dns_provider(
+def update_address_to_dns_provider(
     config_task: config.ConfigTask,
     ipv4_address: str,
     ipv6_address: str,
