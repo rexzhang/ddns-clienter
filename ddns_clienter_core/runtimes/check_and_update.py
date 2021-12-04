@@ -91,7 +91,7 @@ class AddressChangeMaster:
 
     def get_new_addresses(
         self, config_task: ConfigTask
-    ) -> (Optional[str], Optional[str]):
+    ) -> (Optional[str], Optional[str], bool):
         address_status = self._address_status.get(config_task.address_name)
 
         db_task = models.Task.objects.filter(name=config_task.name).first()
@@ -100,6 +100,7 @@ class AddressChangeMaster:
             return (
                 address_status.ipv4_newest_address,
                 address_status.ipv6_newest_address,
+                False,
             )
 
         if (
@@ -110,6 +111,7 @@ class AddressChangeMaster:
             return (
                 address_status.ipv4_newest_address,
                 address_status.ipv6_newest_address,
+                False,
             )
 
         if (
@@ -125,6 +127,7 @@ class AddressChangeMaster:
             return (
                 address_status.ipv4_newest_address,
                 address_status.ipv6_newest_address,
+                True,
             )
 
         if db_task.ipv4 and (
@@ -141,7 +144,7 @@ class AddressChangeMaster:
         else:
             ipv6_new_address = None
 
-        return ipv4_new_address, ipv6_new_address
+        return ipv4_new_address, ipv6_new_address, False
 
     @staticmethod
     def update_task_skipped_to_db(config_task: ConfigTask):
@@ -154,10 +157,20 @@ class AddressChangeMaster:
         ipv4_new_address: Optional[str],
         ipv6_new_address: Optional[str],
         task_success: bool,
+        task_config_changed: bool,
     ):
         db_task = models.Task.objects.filter(name=config_task.name).first()
         if db_task is None:
             db_task = models.Task(**dataclass_asdict(config_task))
+
+        if task_config_changed:
+            db_task.provider = config_task.provider
+            db_task.provider_token = config_task.provider_token
+            db_task.domain = config_task.domain
+            db_task.host = config_task.host
+            db_task.address_name = config_task.address_name
+            db_task.ipv4 = config_task.ipv4
+            db_task.ipv6 = config_task.ipv6
 
         if task_success:
             new_addresses = str()
@@ -221,7 +234,11 @@ def check_and_update(config_file_name: Optional[str] = None, real_push: bool = T
 
     # put A/AAAA record to DNS provider
     for config_task in config.tasks:
-        ipv4_newest_address, ipv6_newest_address = master.get_new_addresses(config_task)
+        (
+            ipv4_newest_address,
+            ipv6_newest_address,
+            task_config_changed,
+        ) = master.get_new_addresses(config_task)
         if ipv4_newest_address is None and ipv6_newest_address is None:
             master.update_task_skipped_to_db(config_task)
 
@@ -237,5 +254,9 @@ def check_and_update(config_file_name: Optional[str] = None, real_push: bool = T
             continue
 
         master.update_task_success_to_db(
-            config_task, ipv4_newest_address, ipv6_newest_address, task_success
+            config_task,
+            ipv4_newest_address,
+            ipv6_newest_address,
+            task_success,
+            task_config_changed,
         )
