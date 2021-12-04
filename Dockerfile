@@ -1,9 +1,9 @@
 FROM python:3.10-alpine
 
-# ---------- for develop
-RUN pip config set global.index-url http://192.168.200.22:3141/root/pypi/+simple \
-    && pip config set install.trusted-host 192.168.200.22
-# ----------
+## ---------- for develop
+#RUN pip config set global.index-url http://192.168.200.22:3141/root/pypi/+simple \
+#    && pip config set install.trusted-host 192.168.200.22
+## ----------
 
 COPY ddns_clienter /app/ddns_clienter
 COPY ddns_clienter_core /app/ddns_clienter_core
