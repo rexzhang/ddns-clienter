@@ -50,6 +50,14 @@ class AddressChangeMaster:
         if db_address is None:
             db_address = models.Address(**dataclass_asdict(config_address))
 
+        # maybe address config changed, force update address info to db
+        db_address.provider = config_address.provider
+        db_address.parameter = config_address.parameter
+        db_address.ipv4 = config_address.ipv4
+        db_address.ipv6 = config_address.ipv6
+        db_address.ipv4_match_rule = config_address.ipv4_match_rule
+        db_address.ipv6_match_rule = config_address.ipv6_match_rule
+
         now = timezone.now()
         if (
             ipv4_newest_address is not None
