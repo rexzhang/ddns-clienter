@@ -10,4 +10,4 @@ class Command(BaseCommand):
         parser.add_argument("-c", "--config", type=str, required=True)
 
     def handle(self, *args, **options):
-        check_and_update(options["config"], real_push=False)
+        check_and_update(options["config"], real_update=False)

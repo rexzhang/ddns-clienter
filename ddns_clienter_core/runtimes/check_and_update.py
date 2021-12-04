@@ -119,7 +119,7 @@ class AddressChangeMaster:
             + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
             < timezone.now()
         ):
-            # PUSH_INTERVALS timeout
+            # FORCE_UPDATE_INTERVALS timeout
             return (
                 address_status.ipv4_newest_address,
                 address_status.ipv6_newest_address,
@@ -206,7 +206,7 @@ class AddressChangeMaster:
         db_task.save()
 
 
-def check_and_update(config_file_name: Optional[str] = None, real_push: bool = True):
+def check_and_update(config_file_name: Optional[str] = None, real_update: bool = True):
     # load config
     if config_file_name is None:
         config_file_name = settings.BASE_DATA_DIR.joinpath(
@@ -259,7 +259,7 @@ def check_and_update(config_file_name: Optional[str] = None, real_push: bool = T
 
         try:
             task_success = update_address_to_dns_provider(
-                config_task, ipv4_newest_address, ipv6_newest_address, real_push
+                config_task, ipv4_newest_address, ipv6_newest_address, real_update
             )
         except DDNSProviderException as e:
             event.send_event(str(e), level=event.EventLevel.ERROR)

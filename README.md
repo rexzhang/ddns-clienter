@@ -1,4 +1,4 @@
-# DDNS Clienter
+# DynDNS Clienter
 
 # Docker
 
@@ -18,6 +18,23 @@ in `/data/config.toml`, [Example](config.toml)
 
 default value: `5` minutes
 
-## PUSH_INTERVALS
+## FORCE_UPDATE_INTERVALS
 
 default value: `1440` minutes, one day
+
+# Address Provider
+
+## hostname
+
+Recommended for use in LAN
+
+## ipify
+
+https://www.ipify.org/
+
+# DynDNS Provider
+
+## dynv6
+
+https://dynv6.com/docs/apis
+Update API and REST API mix

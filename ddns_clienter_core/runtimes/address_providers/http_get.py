@@ -63,7 +63,8 @@ class AddressProviderIpify(AddressProviderHttpGetAbs):
 
     @property
     def _ipv6_url(self):
-        return "https://api64.ipify.org/"
+        # return "https://api64.ipify.org/"
+        return "https://api6.ipify.org/"
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):
