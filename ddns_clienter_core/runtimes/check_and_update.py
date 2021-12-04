@@ -36,7 +36,10 @@ class AddressChangeStatus:
 
 
 class AddressChangeMaster:
-    _address_status: dict[str, AddressChangeStatus] = dict()  # address status
+    _address_status: dict[str, AddressChangeStatus]  # address status
+
+    def __init__(self):
+        self._address_status = dict()
 
     def import_address_info(
         self,
