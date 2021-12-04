@@ -3,7 +3,7 @@
 
 
 """
-__DESCRIPTION__
+Check and update A/AAAA record to DynDNS provider, WebUI, support Docker
 """
 
 from .core import (  # noqa: F401
@@ -13,9 +13,11 @@ from .core import (  # noqa: F401
 __name__ = "DDNS Clienter"
 __version__ = "0.1.0"
 
-__author__ = "__AUTHOR__"
-__author_email__ = "__AUTHOR_EMAIL__"
-__licence__ = "__LICENCE__"
+__author__ = "Rex Zhang"
+__author_email__ = "rex.zhang@gmail.com"
+__licence__ = "MIT"
 
-__description__ = "__DESCRIPTION__"
+__description__ = (
+    "Check and update A/AAAA record to DynDNS provider, WebUI, support Docker"
+)
 __project_url__ = "https://github.com/rexzhang/ddns-clienter"
