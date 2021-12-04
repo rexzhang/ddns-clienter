@@ -8,7 +8,7 @@ name: Publish Docker Releases to Hub
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
 
 jobs:
   docker:

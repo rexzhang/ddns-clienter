@@ -3,7 +3,7 @@ name: Publish package to PyPI
 on:
   push:
     tags:
-      - 'v*'
+      - 'vDISABLE*'
 
 jobs:
   publish:
