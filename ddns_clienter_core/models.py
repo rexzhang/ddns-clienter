@@ -1,5 +1,7 @@
 from django.db import models
 
+from ddns_clienter_core.runtimes.event import EventLevel
+
 
 class Address(models.Model):
     # from config
@@ -48,13 +50,6 @@ class Task(models.Model):
 
     # last run task timestamp
     time = models.DateTimeField(auto_now=True)
-
-
-class EventLevel(models.TextChoices):
-    INFO = "INFO"
-    WARNING = "WARNING"
-    ERROR = "ERROR"
-    CRITICAL = "CRITICAL"
 
 
 class Status(models.Model):

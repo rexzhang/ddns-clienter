@@ -7,7 +7,8 @@ from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
 from ninja.pagination import paginate, PageNumberPagination
 
-from ddns_clienter_core.models import Status, Address, Task, Event, EventLevel
+from ddns_clienter_core.models import Status, Address, Task, Event
+from runtimes.event import EventLevel
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
 
 AddressSchema = create_schema(Address, exclude=[])

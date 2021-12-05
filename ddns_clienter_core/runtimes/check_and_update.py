@@ -21,7 +21,7 @@ from ddns_clienter_core.runtimes.dns_providers import (
     update_address_to_dns_provider,
     DDNSProviderException,
 )
-from ddns_clienter_core.runtimes import event
+from ddns_clienter_core.runtimes.event import EventLevel, send_event
 
 logger = getLogger(__name__)
 
@@ -71,6 +71,13 @@ class AddressChangeMaster:
             db_address.ipv4_last_change_time = now
 
             ipv4_is_changed = True
+            send_event(
+                "{}'s ipv4 changed:{}->{}".format(
+                    config_address.name,
+                    db_address.ipv4_last_address,
+                    db_address.ipv4_address,
+                )
+            )
         else:
             ipv4_is_changed = False
 
@@ -83,6 +90,13 @@ class AddressChangeMaster:
             db_address.ipv6_last_change_time = now
 
             ipv6_is_changed = True
+            send_event(
+                "{}'s ipv6 changed:{}->{}".format(
+                    config_address.name,
+                    db_address.ipv6_last_address,
+                    db_address.ipv6_address,
+                )
+            )
         else:
             ipv6_is_changed = False
 
@@ -217,7 +231,7 @@ def check_and_update(config_file_name: Optional[str] = None, real_update: bool =
     try:
         config = Config(config_file_name)
     except ConfigException as e:
-        event.send_event(str(e), level=event.EventLevel.CRITICAL)
+        send_event(str(e), level=EventLevel.CRITICAL)
         return
     logger.debug("config:{}".format(config.addresses))
 
@@ -232,7 +246,7 @@ def check_and_update(config_file_name: Optional[str] = None, real_update: bool =
             )
 
         except AddressProviderException as e:
-            event.send_event(str(e), level=event.EventLevel.ERROR)
+            send_event(str(e), level=EventLevel.ERROR)
             continue
 
         logger.debug(
@@ -262,7 +276,7 @@ def check_and_update(config_file_name: Optional[str] = None, real_update: bool =
                 config_task, ipv4_newest_address, ipv6_newest_address, real_update
             )
         except DDNSProviderException as e:
-            event.send_event(str(e), level=event.EventLevel.ERROR)
+            send_event(str(e), level=EventLevel.ERROR)
             continue
 
         master.update_task_success_to_db(
