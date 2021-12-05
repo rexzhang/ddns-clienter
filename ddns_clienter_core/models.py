@@ -1,6 +1,6 @@
 from django.db import models
 
-from ddns_clienter_core.runtimes.event import EventLevel
+from ddns_clienter_core.constants import EventLevel
 
 
 class Address(models.Model):

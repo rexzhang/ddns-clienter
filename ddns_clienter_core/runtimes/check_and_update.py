@@ -6,6 +6,7 @@ from logging import getLogger
 from django.conf import settings
 from django.utils import timezone
 
+from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core import models
 from ddns_clienter_core.runtimes.config import (
     Config,
@@ -21,7 +22,7 @@ from ddns_clienter_core.runtimes.dns_providers import (
     update_address_to_dns_provider,
     DDNSProviderException,
 )
-from ddns_clienter_core.runtimes.event import EventLevel, send_event
+from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
 

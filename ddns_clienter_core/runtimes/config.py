@@ -3,7 +3,7 @@ from logging import getLogger
 
 import toml
 
-from runtimes.event import EventLevel
+from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
