@@ -11,7 +11,7 @@ from .core import (  # noqa: F401
 )
 
 __name__ = "DDNS Clienter"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 __author__ = "Rex Zhang"
 __author_email__ = "rex.zhang@gmail.com"
