@@ -42,10 +42,10 @@ class ConfigException(Exception):
 
 
 class Config:
-    addresses = dict()
-    tasks = list()
-
     def __init__(self, file_name: str):
+        self.addresses = dict()
+        self.tasks = list()
+
         self._file_name = file_name
         self.load_from_file()
 
