@@ -154,3 +154,24 @@ CHECK_INTERVALS = getenv("CHECK_INTERVALS", 5)  # minutes
 FORCE_UPDATE_INTERVALS = getenv("FORCE_UPDATE_INTERVALS", 1440)  # minutes, 1day
 
 DISABLE_CRON = getenv("DISABLE_CRON", False)  # for dev
+
+#
+# Sentry
+#
+SENTRY_DSN = getenv("SENTRY_DSN", "")
+if SENTRY_DSN:
+    from sentry_sdk.integrations.django import DjangoIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
+
+    # from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+
+    from ddns_clienter import __version__
+    from ddns_clienter_core.runtimes.sentry import init_sentry
+
+    init_sentry(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(), LoggingIntegration()],
+        app_name="PelicanPublisher",
+        app_version=__version__,
+        user_id_is_mac_address=True,
+    )

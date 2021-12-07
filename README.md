@@ -22,6 +22,10 @@ default value: `5` minutes
 
 default value: `1440` minutes, one day
 
+## SENTRY_DSN
+
+default value: None
+
 # Address Provider
 
 ## hostname
