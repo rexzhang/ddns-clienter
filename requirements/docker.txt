@@ -2,3 +2,6 @@
 
 # Web Server
 uvicorn
+
+# debug
+sentry_sdk
