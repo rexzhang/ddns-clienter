@@ -37,10 +37,12 @@ class AddressChangeStatus:
 
 
 class AddressChangeMaster:
-    _address_status: dict[str, AddressChangeStatus]  # address status
+    _address_status: dict[str, AddressChangeStatus]  # dict[address_name, status]
+    _address_names: Optional[set]
 
     def __init__(self):
         self._address_status = dict()
+        self._address_names = None
 
     def import_address_info(
         self,
@@ -114,6 +116,15 @@ class AddressChangeMaster:
         )
 
         db_address.save()
+
+    def is_valid_address_name(self, address_name: str) -> bool:
+        if self._address_names is None:
+            self._address_names = set(self._address_status.keys())
+
+        if address_name in self._address_names:
+            return True
+
+        return False
 
     def get_new_addresses(
         self, config_task: ConfigTask
@@ -261,6 +272,12 @@ def check_and_update(config_file_name: Optional[str] = None, real_update: bool =
 
     # put A/AAAA record to DNS provider
     for config_task in config.tasks:
+        if not master.is_valid_address_name(config_task.address_name):
+            message = "Cannot found address:{}".format(config_task.address_name)
+            logger.error(message)
+            send_event(message, level=EventLevel.ERROR)
+            continue
+
         (
             ipv4_newest_address,
             ipv6_newest_address,
