@@ -123,23 +123,30 @@ else:
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            # "format": "%(levelname)s %(asctime)s %(module)s %(message)s",
+            "format": "%(levelname)s [%(module)s] %(message)s",
+        },
+        "simple": {
+            "format": "%(levelname)s: %(message)s",
+        },
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "default",
         },
     },
-    # "root": {
-    #     "handlers": ["console"],
-    #     "level": "WARNING",
-    # },
+    "root": {
+        "handlers": ["console"],
+        "level": logging_level,
+    },
     "loggers": {
-        "ddns_clienter": {
+        "django": {
             "handlers": ["console"],
-            "level": logging_level,
-        },
-        "ddns_clienter_core": {
-            "handlers": ["console"],
-            "level": logging_level,
+            "level": "INFO",
+            "propagate": True,
         },
     },
 }

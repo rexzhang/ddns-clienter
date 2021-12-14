@@ -1,4 +1,3 @@
-from typing import Optional
 from ddns_clienter_core.runtimes import config
 from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderException
 from ddns_clienter_core.runtimes.address_providers.host_name import (
@@ -19,8 +18,8 @@ __all__ = [
 
 
 def detect_ip_address_from_provider(
-    address_config: config.ConfigAddress,
-) -> (Optional[str], Optional[str]):
+    address_config: config.AddressConfig,
+) -> (str | None, str | None):
     if address_config.provider == "hostname":
         provider_class = AddressProviderHostName
     elif address_config.provider == "ipify":

@@ -1,10 +1,9 @@
-from typing import Optional
 from logging import getLogger
 
 import requests
 from requests.structures import CaseInsensitiveDict
 
-from ddns_clienter_core.runtimes.config import ConfigTask
+from ddns_clienter_core.runtimes.config import TaskConfig
 from .abs import DDNSProviderAbs, DDNSProviderException
 
 logger = getLogger(__name__)
@@ -16,8 +15,8 @@ _rest_api_url = "https://dynv6.com/api/v2"
 def _call_update_api(
     domain: str,
     token: str,
-    ipv4_address: Optional[str],
-    ipv6_address: Optional[str],
+    ipv4_address: str | None,
+    ipv6_address: str | None,
     real_update: bool,
 ) -> (bool, str):
     # https://dynv6.com/docs/apis
@@ -35,20 +34,20 @@ def _call_update_api(
         return True, ""
 
     r = requests.get(_update_api_url, params)
-    logger.debug(r)
-    status_code = r.status_code
-    if status_code == 200:
+    logger.debug("{} {}".format(r.status_code, r.content))
+
+    if r.status_code == 200:
         return True, ""
     else:
         return False, ""
 
 
 class CallRestApi:
-    zone_id: Optional[int] = None
+    zone_id: int | None = None
 
     def __init__(
         self,
-        config_task: ConfigTask,
+        config_task: TaskConfig,
         ipv4_address: str,
         ipv6_address: str,
         real_update: bool,
@@ -67,10 +66,11 @@ class CallRestApi:
         url,
     ) -> requests.Response:
         r = requests.get(url, headers=self.headers)
+        logger.debug("{} {}".format(r.status_code, r.content))
+
         if r.status_code != 200:
             raise DDNSProviderException(r)
 
-        logger.debug(r)
         return r
 
     def _call_rest_api_add_record(
@@ -82,10 +82,11 @@ class CallRestApi:
             headers=self.headers,
             json=j,
         )
+        logger.debug("{} {}".format(r.status_code, r.content))
+
         if r.status_code != 200:
             raise DDNSProviderException(r)
 
-        logger.debug(r)
         return r
 
     def _call_rest_api_update_record(
@@ -97,10 +98,12 @@ class CallRestApi:
             headers=self.headers,
             json=j,
         )
+
+        logger.debug("{} {}".format(r.status_code, r.content))
+
         if r.status_code != 200:
             raise DDNSProviderException(r)
 
-        logger.debug(r)
         return r
 
     def process(self):
@@ -169,23 +172,24 @@ class CallRestApi:
 
 class DDNSProviderDynv6(DDNSProviderAbs):
     def _update_to_provider(self):
-        if self._config_task.host is None or len(self._config_task.host) == 0:
+        if self.task_config.host is None or len(self.task_config.host) == 0:
             update_success, message = _call_update_api(
-                domain=self._config_task.domain,
-                token=self._config_task.provider_token,
-                ipv4_address=self.ipv4_address,
-                ipv6_address=self.ipv6_address,
+                domain=self.task_config.domain,
+                token=self.task_config.provider_token,
+                ipv4_address=self.address_info.ipv4_address,
+                ipv6_address=self.address_info.ipv6_address_with_prefix,
                 real_update=self.real_update,
             )
 
         else:
             logger.debug("update in Dynv6 REST API")
             call_rest_api = CallRestApi(
-                config_task=self._config_task,
-                ipv4_address=self.ipv4_address,
-                ipv6_address=self.ipv6_address,
+                config_task=self.task_config,
+                ipv4_address=self.address_info.ipv4_address,
+                ipv6_address=self.address_info.ipv6_address,  # REST API 似乎不支持 /xx 这种方式定义 prefix
                 real_update=self.real_update,
             )
+
             call_rest_api.process()
             update_success = True  # TODO: more logging, more try/expect
             message = ""

@@ -10,11 +10,12 @@ logger = getLogger(__name__)
 
 
 @dataclass
-class ConfigAddress:
+class AddressConfig:
     name: str
 
     ipv4: bool = False
     ipv6: bool = False
+    ipv6_prefix_length: int | None = None
     ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
 
@@ -23,18 +24,18 @@ class ConfigAddress:
 
 
 @dataclass
-class ConfigTask:
+class TaskConfig:
     name: str
 
     address_name: str
     ipv4: bool = False
     ipv6: bool = False
 
-    domain: str = field(default=None)
-    host: str = field(default=None)
-
     provider: str = field(default=None)
     provider_token: str = field(default=None)
+
+    domain: str = field(default=None)
+    host: str = field(default=None)
 
 
 class ConfigException(Exception):
@@ -42,8 +43,11 @@ class ConfigException(Exception):
 
 
 class Config:
+    addresses: list[AddressConfig]
+    tasks: list[TaskConfig]
+
     def __init__(self, file_name: str):
-        self.addresses = dict()
+        self.addresses = list()  #
         self.tasks = list()
 
         self._file_name = file_name
@@ -66,14 +70,14 @@ class Config:
             raise
 
         for name, data in addresses_obj.items():
-            address_info = ConfigAddress(name=name, **data)
+            address_info = AddressConfig(name=name, **data)
             if not address_info.ipv4 and not address_info.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.addresses.update({name: address_info})
+            self.addresses.append(address_info)
 
         for name, data in tasks_obj.items():
-            task = ConfigTask(name=name, **data)
+            task = TaskConfig(name=name, **data)
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 

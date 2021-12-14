@@ -1,17 +1,17 @@
-from typing import Optional
 from dataclasses import dataclass, asdict as dataclass_asdict
 from datetime import timedelta
 from logging import getLogger
 
 from django.conf import settings
+from django.forms.models import model_to_dict
 from django.utils import timezone
 
-from ddns_clienter_core.constants import EventLevel
+from ddns_clienter_core.constants import AddressInfo, EventLevel
 from ddns_clienter_core import models
 from ddns_clienter_core.runtimes.config import (
     Config,
-    ConfigAddress,
-    ConfigTask,
+    AddressConfig,
+    TaskConfig,
     ConfigException,
 )
 from ddns_clienter_core.runtimes.address_providers import (
@@ -28,279 +28,391 @@ logger = getLogger(__name__)
 
 
 @dataclass
-class AddressChangeStatus:
-    address_config: ConfigAddress
-    ipv4_is_changed: bool
-    ipv6_is_changed: bool
-    ipv4_newest_address: Optional[str]
-    ipv6_newest_address: Optional[str]
+class AddressDataItem:
+    config: AddressConfig
+    config_changed: bool
+    ipv4_changed: bool
+    ipv6_changed: bool
+    ipv4_newest_address: str | None
+    ipv6_newest_address: str | None
 
-
-class AddressChangeMaster:
-    _address_status: dict[str, AddressChangeStatus]  # dict[address_name, status]
-    _address_names: Optional[set]
-
-    def __init__(self):
-        self._address_status = dict()
-        self._address_names = None
-
-    def import_address_info(
-        self,
-        config_address: ConfigAddress,
-        ipv4_newest_address: Optional[str],
-        ipv6_newest_address: Optional[str],
-    ):
-        # xxx_new_address: None == no changed == no checked
-
-        db_address = models.Address.objects.filter(name=config_address.name).first()
-        if db_address is None:
-            db_address = models.Address(**dataclass_asdict(config_address))
-
-        # maybe address config changed, force update address info to db
-        db_address.provider = config_address.provider
-        db_address.parameter = config_address.parameter
-        db_address.ipv4 = config_address.ipv4
-        db_address.ipv6 = config_address.ipv6
-        db_address.ipv4_match_rule = config_address.ipv4_match_rule
-        db_address.ipv6_match_rule = config_address.ipv6_match_rule
-
-        now = timezone.now()
-        if (
-            ipv4_newest_address is not None
-            and ipv4_newest_address != db_address.ipv4_address
-        ):
-            db_address.ipv4_last_address = db_address.ipv4_address
-            db_address.ipv4_address = ipv4_newest_address
-            db_address.ipv4_last_change_time = now
-
-            ipv4_is_changed = True
-            send_event(
-                "{}'s ipv4 changed:{}->{}".format(
-                    config_address.name,
-                    db_address.ipv4_last_address,
-                    db_address.ipv4_address,
-                )
-            )
-        else:
-            ipv4_is_changed = False
-
-        if (
-            ipv6_newest_address is not None
-            and ipv6_newest_address != db_address.ipv6_address
-        ):
-            db_address.ipv6_last_address = db_address.ipv6_address
-            db_address.ipv6_address = ipv6_newest_address
-            db_address.ipv6_last_change_time = now
-
-            ipv6_is_changed = True
-            send_event(
-                "{}'s ipv6 changed:{}->{}".format(
-                    config_address.name,
-                    db_address.ipv6_last_address,
-                    db_address.ipv6_address,
-                )
-            )
-        else:
-            ipv6_is_changed = False
-
-        self._address_status.update(
-            {
-                config_address.name: AddressChangeStatus(
-                    config_address,
-                    ipv4_is_changed,
-                    ipv6_is_changed,
-                    ipv4_newest_address,
-                    ipv6_newest_address,
-                )
-            }
-        )
-
-        db_address.save()
-
-    def is_valid_address_name(self, address_name: str) -> bool:
-        if self._address_names is None:
-            self._address_names = set(self._address_status.keys())
-
-        if address_name in self._address_names:
+    @property
+    def there_ars_changes(self) -> bool:
+        """config changed or address changed"""
+        if self.config_changed or self.ipv4_changed or self.ipv6_changed:
             return True
 
         return False
 
-    def get_new_addresses(
-        self, config_task: ConfigTask
-    ) -> (Optional[str], Optional[str], bool):
-        address_status = self._address_status.get(config_task.address_name)
 
-        db_task = models.Task.objects.filter(name=config_task.name).first()
-        if db_task is None:
-            # can't found task record
-            return (
-                address_status.ipv4_newest_address,
-                address_status.ipv6_newest_address,
-                False,
+class CannotMatchAddressException(Exception):
+    pass
+
+
+def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
+    # TODO!!! config 变化后这里似乎没有正确工作
+    changed = False
+    data = model_to_dict(db_obj)
+    for k, v in dataclass_asdict(dc_obj).items():
+        # if db_obj.__getattribute__(k) != v:
+        #     changed = True
+        #     db_obj.__setattr__(k, v)
+        if data.get(k) != v:
+            changed = True
+            db_obj.__setattr__(k, v)
+
+    return changed
+
+
+class AddressHub:
+    # 导入 Address Config+DB 信息
+    # 计算获取 需要获取的 addresses 清单，交给 address_provider 去并行处理
+    # 等待并导入所有并行处理结果
+    # 获得已经改变的 changed_address_names
+
+    _data: dict[str, AddressDataItem]
+    _changed_names: set[str]
+
+    @staticmethod
+    def _compare_and_update_from_config_to_db(
+        address_c: AddressConfig,
+    ) -> (bool, str | None, str | None):
+        address_db = models.Address.objects.filter(name=address_c.name).first()
+        if address_db is None:
+            address_db = models.Address(**dataclass_asdict(address_c))
+            address_db.save()
+            logger.info(
+                "Cannot found address:{} from db, create it.".format(address_c.name)
+            )
+            return True, None, None
+
+        changed = compare_and_update_from_dataclass_to_db(address_c, address_db)
+        if changed:
+            address_db.save()
+            logger.info(
+                "The address[{}]'s config has changed, update to db.".format(
+                    address_c.name
+                )
+            )
+            return True, address_db.ipv4_last_address, address_db.ipv6_last_address
+
+        logger.debug("The address[{}] no change in config".format(address_c.name))
+        return False, address_db.ipv4_last_address, address_db.ipv6_last_address
+
+    def __init__(self, addresses_c: list[AddressConfig]):
+        self._data = dict()
+
+        for address_c in addresses_c:
+            (
+                config_changed,
+                ipv4_newest_address,
+                ipv6_newest_address,
+            ) = self._compare_and_update_from_config_to_db(address_c)
+
+            self._data.update(
+                {
+                    address_c.name: AddressDataItem(
+                        address_c,
+                        config_changed,
+                        False,
+                        False,
+                        ipv4_newest_address,
+                        ipv6_newest_address,
+                    )
+                }
             )
 
-        if db_task.last_update_time is None or (
-            db_task.last_update_time
-            + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
-            < timezone.now()
-        ):
-            # FORCE_UPDATE_INTERVALS timeout
-            return (
-                address_status.ipv4_newest_address,
-                address_status.ipv6_newest_address,
-                False,
-            )
+    @property
+    def to_be_update_addresses(self) -> list[AddressConfig]:
+        data = list()
+        for item in self._data.values():
+            data.append(item.config)
+
+        logger.debug("To be update addresses:{}".format(data))
+        return data
+
+    def update_ip_address(
+        self, name: str, ipv4_newest_address: str, ipv6_newest_address: str
+    ):
+        address_data = self._data.get(name)
+        now = timezone.now()
+        address_db = models.Address.objects.filter(name=name).first()
 
         if (
-            (config_task.provider != db_task.provider)
-            or (config_task.provider_token != db_task.provider_token)
-            or (config_task.domain != db_task.domain)
-            or (config_task.host != db_task.host)
-            or (config_task.address_name != db_task.address_name)
-            or (config_task.ipv4 != db_task.ipv4)
-            or (config_task.ipv6 != db_task.ipv6)
+            ipv4_newest_address is not None
+            and ipv4_newest_address != address_data.ipv4_newest_address
         ):
-            # task config changed
-            return (
-                address_status.ipv4_newest_address,
-                address_status.ipv6_newest_address,
-                True,
+            address_data.ipv4_changed = True
+            address_data.ipv4_newest_address = ipv4_newest_address
+
+            address_db.ipv4_previous_address = address_db.ipv4_last_address
+            address_db.ipv4_last_address = ipv4_newest_address
+            address_db.ipv4_last_change_time = now
+
+            send_event(
+                "{}'s ipv4 changed:{}->{}".format(
+                    name,
+                    address_db.ipv4_previous_address,
+                    address_db.ipv4_last_address,
+                )
             )
 
-        if db_task.ipv4 and (
-            address_status.ipv4_is_changed or not db_task.last_update_is_success
+        if ipv6_newest_address is not None and (
+            ipv6_newest_address != address_data.ipv6_newest_address
         ):
-            ipv4_new_address = address_status.ipv4_newest_address
-        else:
-            ipv4_new_address = None
+            address_data.ipv6_changed = True
+            address_data.ipv6_newest_address = ipv6_newest_address
 
-        if db_task.ipv6 and (
-            address_status.ipv6_is_changed or not db_task.last_update_is_success
-        ):
-            ipv6_new_address = address_status.ipv6_newest_address
-        else:
-            ipv6_new_address = None
+            address_db.ipv6_previous_address = address_db.ipv6_last_address
+            address_db.ipv6_last_address = ipv6_newest_address
+            address_db.ipv6_last_change_time = now
 
-        return ipv4_new_address, ipv6_new_address, False
+        send_event(
+            "{}'s ipv6 changed:{}->{}/{}".format(
+                name,
+                address_db.ipv6_previous_address,
+                address_db.ipv6_last_address,
+                address_data.config.ipv6_prefix_length,
+            )
+        )
+
+        address_db.save()
+
+    def get_address_info_if_changed(
+        self, name: str, task_config_changed: bool  # TODO
+    ) -> AddressInfo | None:
+        address_c = self._data.get(name)
+        if address_c is None:
+            raise CannotMatchAddressException()
+
+        if task_config_changed or address_c.there_ars_changes:
+            return AddressInfo(
+                address_c.ipv4_newest_address,
+                address_c.ipv6_newest_address,
+                address_c.config.ipv6_prefix_length,
+            )
+
+        return None
+
+
+@dataclass
+class TaskDataItem:
+    config: TaskConfig
+    config_changed: bool
+    last_update_success: bool
+
+
+class TaskHub:
+    # 根据 changed_address_names 获取更新信息清单，交给 dns_provider 去并行处理
+    # 等待并导入所有并行处理结果
+    # 将更新任务结果存储到 DB
+
+    _data: dict[str, TaskDataItem]
 
     @staticmethod
-    def update_task_skipped_to_db(config_task: ConfigTask):
-        db_task = models.Task.objects.filter(name=config_task.name).first()
-        db_task.save()
+    def _compare_and_update_from_config_to_db(task_c: TaskConfig) -> (bool, bool):
+        task_db = models.Task.objects.filter(name=task_c.name).first()
+        if task_db is None:
+            task_db = models.Task(**dataclass_asdict(task_c))
+            task_db.save()
+            logger.info(
+                "Cannot found task:{} from db, create it in db.".format(task_c.name)
+            )
 
-    @staticmethod
-    def update_task_success_to_db(
-        config_task: ConfigTask,
-        ipv4_new_address: Optional[str],
-        ipv6_new_address: Optional[str],
-        task_success: bool,
-        task_config_changed: bool,
+            return True, False
+
+        changed = compare_and_update_from_dataclass_to_db(task_c, task_db)
+        if changed:
+            task_db.save()
+            logger.info(
+                "The task[{}]'s config has changed, update to db.".format(task_c.name)
+            )
+            return True, task_db.last_update_success
+
+        logger.debug("The task[{}] no change in config".format(task_c.name))
+        return False, task_db.last_update_success
+
+    def __init__(self, tasks_c: list[TaskConfig]):
+        self._data = dict()
+
+        for tasks_c in tasks_c:
+            (
+                config_changed,
+                last_update_success,
+            ) = self._compare_and_update_from_config_to_db(tasks_c)
+            self._data.update(
+                {
+                    tasks_c.name: TaskDataItem(
+                        tasks_c,
+                        config_changed,
+                        last_update_success,
+                    )
+                }
+            )
+
+    @property
+    def to_be_update_tasks(self) -> list[TaskDataItem]:
+        data = list()
+        for item in self._data.values():
+            db_task = models.Task.objects.filter(name=item.config.name).first()
+
+            if item.config_changed:
+                # task config changed
+                data.append(item)
+                continue
+
+            if not item.last_update_success:
+                # last update failed
+                continue
+
+            if db_task.last_update_success_time is None or (
+                db_task.last_update_success_time
+                + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
+                < timezone.now()
+            ):
+                # FORCE_UPDATE_INTERVALS timeout
+                data.append(item)
+                continue
+
+        logger.debug("To be update tasks:{}".format(data))
+        return data
+
+    def set_task_skipped(self, name: str):
+        task_db = models.Task.objects.filter(name=name).first()
+        task_db.save()
+
+    def update_update_status(
+        self, name: str, address_info: AddressInfo, update_success: bool
     ):
-        db_task = models.Task.objects.filter(name=config_task.name).first()
-        if db_task is None:
-            db_task = models.Task(**dataclass_asdict(config_task))
+        db_task = models.Task.objects.filter(name=name).first()
 
-        if task_config_changed:
-            db_task.provider = config_task.provider
-            db_task.provider_token = config_task.provider_token
-            db_task.domain = config_task.domain
-            db_task.host = config_task.host
-            db_task.address_name = config_task.address_name
-            db_task.ipv4 = config_task.ipv4
-            db_task.ipv6 = config_task.ipv6
-
-        if task_success:
+        now = timezone.now()
+        if update_success:
             new_addresses = str()
-            if config_task.ipv4 and ipv4_new_address is not None:
-                new_addresses += ipv4_new_address
+            if db_task.ipv4 and address_info.ipv4_address is not None:
+                new_addresses += address_info.ipv4_address
 
-            if config_task.ipv6 and ipv6_new_address is not None:
+            if db_task.ipv6 and address_info.ipv6_address is not None:
                 if len(new_addresses) != 0:
                     new_addresses += ","
 
-                new_addresses += ipv6_new_address
+                new_addresses += address_info.ipv6_address_with_prefix
 
-            db_task.last_ip_addresses = db_task.ip_addresses
-            db_task.ip_addresses = new_addresses
-            db_task.last_update_is_success = True
-            db_task.last_update_time = timezone.now()
+            db_task.last_update_time = now
+            db_task.last_update_success = True
+
+            db_task.previous_ip_addresses = db_task.last_ip_addresses
+            db_task.last_ip_addresses = new_addresses
+            db_task.last_update_success_time = now
 
         else:
-            db_task.last_update_is_success = False
+            db_task.last_update_time = now
+            db_task.last_update_success = False
 
         db_task.save()
 
 
-def check_and_update(config_file_name: Optional[str] = None, real_update: bool = True):
+def check_and_update(config_file_name: str | None = None, real_update: bool = True):
     # load config
     if config_file_name is None:
         config_file_name = settings.BASE_DATA_DIR.joinpath(
             settings.CONFIG_FILE_NAME
         ).as_posix()
-    logger.debug("config_file_name:{}".format(config_file_name))
+    logger.debug("Load config from:{}".format(config_file_name))
 
     try:
         config = Config(config_file_name)
     except ConfigException as e:
         send_event(str(e), level=EventLevel.CRITICAL)
         return
-    logger.debug("config:{}".format(config.addresses))
+    logger.debug("Config data:{}".format(config.addresses))
 
-    # prepare
-    master = AddressChangeMaster()
+    # import address data from config and db
+    ah = AddressHub(config.addresses)
 
-    # get ip address, update ip address info into config.addresses
-    for config_address in config.addresses.values():
+    # get ip address, update ip address into hub
+    for address_c in ah.to_be_update_addresses:
         try:
-            ipv4_newest_address, ipv6_newest_address = detect_ip_address_from_provider(
-                config_address
-            )
+            (
+                ipv4_newest_address,
+                ipv6_newest_address,
+            ) = detect_ip_address_from_provider(address_c)
 
         except AddressProviderException as e:
             send_event(str(e), level=EventLevel.ERROR)
             continue
 
+        ah.update_ip_address(address_c.name, ipv4_newest_address, ipv6_newest_address)
+
         logger.debug(
-            "Address name:{}, ipv4:{} ipv6:{}".format(
-                config_address.name, ipv4_newest_address, ipv6_newest_address
+            "Address:{}, ipv4:{} ipv6:{}/{}".format(
+                address_c.name,
+                ipv4_newest_address,
+                ipv6_newest_address,
+                address_c.ipv6_prefix_length,
             )
         )
-        master.import_address_info(
-            config_address, ipv4_newest_address, ipv6_newest_address
-        )
 
-    # put A/AAAA record to DNS provider
-    for config_task in config.tasks:
-        if not master.is_valid_address_name(config_task.address_name):
-            message = "Cannot found address:{}".format(config_task.address_name)
-            logger.error(message)
+    # import address data from config and db
+    th = TaskHub(config.tasks)
+
+    # update to DNS provider
+    for task in th.to_be_update_tasks:
+        try:
+            address_info = ah.get_address_info_if_changed(
+                task.config.address_name, task.config_changed
+            )
+
+        except CannotMatchAddressException:
+            message = "Cannot found address:{}".format(task.config.address_name)
+            logger.warning(message)
             send_event(message, level=EventLevel.ERROR)
             continue
 
-        (
-            ipv4_newest_address,
-            ipv6_newest_address,
-            task_config_changed,
-        ) = master.get_new_addresses(config_task)
-        if ipv4_newest_address is None and ipv6_newest_address is None:
-            master.update_task_skipped_to_db(config_task)
+        if address_info is None:
+            logger.debug(
+                "Skip task:{}, because address have not any change".format(
+                    task.config.name
+                )
+            )
 
-            logger.debug("Skip task:{}".format(config_task.name))
+            th.set_task_skipped(task.config.name)
+            continue
+
+        if address_info.ipv4_address is None and address_info.ipv6_address is None:
+            message = "{}: ipv4_address and ipv6_address both None".format(
+                task.config.address_name
+            )
+            send_event(message, level=EventLevel.WARNING)
+            logger.warning(message)
+
+            th.set_task_skipped(task.config.name)
+            continue
+
+        # check ip address
+        if not task.config.ipv4:
+            address_info.ipv4_address = None
+
+        if not task.config.ipv6:
+            address_info.ipv6_address = None
+
+        if address_info.ipv4_address is None and address_info.ipv6_address is None:
+            logger.debug(
+                "Skip task:{}, because address do not need update".format(
+                    task.config.name
+                )
+            )
+
+            th.set_task_skipped(task.config.name)
             continue
 
         try:
-            task_success = update_address_to_dns_provider(
-                config_task, ipv4_newest_address, ipv6_newest_address, real_update
+            update_success = update_address_to_dns_provider(
+                task.config, address_info, real_update
             )
+
         except DDNSProviderException as e:
             send_event(str(e), level=EventLevel.ERROR)
             continue
 
-        master.update_task_success_to_db(
-            config_task,
-            ipv4_newest_address,
-            ipv6_newest_address,
-            task_success,
-            task_config_changed,
-        )
+        th.update_update_status(task.config.name, address_info, update_success)

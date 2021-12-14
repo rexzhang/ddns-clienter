@@ -1,4 +1,3 @@
-import asyncio
 from django.core.management.base import BaseCommand, CommandError
 
 from ddns_clienter_core.runtimes.check_and_update import check_and_update

@@ -1,4 +1,4 @@
-from typing import Optional, Callable
+from typing import Callable
 from ipaddress import ip_address as ip_address_string_check
 from logging import getLogger
 
@@ -19,7 +19,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         raise NotImplemented
 
     @staticmethod
-    def _detect_process(server_url: str, match_func: Callable) -> Optional[str]:
+    def _detect_process(server_url: str, match_func: Callable) -> str | None:
 
         try:
             r = requests.get(server_url)
@@ -45,10 +45,10 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         return ip_address
 
     def _detect_ip_address(self) -> None:
-        if self._config_address.ipv4 and self._ipv4_url:
+        if self._address_c.ipv4 and self._ipv4_url:
             self.ipv4_address = self._detect_process(self._ipv4_url, self._match_ipv4)
 
-        if self._config_address.ipv6:
+        if self._address_c.ipv6:
             self.ipv6_address = self._detect_process(self._ipv6_url, self._match_ipv6)
 
 
@@ -64,7 +64,7 @@ class AddressProviderIpify(AddressProviderHttpGetAbs):
     @property
     def _ipv6_url(self):
         return "https://api64.ipify.org/"
-        # return "https://api6.ipify.org/" # TODO: ipv6 only server
+        # return "https://api6.ipify.org/" # ipv6 only server
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):

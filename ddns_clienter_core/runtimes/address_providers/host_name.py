@@ -13,11 +13,11 @@ class AddressProviderHostName(AddressProviderAbs):
 
     def _detect_ip_address(self) -> None:
         try:
-            data = socket.getaddrinfo(self._config_address.parameter, 80)
+            data = socket.getaddrinfo(self._address_c.parameter, 80)
         except socket.gaierror as e:
             logger.error(
                 "Detect IP Address failed, hostname:'{}', message:{}".format(
-                    self._config_address.parameter, e
+                    self._address_c.parameter, e
                 )
             )
             return
@@ -26,7 +26,7 @@ class AddressProviderHostName(AddressProviderAbs):
             if (
                 item[0] == socket.AF_INET
                 and item[1] == socket.SOCK_STREAM
-                and self._config_address.ipv4
+                and self._address_c.ipv4
             ):
                 ip_address = item[4][0]
                 if not self._match_ipv4(ip_address):
@@ -37,7 +37,7 @@ class AddressProviderHostName(AddressProviderAbs):
             elif (
                 item[0] == socket.AF_INET6
                 and item[1] == socket.SOCK_STREAM
-                and self._config_address.ipv6
+                and self._address_c.ipv6
             ):
                 ip_address = item[4][0]
                 if not self._match_ipv6(ip_address):

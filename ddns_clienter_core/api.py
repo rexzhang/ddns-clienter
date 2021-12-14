@@ -36,7 +36,7 @@ api_public = Router(tags=["Public"])
 def list_addresses(request):
     addresses = (
         Address.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 3))
+            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 10))
         )
         .order_by("name")
         .all()
@@ -54,7 +54,7 @@ def get_address(request, address_id: int):
 def list_tasks(request):
     tasks = (
         Task.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 3))
+            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 10))
         )
         .order_by("name")
         .all()
