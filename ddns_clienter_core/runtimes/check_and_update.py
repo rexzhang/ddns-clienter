@@ -50,13 +50,9 @@ class CannotMatchAddressException(Exception):
 
 
 def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
-    # TODO!!! config 变化后这里似乎没有正确工作
     changed = False
     data = model_to_dict(db_obj)
     for k, v in dataclass_asdict(dc_obj).items():
-        # if db_obj.__getattribute__(k) != v:
-        #     changed = True
-        #     db_obj.__setattr__(k, v)
         if data.get(k) != v:
             changed = True
             db_obj.__setattr__(k, v)
