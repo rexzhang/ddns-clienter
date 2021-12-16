@@ -1,6 +1,15 @@
 from django.shortcuts import render
+from django.conf import settings
+from django.forms.models import model_to_dict
+from django.views.generic import TemplateView
+from django.utils import timezone
 
 from ddns_clienter import __name__ as name, __version__, __project_url__
+from ddns_clienter_core.runtimes.persistent_data import (
+    get_addresses,
+    get_tasks,
+    get_events,
+)
 
 
 def index_view(request):
@@ -10,3 +19,66 @@ def index_view(request):
         "project_url": __project_url__,
     }
     return render(request, "index.html", context)
+
+
+def convert_none_to_symbol(data: dict) -> dict:
+    for key in data.keys():
+        if data[key] is None or data[key] == "":
+            data[key] = "-"
+
+    return data
+
+
+class IndexView(TemplateView):
+    template_name = "index_v2.html"
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        if settings.DEBUG:
+            full = True
+        else:
+            full = False
+
+        addresses = list()
+        for address in get_addresses(full):
+            data = model_to_dict(address)
+            data = convert_none_to_symbol(data)
+
+            addresses.append(data)
+
+        tasks = list()
+        for task in get_tasks(full):
+            data = model_to_dict(task)
+            if data["host"] is None or data["host"] == "":
+                data["full_domain"] = data["domain"]
+            else:
+                data["full_domain"] = "{}.{}".format(data["host"], data["domain"])
+
+            data = convert_none_to_symbol(data)
+
+            tasks.append(data)
+
+        events = list()
+        for event in get_events(full):
+            data = model_to_dict(event)
+            if event.level in {"WARNING", "ERROR", "CRITICAL"}:
+                data["highlight"] = True
+            else:
+                data["highlight"] = False
+
+            events.append(data)
+
+        kwargs.update(
+            {
+                "app_name": name,
+                "app_version": __version__,
+                "app_url": __project_url__,
+                "CHECK_INTERVALS": settings.CHECK_INTERVALS,
+                "FORCE_UPDATE_INTERVALS": settings.FORCE_UPDATE_INTERVALS,
+                "now": timezone.now(),
+                "addresses": addresses,
+                "tasks": tasks,
+                "events": events,
+            }
+        )
+        return kwargs

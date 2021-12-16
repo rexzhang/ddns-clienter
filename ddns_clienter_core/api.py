@@ -1,14 +1,11 @@
-from datetime import timedelta
-
 from django.shortcuts import get_object_or_404
-from django.conf import settings
-from django.utils import timezone
 from ninja import NinjaAPI, Router, ModelSchema
 from ninja.orm import create_schema
 from ninja.pagination import paginate, PageNumberPagination
 
 from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.models import Status, Address, Task, Event
+from ddns_clienter_core.runtimes.persistent_data import get_addresses, get_tasks
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
 
 AddressSchema = create_schema(Address, exclude=[])
@@ -34,15 +31,7 @@ api_public = Router(tags=["Public"])
 
 @api_public.get("/addresses", response=list[AddressSchema])
 def list_addresses(request, full: bool = False):
-    if full:
-        queryset = Address.objects
-    else:
-        queryset = Address.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 2))
-        )
-
-    addresses = queryset.order_by("name").all()
-    return addresses
+    return get_addresses(full)
 
 
 @api_public.get("/addresses/{address_id}", response=AddressSchema)
@@ -53,17 +42,7 @@ def get_address(request, address_id: int):
 
 @api_public.get("/tasks", response=list[TaskSchema])
 def list_tasks(request, full: bool = False):
-    if full:
-        queryset = Task.objects
-    else:
-        queryset = Task.objects.filter(
-            time__gt=(
-                timezone.now() - timedelta(minutes=settings.FORCE_UPDATE_INTERVALS * 2)
-            )
-        )
-
-    tasks = queryset.order_by("name").all()
-    return tasks
+    return get_tasks(full)
 
 
 @api_public.get("/status", response=list[StatusSchema])
