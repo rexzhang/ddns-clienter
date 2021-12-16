@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load static %}{% load bootstrap4 %}
+<!DOCTYPE html>{% load static %}{% load django_bootstrap5 %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -64,7 +64,9 @@
     <a href="/api/docs">OpenAPI Docs </a> | <a href="{{ project_url }}">GitHub</a>
 </footer>
 
-{% bootstrap_javascript jquery='full' %}
+{% bootstrap_javascript %}
+<script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
 <script>
