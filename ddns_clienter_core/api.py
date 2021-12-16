@@ -33,14 +33,15 @@ api_public = Router(tags=["Public"])
 
 
 @api_public.get("/addresses", response=list[AddressSchema])
-def list_addresses(request):
-    addresses = (
-        Address.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 10))
+def list_addresses(request, full: bool = False):
+    if full:
+        queryset = Address.objects
+    else:
+        queryset = Address.objects.filter(
+            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 2))
         )
-        .order_by("name")
-        .all()
-    )
+
+    addresses = queryset.order_by("name").all()
     return addresses
 
 
@@ -51,14 +52,17 @@ def get_address(request, address_id: int):
 
 
 @api_public.get("/tasks", response=list[TaskSchema])
-def list_tasks(request):
-    tasks = (
-        Task.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 10))
+def list_tasks(request, full: bool = False):
+    if full:
+        queryset = Task.objects
+    else:
+        queryset = Task.objects.filter(
+            time__gt=(
+                timezone.now() - timedelta(minutes=settings.FORCE_UPDATE_INTERVALS * 2)
+            )
         )
-        .order_by("name")
-        .all()
-    )
+
+    tasks = queryset.order_by("name").all()
     return tasks
 
 

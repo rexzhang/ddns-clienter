@@ -175,13 +175,13 @@ class AddressHub:
         address_db.save()
 
     def get_address_info_if_changed(
-        self, name: str, task_config_changed: bool  # TODO
+        self, name: str, force_update: bool  # TODO
     ) -> AddressInfo | None:
         address_c = self._data.get(name)
         if address_c is None:
             raise CannotMatchAddressException()
 
-        if task_config_changed or address_c.there_ars_changes:
+        if force_update or address_c.there_ars_changes:
             return AddressInfo(
                 address_c.ipv4_newest_address,
                 address_c.ipv6_newest_address,
@@ -194,8 +194,17 @@ class AddressHub:
 @dataclass
 class TaskDataItem:
     config: TaskConfig
-    config_changed: bool
-    last_update_success: bool
+    _config_changed: bool
+    _last_update_success: bool
+    _force_update_intervals_timeout: bool
+
+    @property
+    def force_update(self) -> bool:
+        return (
+            self._config_changed
+            or not self._last_update_success
+            or self._force_update_intervals_timeout
+        )
 
 
 class TaskHub:
@@ -242,33 +251,30 @@ class TaskHub:
                         tasks_c,
                         config_changed,
                         last_update_success,
+                        False,
                     )
                 }
             )
 
     @property
     def to_be_update_tasks(self) -> list[TaskDataItem]:
+        now = timezone.now()
         data = list()
         for item in self._data.values():
-            db_task = models.Task.objects.filter(name=item.config.name).first()
+            task_db = models.Task.objects.filter(name=item.config.name).first()
 
-            if item.config_changed:
-                # task config changed
-                data.append(item)
-                continue
-
-            if not item.last_update_success:
-                # last update failed
-                continue
-
-            if db_task.last_update_success_time is None or (
-                db_task.last_update_success_time
+            if task_db.last_update_success_time is None or (
+                task_db.last_update_success_time
                 + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
-                < timezone.now()
+                < now
             ):
                 # FORCE_UPDATE_INTERVALS timeout
+                item._force_update_intervals_timeout = True
                 data.append(item)
                 continue
+
+            # other task
+            data.append(item)
 
         logger.debug("To be update tasks:{}".format(data))
         return data
@@ -295,7 +301,7 @@ class TaskHub:
                 new_addresses += address_info.ipv6_address_with_prefix
 
             db_task.last_update_time = now
-            db_task.last_update_success = True
+            db_task._last_update_success = True
 
             db_task.previous_ip_addresses = db_task.last_ip_addresses
             db_task.last_ip_addresses = new_addresses
@@ -303,7 +309,7 @@ class TaskHub:
 
         else:
             db_task.last_update_time = now
-            db_task.last_update_success = False
+            db_task._last_update_success = False
 
         db_task.save()
 
@@ -356,13 +362,13 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
     for task in th.to_be_update_tasks:
         try:
             address_info = ah.get_address_info_if_changed(
-                task.config.address_name, task.config_changed
+                task.config.address_name, task.force_update
             )
 
         except CannotMatchAddressException:
             message = "Cannot found address:{}".format(task.config.address_name)
+            send_event(message, level=EventLevel.WARNING)
             logger.warning(message)
-            send_event(message, level=EventLevel.ERROR)
             continue
 
         if address_info is None:
@@ -393,11 +399,11 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             address_info.ipv6_address = None
 
         if address_info.ipv4_address is None and address_info.ipv6_address is None:
-            logger.debug(
-                "Skip task:{}, because address do not need update".format(
-                    task.config.name
-                )
+            message = "Skip task:{}, because address do not need update".format(
+                task.config.name
             )
+            send_event(message, level=EventLevel.WARNING)
+            logger.warning(message)
 
             th.set_task_skipped(task.config.name)
             continue
@@ -409,6 +415,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
 
         except DDNSProviderException as e:
             send_event(str(e), level=EventLevel.ERROR)
+            logger.error(e)
             continue
 
         th.update_update_status(task.config.name, address_info, update_success)
