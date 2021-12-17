@@ -22,6 +22,9 @@ def index_view(request):
 
 def convert_none_to_symbol(data: dict) -> dict:
     for key in data.keys():
+        if "time" in key:
+            continue
+
         if data[key] is None or data[key] == "":
             data[key] = "-"
 
@@ -51,7 +54,7 @@ class IndexView(TemplateView):
             else:
                 data["full_domain"] = "{}.{}".format(data["host"], data["domain"])
 
-            data = convert_none_to_symbol(data)
+            # data = convert_none_to_symbol(data)
 
             tasks.append(data)
 

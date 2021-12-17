@@ -55,10 +55,12 @@
                     <td>{{ item.provider }}</td>
                     <td>{{ item.ipv4_previous_address }}</td>
                     <td>{{ item.ipv4_last_address }}</td>
-                    <td>{{ item.ipv4_last_change_time|timesince:now }}</td>
+                    <td>{% if item.ipv4_last_change_time == None %}-{% else %}
+                        {{ item.ipv4_last_change_time|timesince:now }}{% endif %}</td>
                     <td>{{ item.ipv6_previous_address }}</td>
                     <td>{{ item.ipv6_last_address }}</td>
-                    <td>{{ item.ipv6_last_change_time|timesince:now }}</td>
+                    <td>{% if item.ipv6_last_change_time == None %}-{% else %}
+                        {{ item.ipv6_last_change_time|timesince:now }}{% endif %}</td>
                 </tr>
             {% empty %}
                 <th>Sorry, no data in this list.</th>
@@ -94,8 +96,10 @@
                         <i class="bi bi-check-lg"></i> {% else %}
                         <i class="bi bi-x-lg"></i>{% endif %}
                     </th>
-                    <td>{{ item.last_update_time|timesince:now }}</td>
-                    <td>{{ item.last_update_success_time|timesince:now }}</td>
+                    <td>{% if item.last_update_time == None %}-{% else %}
+                        {{ item.last_update_time|timesince:now }}{% endif %}</td>
+                    <td>{% if item.last_update_success_time == None %}-{% else %}
+                        {{ item.last_update_success_time|timesince:now }}{% endif %}</td>
                 </tr>
             {% empty %}
                 <th>Sorry, no data in this list.</th>
