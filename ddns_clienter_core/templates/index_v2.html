@@ -1,4 +1,4 @@
-<!doctype html>{% load static %}{% load django_bootstrap5 %}
+<!doctype html>{% load i18n %}{% load l10n %}{% load static %}{% load django_bootstrap5 %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -23,121 +23,119 @@
 </head>
 <body class="dark-mode with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
       data-sidebar-shortcut-enabled="true">
-<!-- Page wrapper start -->
-<div id="page-wrapper" class="page-wrapper with-navbar with-navbar-fixed-bottom"
-     data-sidebar-type="default">
+<header>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <span class="navbar-brand">{{ app_name }} <small>v{{ app_version }}</small></span>
+            <span class="navbar-brand">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </span>
         </div>
     </nav>
-    <!-- Content wrapper -->
-    <div class="content-wrapper">
-        <div class="container">
-            <h4>Addresses <small><small class="fw-lighter">
-                CHECK_INTERVALS: {{ CHECK_INTERVALS }}minutes</small></small>
-            </h4>
-            <table class="table table-striped">
-                <thead>
+</header>
+<main class="pt-4 pb-4">
+    <div class="container pt-2">
+        <h4>{% translate "Addresses" %} <small><small class="fw-lighter">
+            {% translate "Check Intervals" %}: {{ CHECK_INTERVALS }}{% translate "minutes" %}</small></small>
+        </h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">{% translate "Name" %}</th>
+                <th scope="col">{% translate "Provider" %}</th>
+                <th scope="col">{% translate "IPv4 Previous Address" %}</th>
+                <th scope="col">{% translate "IPv4 Address" %}</th>
+                <th scope="col">{% translate "IPv4 Change Time" %}</th>
+                <th scope="col">{% translate "IPv6 Previous Address" %}</th>
+                <th scope="col">{% translate "IPv6 Address" %}</th>
+                <th scope="col">{% translate "IPv6 Change Time" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in addresses %}
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Provider</th>
-                    <th scope="col">IPv4 Previous Address</th>
-                    <th scope="col">IPv4 Address</th>
-                    <th scope="col">IPv4 Change Time</th>
-                    <th scope="col">IPv6 Previous Address</th>
-                    <th scope="col">IPv6 Address</th>
-                    <th scope="col">IPv6 Change Time</th>
+                    <th scope="row">{{ item.name }}</th>
+                    <td>{{ item.provider }}</td>
+                    <td>{{ item.ipv4_previous_address }}</td>
+                    <td>{{ item.ipv4_last_address }}</td>
+                    <td>{{ item.ipv4_last_change_time|timesince:now }}</td>
+                    <td>{{ item.ipv6_previous_address }}</td>
+                    <td>{{ item.ipv6_last_address }}</td>
+                    <td>{{ item.ipv6_last_change_time|timesince:now }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for item in addresses %}
-                    <tr>
-                        <th scope="row">{{ item.name }}</th>
-                        <td>{{ item.provider }}</td>
-                        <td>{{ item.ipv4_previous_address }}</td>
-                        <td>{{ item.ipv4_last_address }}</td>
-                        <td>{{ item.ipv4_last_change_time|timesince:now }}</td>
-                        <td>{{ item.ipv6_previous_address }}</td>
-                        <td>{{ item.ipv6_last_address }}</td>
-                        <td>{{ item.ipv6_last_change_time|timesince:now }}</td>
-                    </tr>
-                {% empty %}
-                    <th>Sorry, no data in this list.</th>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="container">
-            <h4>Tasks <small><small class="fw-light">FORCE_UPDATE_INTERVALS: {{ FORCE_UPDATE_INTERVALS }}minutes</small></small>
-            </h4>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Provider</th>
-                    <th scope="col">Domain</th>
-                    <th scope="col">Success</th>
-                    <th scope="col">IP Addresses</th>
-                    <th scope="col">Last Update Time</th>
-                    <th scope="col">Last Success Time</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in tasks %}
-                    <tr>
-                        <th scope="row">{{ item.name }}</th>
-                        <td>{{ item.provider }}</td>
-                        <td>{{ item.full_domain }}</td>
-                        <th scope="row">{% if item.last_update_success %}
-                            <i class="bi bi-check-lg"></i> {% else %}
-                            <i class="bi bi-x-lg"></i>{% endif %}
-                        </th>
-                        <td>{{ item.last_ip_addresses }}</td>
-                        <td>{{ item.last_update_time|timesince:now }}</td>
-                        <td>{{ item.last_update_success_time|timesince:now }}</td>
-                    </tr>
-                {% empty %}
-                    <th>Sorry, no data in this list.</th>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="container">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">Timestamp</th>
-                    <th scope="col">Level</th>
-                    <th scope="col">Message</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in events %}
-                    <tr {% if item.highlight %} bgcolor="orange" {% endif %}>
-                        <td>{{ item.time }}</td>
-                        <td>{{ item.level }}</td>
-                        <td>{{ item.message }}</td>
-                    </tr>
-                {% empty %}
-                    <th>Sorry, no data in this list.</th>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
+            {% empty %}
+                <th>Sorry, no data in this list.</th>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <footer>
-        <hr>
-        <div class="container font-monospace">
-            OpenAPI <a href="/api/docs">Docs</a>/<a href="/api_example">Example</a> | <a
-                href="{{ app_url }}">GitHub</a>
-        </div>
-    </footer>
-</div>
+    <div class="container pt-2">
+        <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
+            {{ FORCE_UPDATE_INTERVALS }}{% translate "minutes" %}</small></small>
+        </h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">{% translate "Name" %}</th>
+                <th scope="col">{% translate "Provider" %}</th>
+                <th scope="col">{% translate "Domain" %}</th>
+                <th scope="col">{% translate "IP Addresses" %}</th>
+                <th scope="col">{% translate "Update Success" %}</th>
+                <th scope="col">{% translate "Last Update Time" %}</th>
+                <th scope="col">{% translate "Last Success Time" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in tasks %}
+                <tr>
+                    <th scope="row">{{ item.name }}</th>
+                    <td>{{ item.provider }}</td>
+                    <td>{{ item.full_domain }}</td>
+                    <td>{{ item.last_ip_addresses }}</td>
+                    <th scope="row">{% if item.last_update_success %}
+                        <i class="bi bi-check-lg"></i> {% else %}
+                        <i class="bi bi-x-lg"></i>{% endif %}
+                    </th>
+                    <td>{{ item.last_update_time|timesince:now }}</td>
+                    <td>{{ item.last_update_success_time|timesince:now }}</td>
+                </tr>
+            {% empty %}
+                <th>Sorry, no data in this list.</th>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container pt-2">
+        <h4>{% translate "Events" %}</h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">{% translate "Timestamp" %}</th>
+                <th scope="col">{% translate "Level" %}</th>
+                <th scope="col">{% translate "Message" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in events %}
+                <tr {% if item.highlight %} bgcolor="orange" {% endif %}>
+                    <td>{{ item.time }}</td>
+                    <td>{{ item.level }}</td>
+                    <td class="font-monospace">{{ item.message }}</td>
+                </tr>
+            {% empty %}
+                <th>Sorry, no data in this list.</th>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <hr class="mb-1">
+    <div class="container font-monospace pb-2"><small>
+        OpenAPI <a href="/api/docs">{% translate "Docs" %}</a>/<a href="/api_example">{% translate "Example" %}</a>
+        | <a href="{{ app_url }}">GitHub</a>
+    </small></div>
+</footer>
 {% bootstrap_javascript %}
 </body>
 </html>

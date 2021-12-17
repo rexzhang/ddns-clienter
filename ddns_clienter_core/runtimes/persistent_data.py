@@ -5,7 +5,7 @@ from django.utils import timezone
 from ddns_clienter_core.models import Address, Task, Event
 
 
-def get_addresses(full: bool = False):
+def get_addresses_values(full: bool = False):
     if full:
         queryset = Address.objects
     else:
@@ -13,11 +13,10 @@ def get_addresses(full: bool = False):
             time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 2))
         )
 
-    addresses = queryset.order_by("name").all()
-    return addresses
+    return queryset.order_by("name").all().values()
 
 
-def get_tasks(full: bool = False):
+def get_tasks_values(full: bool = False):
     if full:
         queryset = Task.objects
     else:
@@ -27,14 +26,14 @@ def get_tasks(full: bool = False):
             )
         )
 
-    tasks = queryset.order_by("name").all()
-    return tasks
+    return queryset.order_by("name").all().values()
 
 
-def get_events(full: bool = False):
+def get_events_values(full: bool = False):
+    queryset = Event.objects.order_by("-id")
     if full:
-        events = Event.objects.order_by("-time").all()
+        queryset = queryset.all()
     else:
-        events = Event.objects.order_by("-time")[:10]
+        queryset = queryset.all()[:10]
 
-    return events
+    return queryset.values()

@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.conf import settings
-from django.forms.models import model_to_dict
 from django.views.generic import TemplateView
 from django.utils import timezone
 
 from ddns_clienter import __name__ as name, __version__, __project_url__
 from ddns_clienter_core.runtimes.persistent_data import (
-    get_addresses,
-    get_tasks,
-    get_events,
+    get_addresses_values,
+    get_tasks_values,
+    get_events_values,
 )
 
 
@@ -40,15 +39,13 @@ class IndexView(TemplateView):
             full = False
 
         addresses = list()
-        for address in get_addresses(full):
-            data = model_to_dict(address)
+        for data in get_addresses_values(full):
             data = convert_none_to_symbol(data)
 
             addresses.append(data)
 
         tasks = list()
-        for task in get_tasks(full):
-            data = model_to_dict(task)
+        for data in get_tasks_values(full):
             if data["host"] is None or data["host"] == "":
                 data["full_domain"] = data["domain"]
             else:
@@ -59,9 +56,8 @@ class IndexView(TemplateView):
             tasks.append(data)
 
         events = list()
-        for event in get_events(full):
-            data = model_to_dict(event)
-            if event.level in {"WARNING", "ERROR", "CRITICAL"}:
+        for data in get_events_values(full):
+            if data["level"] in {"WARNING", "ERROR", "CRITICAL"}:
                 data["highlight"] = True
             else:
                 data["highlight"] = False
