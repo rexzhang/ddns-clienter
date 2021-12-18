@@ -1,0 +1,120 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-12-18 17:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/index_v2.html:36
+msgid "Addresses"
+msgstr "地址"
+
+#: templates/index_v2.html:37
+msgid "Check Intervals"
+msgstr "检查间隔"
+
+#: templates/index_v2.html:37 templates/index_v2.html:75
+msgid "minutes"
+msgstr "分钟"
+
+#: templates/index_v2.html:42 templates/index_v2.html:80
+msgid "Name"
+msgstr "名称"
+
+#: templates/index_v2.html:43 templates/index_v2.html:81
+msgid "Provider"
+msgstr "提供者"
+
+#: templates/index_v2.html:44
+msgid "IPv4 Address"
+msgstr "现 IPv4 地址"
+
+#: templates/index_v2.html:45
+msgid "IPv4 Previous Address"
+msgstr "原 IPv4 地址"
+
+#: templates/index_v2.html:46
+msgid "IPv4 Change Time"
+msgstr "IPv4 更改时间"
+
+#: templates/index_v2.html:47
+msgid "IPv6 Address"
+msgstr "现 IPv6 地址"
+
+#: templates/index_v2.html:48
+msgid "IPv6 Previous Address"
+msgstr "原 IPv6 地址"
+
+#: templates/index_v2.html:49
+msgid "IPv6 Change Time"
+msgstr "IPv6 更改时间"
+
+#: templates/index_v2.html:60 templates/index_v2.html:64
+#: templates/index_v2.html:101 templates/index_v2.html:103
+msgid "ago"
+msgstr "之前"
+
+#: templates/index_v2.html:74
+msgid "Tasks"
+msgstr "任务"
+
+#: templates/index_v2.html:74
+msgid "Force Update Intervals"
+msgstr "强制更新间隔"
+
+#: templates/index_v2.html:82
+msgid "Domain"
+msgstr "域名"
+
+#: templates/index_v2.html:83
+msgid "IP Addresses"
+msgstr "IP 地址"
+
+#: templates/index_v2.html:84
+msgid "Update Success"
+msgstr "更新成功"
+
+#: templates/index_v2.html:85
+msgid "Last Success Time"
+msgstr "最后一次更新成功时间"
+
+#: templates/index_v2.html:86
+msgid "Last Update Time"
+msgstr "最后一次更新时间"
+
+#: templates/index_v2.html:113
+msgid "Events"
+msgstr "事件"
+
+#: templates/index_v2.html:117
+msgid "Timestamp"
+msgstr "时间戳"
+
+#: templates/index_v2.html:118
+msgid "Level"
+msgstr "级别"
+
+#: templates/index_v2.html:119
+msgid "Message"
+msgstr "信息"
+
+#: templates/index_v2.html:140
+msgid "Docs"
+msgstr "文档"
+
+#: templates/index_v2.html:140
+msgid "Example"
+msgstr "范例"

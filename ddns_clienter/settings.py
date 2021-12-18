@@ -98,8 +98,8 @@ DATABASES = {
 
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
-    ("en", _("English")),
-    ("zh", _("Chinese")),
+    ("en-us", _("English")),
+    ("zh-hans", _("Chinese")),
 ]
 
 TIME_ZONE = getenv("TZ", "UTC")

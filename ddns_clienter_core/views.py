@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import TemplateView
-from django.utils import timezone
 
 from ddns_clienter import __name__ as name, __version__, __project_url__
 from ddns_clienter_core.runtimes.persistent_data import (
@@ -74,7 +73,6 @@ class IndexView(TemplateView):
                 "app_url": __project_url__,
                 "CHECK_INTERVALS": settings.CHECK_INTERVALS,
                 "FORCE_UPDATE_INTERVALS": settings.FORCE_UPDATE_INTERVALS,
-                "now": timezone.now(),
                 "addresses": addresses,
                 "tasks": tasks,
                 "events": events,
