@@ -37,10 +37,10 @@ def list_addresses(request, full: bool = False):
     return get_addresses_values(full)
 
 
-@api_public.get("/addresses/{address_id}", response=AddressSchema)
-def get_address(request, address_id: int):
-    address = get_object_or_404(AddressSchema, id=address_id)
-    return address
+@api_public.get("/addresses/{name}", response=AddressSchema)
+def get_address(request, name: str):
+    data = get_object_or_404(Address, name=name)
+    return data
 
 
 @api_public.get("/tasks", response=list[TaskSchema])
@@ -48,7 +48,13 @@ def list_tasks(request, full: bool = False):
     return get_tasks_values(full)
 
 
-@api_public.get("/status", response=list[StatusSchema])
+@api_public.get("/tasks/{name}", response=TaskSchema)
+def get_task(request, name: str):
+    data = get_object_or_404(Task, name=name)
+    return data
+
+
+@api_public.get("/status", response=list[StatusSchema], deprecated=True)
 def list_status(request):
     status = Status.objects.order_by("key").all()
     return status
