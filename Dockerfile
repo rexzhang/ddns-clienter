@@ -10,6 +10,7 @@ COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
 COPY docker_cmd.sh /app
 RUN pip install --no-cache-dir -r /app/requirements/docker.txt
+RUN apk add gettext  # for alpine
 
 WORKDIR /app
 EXPOSE 80
