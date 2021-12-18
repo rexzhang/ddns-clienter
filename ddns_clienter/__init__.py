@@ -6,12 +6,10 @@
 Check and update A/AAAA record to DynDNS provider, WebUI, support Docker
 """
 
-from .core import (  # noqa: F401
-    PyPIPackageProject,
-)
+from .core import PyPIPackageProject  # noqa: F401
 
 __name__ = "DDNS Clienter"
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 __author__ = "Rex Zhang"
 __author_email__ = "rex.zhang@gmail.com"
