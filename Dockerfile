@@ -9,8 +9,13 @@ COPY ddns_clienter /app/ddns_clienter
 COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
 COPY docker_cmd.sh /app
+
+# python
 RUN pip install --no-cache-dir -r /app/requirements/docker.txt
-RUN apk add gettext  # for alpine
+
+# i18n
+RUN apk add --no-cache gettext # for alpine
+RUN django-admin compilemessages --ignore venv
 
 WORKDIR /app
 EXPOSE 80
