@@ -163,14 +163,14 @@ class AddressHub:
             address_db.ipv6_last_address = ipv6_newest_address
             address_db.ipv6_last_change_time = now
 
-        send_event(
-            "{}'s ipv6 changed:{}->{}/{}".format(
-                name,
-                address_db.ipv6_previous_address,
-                address_db.ipv6_last_address,
-                address_data.config.ipv6_prefix_length,
+            send_event(
+                "{}'s ipv6 changed:{}->{}/{}".format(
+                    name,
+                    address_db.ipv6_previous_address,
+                    address_db.ipv6_last_address,
+                    address_data.config.ipv6_prefix_length,
+                )
             )
-        )
 
         address_db.save()
 
