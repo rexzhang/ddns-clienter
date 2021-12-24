@@ -10,12 +10,9 @@ COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
 COPY docker_cmd.sh /app
 
-# python
-RUN pip install --no-cache-dir -r /app/requirements/docker.txt
-
-# i18n
-RUN apk add --no-cache gettext # for alpine
-RUN django-admin compilemessages --ignore venv
+# depends
+RUN pip install --no-cache-dir -r /app/requirements/docker.txt \
+    && apk add --no-cache gettext
 
 WORKDIR /app
 EXPOSE 80
@@ -25,6 +22,9 @@ ENV PYTHONPATH=/app
 ENV DATA_DIR=/data
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 ENV CONFIG_FILE_NAME="config.toml"
+
+# i18n
+RUN django-admin compilemessages --ignore venv
 
 CMD /app/docker_cmd.sh
 LABEL org.opencontainers.image.title="DDNS Clienter"
