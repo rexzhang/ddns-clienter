@@ -1,6 +1,6 @@
 docker container stop ddns-clienter
 docker container rm ddns-clienter
-docker image rm ddns-clienter
+docker image rm ray1ex/ddns-clienter
 
 docker pull python:3.10-alpine
 docker build -t ray1ex/ddns-clienter .
