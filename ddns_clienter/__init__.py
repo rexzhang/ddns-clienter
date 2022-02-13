@@ -3,7 +3,7 @@
 
 
 """
-Check and update A/AAAA record to DynDNS provider, WebUI, support Docker
+Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 """
 
 from .core import PyPIPackageProject  # noqa: F401
@@ -16,6 +16,6 @@ __author_email__ = "rex.zhang@gmail.com"
 __licence__ = "MIT"
 
 __description__ = (
-    "Check and update A/AAAA record to DynDNS provider, WebUI, support Docker"
+    "Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker"
 )
 __project_url__ = "https://github.com/rexzhang/ddns-clienter"

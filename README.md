@@ -1,4 +1,4 @@
-# DynDNS Clienter
+# Dynamic DNS Clienter
 
 # Docker
 
@@ -36,9 +36,16 @@ Recommended for use in LAN
 
 https://www.ipify.org/
 
-# DynDNS Provider
+# Dynamic DNS Provider
 
 ## dynv6
 
 https://dynv6.com/docs/apis
 Update API and REST API mix
+
+# Dev
+
+# TODO
+
+- Address 条目/信息不存在
+- disable 某个 task/address
