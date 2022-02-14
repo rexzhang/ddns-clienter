@@ -12,9 +12,35 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from os import getenv
 from pathlib import Path
+from uuid import uuid4
 
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
+
+
+def str2bool(value: str, default: bool) -> bool:
+    if not isinstance(value, str):
+        return default
+
+    if value.lower() == "true":
+        value = True
+    else:
+        value = False
+
+    return value
+
+
+def str2int(value: str, default: int) -> int:
+    if not isinstance(value, str):
+        return default
+
+    try:
+        value = int(value)
+    except ValueError:
+        return default
+
+    return value
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,13 +53,10 @@ load_dotenv(BASE_DATA_DIR.joinpath(".env"), override=True)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-mamh*np-ny)gqurc^wup8z_ee^kp@nwvq5$@f-%87qk54he&x$"
+SECRET_KEY = "django-insecure-{}".format(uuid4().hex)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if (getenv("DEBUG") is not None) and (getenv("DEBUG").lower() == "true"):
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG = str2bool(getenv("DEBUG"), False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -144,12 +167,13 @@ LOGGING = {
             "formatter": "default",
         },
     },
-    "root": {
-        "handlers": ["console"],
-        "level": logging_level,
-    },
     "loggers": {
         "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "ddns_clienter_core": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
@@ -163,10 +187,12 @@ NINJA_PAGINATION_PER_PAGE = 10
 # DDNS Clienter
 CONFIG_FILE_NAME = getenv("CONFIG_FILE_NAME", "config.toml")
 
-CHECK_INTERVALS = getenv("CHECK_INTERVALS", 5)  # minutes
-FORCE_UPDATE_INTERVALS = getenv("FORCE_UPDATE_INTERVALS", 1440)  # minutes, 1day
+CHECK_INTERVALS = str2int(getenv("CHECK_INTERVALS"), 5)  # minutes
+FORCE_UPDATE_INTERVALS = str2int(
+    getenv("FORCE_UPDATE_INTERVALS"), 1440
+)  # minutes, 1day
 
-DISABLE_CRON = getenv("DISABLE_CRON", False)  # for dev
+DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 
 #
 # Sentry
@@ -178,13 +204,13 @@ if SENTRY_DSN:
 
     # from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
-    from ddns_clienter import __version__
+    from ddns_clienter import __name__ as app_name, __version__ as app_version
     from ddns_clienter_core.runtimes.sentry import init_sentry
 
     init_sentry(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration(), LoggingIntegration()],
-        app_name="PelicanPublisher",
-        app_version=__version__,
+        app_name=app_name,
+        app_version=app_version,
         user_id_is_mac_address=True,
     )
