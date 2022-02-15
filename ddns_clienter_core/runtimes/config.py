@@ -47,12 +47,12 @@ class ConfigException(Exception):
 
 class Config:
     common: Common
-    addresses: list[AddressConfig]
-    tasks: list[TaskConfig]
+    addresses: dict[str, AddressConfig]
+    tasks: dict[str, TaskConfig]
 
     def __init__(self, file_name: str):
-        self.addresses = list()  #
-        self.tasks = list()
+        self.addresses = dict()  #
+        self.tasks = dict()
 
         self._file_name = file_name
         self.load_from_file()
@@ -83,7 +83,7 @@ class Config:
             if not address_info.ipv4 and not address_info.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.addresses.append(address_info)
+            self.addresses.update({name: address_info})
 
         # tasks
         for name, data in tasks_obj.items():
@@ -91,6 +91,6 @@ class Config:
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.tasks.append(task)
+            self.tasks.update({name: task})
 
         # TODO: check

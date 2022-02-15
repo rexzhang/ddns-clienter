@@ -1,7 +1,7 @@
 import socket
 from logging import getLogger
 
-from .abs import AddressProviderAbs
+from .abs import AddressProviderAbs, AddressProviderException
 
 logger = getLogger(__name__)
 
@@ -15,12 +15,11 @@ class AddressProviderHostName(AddressProviderAbs):
         try:
             data = socket.getaddrinfo(self._address_c.parameter, 80)
         except socket.gaierror as e:
-            logger.error(
-                "Detect IP Address failed, hostname:'{}', message:{}".format(
-                    self._address_c.parameter, e
-                )
+            message = "Detect IP Address failed, hostname:'{}', message:{}".format(
+                self._address_c.parameter, e
             )
-            return
+            logger.error(message)
+            raise AddressProviderException(message)
 
         for item in data:
             if (

@@ -7,7 +7,7 @@ ipv4 = true
 ipv6 = true
 ipv6_match_rule = "^240e:"
 provider = "hostname"
-parameter = "ds216plus"
+parameter = "localhost"
 
 [addresses.from_ipify]
 ipv4 = true

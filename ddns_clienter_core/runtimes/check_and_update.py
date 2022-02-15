@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict as dataclass_asdict
+from dataclasses import dataclass, asdict as dataclass_as_dict
 from datetime import timedelta
 from logging import getLogger
 
@@ -47,7 +47,7 @@ class CannotMatchAddressException(Exception):
 def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
     changed = False
     data = model_to_dict(db_obj)
-    for k, v in dataclass_asdict(dc_obj).items():
+    for k, v in dataclass_as_dict(dc_obj).items():
         if data.get(k) != v:
             changed = True
             db_obj.__setattr__(k, v)
@@ -70,7 +70,7 @@ class AddressHub:
     ) -> (bool, str | None, str | None):
         address_db = models.Address.objects.filter(name=address_c.name).first()
         if address_db is None:
-            address_db = models.Address(**dataclass_asdict(address_c))
+            address_db = models.Address(**dataclass_as_dict(address_c))
             address_db.save()
             logger.info(
                 "Cannot found address:{} from db, create it.".format(address_c.name)
@@ -90,10 +90,10 @@ class AddressHub:
         logger.debug("The address[{}] no change in config".format(address_c.name))
         return False, address_db.ipv4_last_address, address_db.ipv6_last_address
 
-    def __init__(self, addresses_c: list[AddressConfig]):
+    def __init__(self, addresses_c: dict[str, AddressConfig]):
         self._data = dict()
 
-        for address_c in addresses_c:
+        for address_c in addresses_c.values():
             (
                 config_changed,
                 ipv4_newest_address,
@@ -213,7 +213,7 @@ class TaskHub:
     def _compare_and_update_from_config_to_db(task_c: TaskConfig) -> (bool, bool):
         task_db = models.Task.objects.filter(name=task_c.name).first()
         if task_db is None:
-            task_db = models.Task(**dataclass_asdict(task_c))
+            task_db = models.Task(**dataclass_as_dict(task_c))
             task_db.save()
             logger.info(
                 "Cannot found task:{} from db, create it in db.".format(task_c.name)
@@ -232,10 +232,10 @@ class TaskHub:
         logger.debug("The task[{}] no change in config".format(task_c.name))
         return False, task_db.last_update_success
 
-    def __init__(self, tasks_c: list[TaskConfig]):
+    def __init__(self, tasks_c: dict[str, TaskConfig]):
         self._data = dict()
 
-        for tasks_c in tasks_c:
+        for tasks_c in tasks_c.values():
             (
                 config_changed,
                 last_update_success,
@@ -274,12 +274,14 @@ class TaskHub:
         logger.debug("To be update tasks:{}".format(data))
         return data
 
-    def set_task_skipped(self, name: str):
+    @staticmethod
+    def set_task_skipped(name: str):
         task_db = models.Task.objects.filter(name=name).first()
         task_db.save()
 
+    @staticmethod
     def update_update_status(
-        self, name: str, address_info: AddressInfo, update_success: bool
+        name: str, address_info: AddressInfo, update_success: bool
     ):
         db_task = models.Task.objects.filter(name=name).first()
 
