@@ -8,12 +8,7 @@ from django.utils import timezone
 
 from ddns_clienter_core.constants import AddressInfo, EventLevel
 from ddns_clienter_core import models
-from ddns_clienter_core.runtimes.config import (
-    Config,
-    AddressConfig,
-    TaskConfig,
-    ConfigException,
-)
+from ddns_clienter_core.runtimes.config import AddressConfig, TaskConfig
 from ddns_clienter_core.runtimes.address_providers import (
     detect_ip_address_from_provider,
     AddressProviderException,
@@ -265,10 +260,10 @@ class TaskHub:
 
             if task_db.last_update_success_time is None or (
                 task_db.last_update_success_time
-                + timedelta(minutes=settings.FORCE_UPDATE_INTERVALS)
+                + timedelta(minutes=settings.CONFIG.common.force_update_intervals)
                 < now
             ):
-                # FORCE_UPDATE_INTERVALS timeout
+                # force_update_intervals timeout
                 item._force_update_intervals_timeout = True
                 data.append(item)
                 continue
@@ -315,22 +310,11 @@ class TaskHub:
 
 
 def check_and_update(config_file_name: str | None = None, real_update: bool = True):
-    # load config
-    if config_file_name is None:
-        config_file_name = settings.BASE_DATA_DIR.joinpath(
-            settings.CONFIG_FILE_NAME
-        ).as_posix()
-    logger.debug("Load config from:{}".format(config_file_name))
-
-    try:
-        config = Config(config_file_name)
-    except ConfigException as e:
-        send_event(str(e), level=EventLevel.CRITICAL)
-        return
-    logger.debug("Config data:{}".format(config.addresses))
+    if config_file_name is not None:
+        raise "TODO"
 
     # import address data from config and db
-    ah = AddressHub(config.addresses)
+    ah = AddressHub(settings.CONFIG.addresses)
 
     # get ip address, update ip address into hub
     for address_c in ah.to_be_update_addresses:
@@ -356,7 +340,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
         )
 
     # import address data from config and db
-    th = TaskHub(config.tasks)
+    th = TaskHub(settings.CONFIG.tasks)
 
     # update to DNS provider
     for task in th.to_be_update_tasks:

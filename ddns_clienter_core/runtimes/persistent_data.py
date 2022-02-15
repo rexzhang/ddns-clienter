@@ -10,7 +10,10 @@ def get_addresses_values(full: bool = False):
         queryset = Address.objects
     else:
         queryset = Address.objects.filter(
-            time__gt=(timezone.now() - timedelta(minutes=settings.CHECK_INTERVALS * 2))
+            time__gt=(
+                timezone.now()
+                - timedelta(minutes=settings.CONFIG.common.check_intervals * 2)
+            )
         )
 
     return queryset.order_by("name").all().values()
@@ -22,7 +25,8 @@ def get_tasks_values(full: bool = False):
     else:
         queryset = Task.objects.filter(
             time__gt=(
-                timezone.now() - timedelta(minutes=settings.FORCE_UPDATE_INTERVALS * 2)
+                timezone.now()
+                - timedelta(minutes=settings.CONFIG.common.force_update_intervals * 2)
             )
         )
 

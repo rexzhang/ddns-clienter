@@ -3,10 +3,13 @@ from logging import getLogger
 
 import toml
 
-from ddns_clienter_core.constants import EventLevel
-from ddns_clienter_core.runtimes.event import send_event
-
 logger = getLogger(__name__)
+
+
+@dataclass
+class Common:
+    check_intervals: int = field(default=5)  # minutes
+    force_update_intervals: int = field(default=1440)  # minutes, 1day
 
 
 @dataclass
@@ -43,6 +46,7 @@ class ConfigException(Exception):
 
 
 class Config:
+    common: Common
     addresses: list[AddressConfig]
     tasks: list[TaskConfig]
 
@@ -58,12 +62,17 @@ class Config:
             obj = toml.load(self._file_name)
         except FileNotFoundError as e:
             logger.error(e)
-            send_event(
-                "Can not open config file:{}".format(self._file_name),
-                level=EventLevel.CRITICAL,
-            )
+            logger.error("Can not open config file:{}".format(self._file_name))
             raise ConfigException(e)
 
+        # common
+        common_obj = obj.get("common")
+        if common_obj is None:
+            self.common = Common()
+        else:
+            self.common = Common(obj.get("common"))
+
+        # addresses
         addresses_obj: dict = obj.get("addresses")
         tasks_obj: dict = obj.get("tasks")
         if addresses_obj is None or tasks_obj is None:
@@ -76,6 +85,7 @@ class Config:
 
             self.addresses.append(address_info)
 
+        # tasks
         for name, data in tasks_obj.items():
             task = TaskConfig(name=name, **data)
             if not task.ipv4 and not task.ipv6:

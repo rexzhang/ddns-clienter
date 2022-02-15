@@ -17,6 +17,8 @@ from uuid import uuid4
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
+from ddns_clienter_core.runtimes.config import Config
+
 
 def str2bool(value: str, default: bool) -> bool:
     if not isinstance(value, str):
@@ -44,10 +46,22 @@ def str2int(value: str, default: int) -> int:
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DATA_DIR = Path(getenv("DATA_DIR", BASE_DIR))
 
-# Load .env
-load_dotenv(BASE_DATA_DIR.joinpath(".env"), override=True)
+# Load .env, for dev
+load_dotenv(BASE_DIR.joinpath(".env"), override=True)
+
+# DDNS Clienter
+WORK_IN_CONTAINER = str2bool(getenv("WORK_IN_CONTAINER"), False)
+if WORK_IN_CONTAINER:
+    DATA_PATH = Path("/data")
+    CONFIG_FILE = "/etc/ddns-clienter.toml"
+else:
+    DATA_PATH = BASE_DIR
+    CONFIG_FILE = "config.toml"
+
+CONFIG = Config(CONFIG_FILE)
+
+DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -110,7 +124,7 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DATA_DIR.joinpath("db.sqlite3"),
+        "NAME": DATA_PATH.joinpath("db.sqlite3"),
         # "NAME": ":memory:",
     }
 }
@@ -183,16 +197,6 @@ LOGGING = {
 
 # django-ninja
 NINJA_PAGINATION_PER_PAGE = 10
-
-# DDNS Clienter
-CONFIG_FILE_NAME = getenv("CONFIG_FILE_NAME", "config.toml")
-
-CHECK_INTERVALS = str2int(getenv("CHECK_INTERVALS"), 5)  # minutes
-FORCE_UPDATE_INTERVALS = str2int(
-    getenv("FORCE_UPDATE_INTERVALS"), 1440
-)  # minutes, 1day
-
-DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 
 #
 # Sentry

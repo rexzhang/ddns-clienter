@@ -71,11 +71,13 @@ class IndexView(TemplateView):
                 "app_name": name,
                 "app_version": __version__,
                 "app_url": __project_url__,
-                "CHECK_INTERVALS": settings.CHECK_INTERVALS,
-                "FORCE_UPDATE_INTERVALS": settings.FORCE_UPDATE_INTERVALS,
+                "check_intervals": settings.CONFIG.common.check_intervals,
+                "force_update_intervals": settings.CONFIG.common.force_update_intervals,
+                "app_config": settings.CONFIG,
                 "addresses": addresses,
                 "tasks": tasks,
                 "events": events,
             }
         )
+        print(settings.CONFIG.common)
         return kwargs

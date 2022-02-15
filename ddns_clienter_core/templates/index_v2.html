@@ -2,142 +2,143 @@
 {% load i18n %}{% load l10n %}
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The page supports both dark and light color schemes,
-         and the page author prefers / default is light. -->
-    <meta name="color-scheme" content="light dark">
-    {% bootstrap_css %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <!-- Load the alternate CSS first ...
-         in this case the Bootstrap-Dark Variant CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet"
-          media="(prefers-color-scheme: dark)">
-    <!-- and then the primary CSS last ...
-         in this case the (original) Bootstrap Variant CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          media="(prefers-color-scheme: light)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The page supports both dark and light color schemes,
+       and the page author prefers / default is light. -->
+  <meta name="color-scheme" content="light dark">
+  {% bootstrap_css %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <!-- Load the alternate CSS first ...
+       in this case the Bootstrap-Dark Variant CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet"
+        media="(prefers-color-scheme: dark)">
+  <!-- and then the primary CSS last ...
+       in this case the (original) Bootstrap Variant CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        media="(prefers-color-scheme: light)">
 
-    <title>{{ app_name }}</title>
+  <title>{{ app_name }}</title>
 </head>
 <body class="dark-mode with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
       data-sidebar-shortcut-enabled="true">
 <header>
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
-            <span class="navbar-brand">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </span>
-        </div>
-    </nav>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+      <span class="navbar-brand">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </span>
+    </div>
+  </nav>
 </header>
 <main class="pt-4 pb-4">
-    <div class="container pt-2">
-        <h4>{% translate "Addresses" %} <small><small class="fw-lighter">
-            {% translate "Check Intervals" %}: {{ CHECK_INTERVALS }}{% translate "minutes" %}</small></small>
-        </h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">{% translate "Name" %}</th>
-                <th scope="col">{% translate "Provider" %}</th>
-                <th scope="col">{% translate "IPv4 Address" %}</th>
-                <th scope="col">{% translate "IPv4 Previous Address" %}</th>
-                <th scope="col">{% translate "IPv4 Change Time" %}</th>
-                <th scope="col">{% translate "IPv6 Address" %}</th>
-                <th scope="col">{% translate "IPv6 Previous Address" %}</th>
-                <th scope="col">{% translate "IPv6 Change Time" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in addresses %}
-                <tr>
-                    <th scope="row">{{ item.name }}</th>
-                    <td>{{ item.provider }}</td>
-                    <td>{{ item.ipv4_last_address }}</td>
-                    <td>{{ item.ipv4_previous_address }}</td>
-                    <td>{% if item.ipv4_last_change_time == None %}-{% else %}
-                        {{ item.ipv4_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
-                    <td>{{ item.ipv6_last_address }}</td>
-                    <td>{{ item.ipv6_previous_address }}</td>
-                    <td>{% if item.ipv6_last_change_time == None %}-{% else %}
-                        {{ item.ipv6_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
-                </tr>
-            {% empty %}
-                <th>Sorry, no data in this list.</th>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="container pt-2">
+    <h4>{% translate "Addresses" %} <small><small class="fw-lighter">
+      {% translate "Check Intervals" %}:
+      {{ app_config.common.check_intervals }}{% translate "minutes" %}</small></small>
+    </h4>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Name" %}</th>
+        <th scope="col">{% translate "Provider" %}</th>
+        <th scope="col">{% translate "IPv4 Address" %}</th>
+        <th scope="col">{% translate "IPv4 Previous Address" %}</th>
+        <th scope="col">{% translate "IPv4 Change Time" %}</th>
+        <th scope="col">{% translate "IPv6 Address" %}</th>
+        <th scope="col">{% translate "IPv6 Previous Address" %}</th>
+        <th scope="col">{% translate "IPv6 Change Time" %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for item in addresses %}
+        <tr>
+          <th scope="row">{{ item.name }}</th>
+          <td>{{ item.provider }}</td>
+          <td>{{ item.ipv4_last_address }}</td>
+          <td>{{ item.ipv4_previous_address }}</td>
+          <td>{% if item.ipv4_last_change_time == None %}-{% else %}
+            {{ item.ipv4_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
+          <td>{{ item.ipv6_last_address }}</td>
+          <td>{{ item.ipv6_previous_address }}</td>
+          <td>{% if item.ipv6_last_change_time == None %}-{% else %}
+            {{ item.ipv6_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div class="container pt-2">
-        <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
-            {{ FORCE_UPDATE_INTERVALS }}{% translate "minutes" %}</small></small>
-        </h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">{% translate "Name" %}</th>
-                <th scope="col">{% translate "Provider" %}</th>
-                <th scope="col">{% translate "Domain" %}</th>
-                <th scope="col">{% translate "IP Addresses" %}</th>
-                <th scope="col">{% translate "Update Success" %}</th>
-                <th scope="col">{% translate "Last Success Time" %}</th>
-                <th scope="col">{% translate "Last Update Time" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in tasks %}
-                <tr>
-                    <th scope="row">{{ item.name }}</th>
-                    <td>{{ item.provider }}</td>
-                    <td>{{ item.full_domain }}</td>
-                    <td>{{ item.last_ip_addresses }}</td>
-                    <th scope="row">{% if item.last_update_success %}
-                        <i class="bi bi-check-lg"></i> {% else %}
-                        <i class="bi bi-x-lg"></i>{% endif %}
-                    </th>
-                    <td>{% if item.last_update_success_time == None %}-{% else %}
-                        {{ item.last_update_success_time|timesince }} {% translate "ago" %}{% endif %}</td>
-                    <td>{% if item.last_update_time == None %}-{% else %}
-                        {{ item.last_update_time|timesince }} {% translate "ago" %}{% endif %}</td>
-                </tr>
-            {% empty %}
-                <th>Sorry, no data in this list.</th>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="container pt-2">
+    <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
+      {{ app_config.common.force_update_intervals }}{% translate "minutes" %}</small></small>
+    </h4>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Name" %}</th>
+        <th scope="col">{% translate "Provider" %}</th>
+        <th scope="col">{% translate "Domain" %}</th>
+        <th scope="col">{% translate "IP Addresses" %}</th>
+        <th scope="col">{% translate "Update Success" %}</th>
+        <th scope="col">{% translate "Last Success Time" %}</th>
+        <th scope="col">{% translate "Last Update Time" %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for item in tasks %}
+        <tr>
+          <th scope="row">{{ item.name }}</th>
+          <td>{{ item.provider }}</td>
+          <td>{{ item.full_domain }}</td>
+          <td>{{ item.last_ip_addresses }}</td>
+          <th scope="row">{% if item.last_update_success %}
+            <i class="bi bi-check-lg"></i> {% else %}
+            <i class="bi bi-x-lg"></i>{% endif %}
+          </th>
+          <td>{% if item.last_update_success_time == None %}-{% else %}
+            {{ item.last_update_success_time|timesince }} {% translate "ago" %}{% endif %}</td>
+          <td>{% if item.last_update_time == None %}-{% else %}
+            {{ item.last_update_time|timesince }} {% translate "ago" %}{% endif %}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div class="container pt-2">
-        <h4>{% translate "Events" %}</h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">{% translate "Timestamp" %}</th>
-                <th scope="col">{% translate "Level" %}</th>
-                <th scope="col">{% translate "Message" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in events %}
-                <tr {% if item.highlight %} bgcolor="orange" {% endif %}>
-                    <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
-                    <td>{{ item.level }}</td>
-                    <td class="font-monospace">{{ item.message }}</td>
-                </tr>
-            {% empty %}
-                <th>Sorry, no data in this list.</th>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <div class="container pt-2">
+    <h4>{% translate "Events" %}</h4>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Timestamp" %}</th>
+        <th scope="col">{% translate "Level" %}</th>
+        <th scope="col">{% translate "Message" %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for item in events %}
+        <tr {% if item.highlight %} bgcolor="orange" {% endif %}>
+          <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
+          <td>{{ item.level }}</td>
+          <td class="font-monospace">{{ item.message }}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </main>
 
 <footer>
-    <hr class="mb-1">
-    <div class="container font-monospace pb-2"><small>
-        OpenAPI <a href="/api/docs">{% translate "Docs" %}</a>/<a href="/api_example">{% translate "Example" %}</a>
-        | <a href="{{ app_url }}">GitHub</a>
-    </small></div>
+  <hr class="mb-1">
+  <div class="container font-monospace pb-2"><small>
+    OpenAPI <a href="/api/docs">{% translate "Docs" %}</a>/<a href="/api_example">{% translate "Example" %}</a>
+    | <a href="{{ app_url }}">GitHub</a>
+  </small></div>
 </footer>
 {% bootstrap_javascript %}
 </body>

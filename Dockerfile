@@ -30,8 +30,8 @@ EXPOSE 8000
 ENV PYTHONPATH=/app
 ENV DATA_DIR=/data
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
-ENV CONFIG_FILE_NAME="config.toml"
 ENV SENTRY_DSN=""
+ENV WORK_IN_CONTAINER="true"
 
 # i18n
 RUN django-admin compilemessages --ignore venv

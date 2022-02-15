@@ -31,14 +31,6 @@ in `/data/config.toml`, [Example](config.toml)
 
 ## Environment Variables
 
-### CHECK_INTERVALS
-
-default value: `5` minutes
-
-### FORCE_UPDATE_INTERVALS
-
-default value: `1440` minutes, one day
-
 ### SENTRY_DSN
 
 default value: None
