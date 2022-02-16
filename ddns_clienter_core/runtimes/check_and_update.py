@@ -147,13 +147,13 @@ class AddressHub:
             address_db.ipv4_last_address = newest_address.ipv4_address
             address_db.ipv4_last_change_time = now
 
-            send_event(
-                "{}'s ipv4 changed:{}->{}".format(
-                    name,
-                    address_db.ipv4_previous_address,
-                    address_db.ipv4_last_address,
-                )
+            message = "{}'s ipv4 changed:{}->{}".format(
+                name,
+                address_db.ipv4_previous_address,
+                address_db.ipv4_last_address,
             )
+            logger.info(message)
+            send_event(message)
 
         if newest_address.ipv6_address is not None and (
             newest_address.ipv6_address != address_data.newest_address.ipv6_address
@@ -165,14 +165,14 @@ class AddressHub:
             address_db.ipv6_last_address = newest_address.ipv6_address
             address_db.ipv6_last_change_time = now
 
-            send_event(
-                "{}'s ipv6 changed:{}->{}/{}".format(
-                    name,
-                    address_db.ipv6_previous_address,
-                    address_db.ipv6_last_address,
-                    address_data.config.ipv6_prefix_length,
-                )
+            message = "{}'s ipv6 changed:{}->{}/{}".format(
+                name,
+                address_db.ipv6_previous_address,
+                address_db.ipv6_last_address,
+                address_data.config.ipv6_prefix_length,
             )
+            logger.info(message)
+            send_event(message)
 
         address_db.save()
 
@@ -327,7 +327,9 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             address_info = get_ip_address_from_provider(address_c)
 
         except AddressProviderException as e:
-            send_event(str(e), level=EventLevel.ERROR)
+            message = str(e)
+            logger.error(message)
+            send_event(message, level=EventLevel.ERROR)
             continue
 
         # ah.update_ip_address(address_c.name, ipv4_newest_address, ipv6_newest_address)
@@ -347,8 +349,8 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
 
         except CannotMatchAddressException:
             message = "Cannot found address:{}".format(task.config.address_name)
-            send_event(message, level=EventLevel.WARNING)
             logger.warning(message)
+            send_event(message, level=EventLevel.WARNING)
             continue
 
         if address_info is None:
@@ -365,8 +367,8 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             message = "{}: ipv4_address and ipv6_address both None".format(
                 task.config.address_name
             )
-            send_event(message, level=EventLevel.WARNING)
             logger.warning(message)
+            send_event(message, level=EventLevel.WARNING)
 
             th.set_task_skipped(task.config.name)
             continue
@@ -382,8 +384,8 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             message = "Skip task:{}, because address do not need update".format(
                 task.config.name
             )
-            send_event(message, level=EventLevel.WARNING)
             logger.warning(message)
+            send_event(message, level=EventLevel.WARNING)
 
             th.set_task_skipped(task.config.name)
             continue
@@ -394,8 +396,9 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             )
 
         except DDNSProviderException as e:
-            send_event(str(e), level=EventLevel.ERROR)
-            logger.error(e)
+            message = str(e)
+            logger.error(message)
+            send_event(message, level=EventLevel.ERROR)
             continue
 
         th.update_update_status(task.config.name, address_info, update_success)

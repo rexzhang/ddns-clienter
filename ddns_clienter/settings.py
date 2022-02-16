@@ -194,7 +194,7 @@ LOGGING = {
         },
         "ddns_clienter_core": {
             "handlers": ["console"],
-            "level": "INFO",
+            "level": logging_level,
             "propagate": True,
         },
     },

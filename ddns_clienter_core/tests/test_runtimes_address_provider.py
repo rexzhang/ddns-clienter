@@ -19,7 +19,6 @@ class MyTestCase(unittest.TestCase):
             parameter="localhost",
         )
         address_provider = AddressProviderHostName(address_info)
-        print(address_provider)
         self.assertEqual(
             address_provider.ip_address.ipv4_address, IPv4Address("127.0.0.1")
         )

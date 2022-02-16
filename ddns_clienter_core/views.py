@@ -77,5 +77,4 @@ class IndexView(TemplateView):
                 "events": events,
             }
         )
-        print(settings.CONFIG.common)
         return kwargs

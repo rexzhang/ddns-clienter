@@ -9,15 +9,24 @@ class AddressInfo:
     ipv6_prefix_length: int | None = None
 
     @property
-    def ipv4_address_str(self) -> str:
+    def ipv4_address_str(self) -> str | None:
+        if self.ipv4_address is None:
+            return None
+
         return self.ipv4_address.__str__()
 
     @property
-    def ipv6_address_str(self) -> str:
+    def ipv6_address_str(self) -> str | None:
+        if self.ipv6_address is None:
+            return None
+
         return self.ipv6_address.__str__()
 
     @property
-    def ipv6_address_str_with_prefix(self) -> str:
+    def ipv6_address_str_with_prefix(self) -> str | None:
+        if self.ipv6_address is None:
+            return None
+
         if self.ipv6_prefix_length is None:
             return self.ipv6_address.__str__()
 

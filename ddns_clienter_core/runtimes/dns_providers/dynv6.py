@@ -106,7 +106,7 @@ class CallRestApi:
 
         return r
 
-    def process(self):
+    def process(self) -> (bool, str):
         # https://dynv6.github.io/api-spec
 
         # get zone id
@@ -169,14 +169,21 @@ class CallRestApi:
                     ip_address=self.ipv6_address,
                 )
 
+        if 200 <= r.status_code <= 299:
+            update_success = True
+        else:
+            update_success = False
+        return update_success, "{} {}".format(r.status_code, r.text)
+
 
 class DDNSProviderDynv6(DDNSProviderAbs):
     def _update_to_provider(self):
         if self.task_config.host is None or len(self.task_config.host) == 0:
+            logger.debug("update in Dynv6 UPDATE API")
             update_success, message = _call_update_api(
                 domain=self.task_config.domain,
                 token=self.task_config.provider_token,
-                ipv4_address=self.address_info.ipv4_address,
+                ipv4_address=self.address_info.ipv4_address_str,
                 ipv6_address=self.address_info.ipv6_address_str_with_prefix,
                 real_update=self.real_update,
             )
@@ -190,9 +197,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
                 real_update=self.real_update,
             )
 
-            call_rest_api.process()
-            update_success = True  # TODO: more logging, more try/expect
-            message = ""
+            update_success, message = call_rest_api.process()
 
         self.update_success = update_success
         self.message = message
