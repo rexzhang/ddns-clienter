@@ -283,7 +283,7 @@ class TaskHub:
         task_db.save()
 
     @staticmethod
-    def update_update_status(
+    def save_update_status_to_db(
         name: str, address_info: AddressInfo, update_success: bool
     ):
         db_task = models.Task.objects.filter(name=name).first()
@@ -301,7 +301,7 @@ class TaskHub:
                 new_addresses += address_info.ipv6_address_str_with_prefix
 
             db_task.last_update_time = now
-            db_task._last_update_success = True
+            db_task.last_update_success = True
 
             db_task.previous_ip_addresses = db_task.last_ip_addresses
             db_task.last_ip_addresses = new_addresses
@@ -309,7 +309,7 @@ class TaskHub:
 
         else:
             db_task.last_update_time = now
-            db_task._last_update_success = False
+            db_task.last_update_success = False
 
         db_task.save()
 
@@ -391,7 +391,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             continue
 
         try:
-            update_success = update_address_to_dns_provider(
+            update_success, update_message = update_address_to_dns_provider(
                 task.config, address_info, real_update
             )
 
@@ -401,4 +401,13 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             send_event(message, level=EventLevel.ERROR)
             continue
 
-        th.update_update_status(task.config.name, address_info, update_success)
+        if update_success:
+            message = "update task:{} finished".format(task.config.name)
+            logger.info(message)
+            send_event(message)
+        else:
+            message = "update task:{} failed".format(task.config.name)
+            logger.warning(message)
+            send_event(message, level=EventLevel.WARNING)
+
+        th.save_update_status_to_db(task.config.name, address_info, update_success)

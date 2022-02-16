@@ -37,9 +37,9 @@ def _call_update_api(
     logger.debug("{} {}".format(r.status_code, r.content))
 
     if r.status_code == 200:
-        return True, ""
+        return True, r.text
     else:
-        return False, ""
+        return False, r.text
 
 
 class CallRestApi:
@@ -180,7 +180,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
     def _update_to_provider(self):
         if self.task_config.host is None or len(self.task_config.host) == 0:
             logger.debug("update in Dynv6 UPDATE API")
-            update_success, message = _call_update_api(
+            update_success, update_message = _call_update_api(
                 domain=self.task_config.domain,
                 token=self.task_config.provider_token,
                 ipv4_address=self.address_info.ipv4_address_str,
@@ -197,7 +197,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
                 real_update=self.real_update,
             )
 
-            update_success, message = call_rest_api.process()
+            update_success, update_message = call_rest_api.process()
 
         self.update_success = update_success
-        self.message = message
+        self.update_message = update_message

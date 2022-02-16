@@ -13,7 +13,7 @@ class DDNSProviderConnectException(DDNSProviderException):
 class DDNSProviderAbs:
     address_info: AddressInfo
     update_success: bool
-    message: str
+    update_message: str
 
     def __init__(
         self,

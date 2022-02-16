@@ -10,7 +10,7 @@ def update_address_to_dns_provider(
     config_task: config.TaskConfig,
     address_info: AddressInfo | None,
     real_update: bool = True,
-):
+) -> (bool, str):
     if config_task.provider == "dynv6":
         provider_class = DDNSProviderDynv6
 
@@ -18,4 +18,4 @@ def update_address_to_dns_provider(
         raise DDNSProviderException("Can not match DNS provider")
 
     provider = provider_class(config_task, address_info, real_update)
-    return provider.update_success
+    return provider.update_success, provider.update_message
