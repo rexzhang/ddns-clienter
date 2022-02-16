@@ -1,4 +1,5 @@
 import unittest
+from ipaddress import IPv4Address
 
 from ddns_clienter_core.runtimes.config import AddressConfig
 from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderException
@@ -13,18 +14,17 @@ class MyTestCase(unittest.TestCase):
             name="test",
             ipv4=True,
             ipv6=True,
+            allow_loopback=True,
             provider="hostname",
             parameter="localhost",
         )
         address_provider = AddressProviderHostName(address_info)
         print(address_provider)
-        self.assertEqual(address_provider.ipv4_address, "127.0.0.1")
+        self.assertEqual(address_provider.ipv4_address, IPv4Address("127.0.0.1"))
 
         address_info.parameter = "not-real-device"
         with self.assertRaises(AddressProviderException):
             AddressProviderHostName(address_info)
-
-        # self.assertEqual(True, False)  # add assertion here
 
 
 if __name__ == "__main__":

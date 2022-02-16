@@ -21,9 +21,15 @@ class AddressConfig:
     ipv6_prefix_length: int | None = None
     ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
+    allow_private: bool = False
+    allow_loopback: bool = False
 
-    provider: str = field(default=None)  # ip address detect provider's name
-    parameter: str = ""  # for ip address detect provider
+    provider: str = field(default=None)  # ip address provider's name
+    parameter: str = ""  # for ip address provider
+
+    def __post_init__(self):
+        if self.allow_loopback:
+            self.allow_private = True
 
 
 @dataclass
@@ -51,7 +57,7 @@ class Config:
     tasks: dict[str, TaskConfig]
 
     def __init__(self, file_name: str):
-        self.addresses = dict()  #
+        self.addresses = dict()
         self.tasks = dict()
 
         self._file_name = file_name

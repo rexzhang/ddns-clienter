@@ -1,4 +1,3 @@
-from typing import Callable
 from ipaddress import ip_address as ip_address_string_check
 from logging import getLogger
 
@@ -19,7 +18,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         raise NotImplemented
 
     @staticmethod
-    def _detect_process(server_url: str, match_func: Callable) -> str | None:
+    def _detect_with_http_get(server_url: str) -> str | None:
 
         try:
             r = requests.get(server_url)
@@ -39,17 +38,14 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         except ValueError:
             return None
 
-        if not match_func(ip_address):
-            return None
-
         return ip_address
 
     def _detect_ip_address(self) -> None:
         if self._address_c.ipv4 and self._ipv4_url:
-            self.ipv4_address = self._detect_process(self._ipv4_url, self._match_ipv4)
+            self.set_ipv4_address(self._detect_with_http_get(self._ipv4_url))
 
         if self._address_c.ipv6:
-            self.ipv6_address = self._detect_process(self._ipv6_url, self._match_ipv6)
+            self.set_ipv6_address(self._detect_with_http_get(self._ipv6_url))
 
 
 class AddressProviderIpify(AddressProviderHttpGetAbs):

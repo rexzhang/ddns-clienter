@@ -28,18 +28,14 @@ class AddressProviderHostName(AddressProviderAbs):
                 and self._address_c.ipv4
             ):
                 ip_address = item[4][0]
-                if not self._match_ipv4(ip_address):
-                    continue
+                self.set_ipv4_address(ip_address)
+                continue
 
-                self.ipv4_address = ip_address
-
-            elif (
+            if (
                 item[0] == socket.AF_INET6
                 and item[1] == socket.SOCK_STREAM
                 and self._address_c.ipv6
             ):
                 ip_address = item[4][0]
-                if not self._match_ipv6(ip_address):
-                    continue
-
-                self.ipv6_address = ip_address
+                self.set_ipv6_address(ip_address)
+                continue
