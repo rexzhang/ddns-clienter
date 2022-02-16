@@ -67,8 +67,11 @@ def _get_pagination_range(page: int) -> [int, int]:
 @api_public.get("/events", response=list[EventSchema])
 @paginate(PageNumberPagination)
 def get_events(request, **kwargs):
-    page_range = _get_pagination_range(kwargs.get("pagination").page)
-    events = Event.objects.order_by("-time")[page_range[0] : page_range[1]]
+    # TODO ninja's bug?
+    # page_range = _get_pagination_range(kwargs.get("pagination").page)
+    # events = Event.objects.order_by("-time")[page_range[0] : page_range[1]]
+    # return events
+    events = Event.objects.order_by("-time").all()
     return events
 
 
