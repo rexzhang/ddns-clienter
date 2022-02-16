@@ -1,3 +1,4 @@
+from ddns_clienter_core.constants import AddressInfo
 from ddns_clienter_core.runtimes import config
 from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderException
 from ddns_clienter_core.runtimes.address_providers.host_name import (
@@ -10,16 +11,16 @@ from ddns_clienter_core.runtimes.address_providers.http_get import (
 
 __all__ = [
     "AddressProviderException",
-    "detect_ip_address_from_provider",
+    "get_ip_address_from_provider",
     "AddressProviderHostName",
     "AddressProviderIpify",
     "AddressProviderNoip",
 ]
 
 
-def detect_ip_address_from_provider(
+def get_ip_address_from_provider(
     address_config: config.AddressConfig,
-) -> (str | None, str | None):
+) -> AddressInfo:
     if address_config.provider == "hostname":
         provider_class = AddressProviderHostName
     elif address_config.provider == "ipify":
@@ -31,4 +32,4 @@ def detect_ip_address_from_provider(
         raise
 
     provider = provider_class(address_config)
-    return provider.ipv4_address, provider.ipv6_address
+    return provider.ip_address

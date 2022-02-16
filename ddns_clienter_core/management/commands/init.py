@@ -20,9 +20,7 @@ def init_crontab():
 
     url = "http://127.0.0.1:8000/api/check_and_update"
     if settings.DEBUG:
-        command = "/usr/bin/wget {} -o /{}/dc-cron.log".format(
-            url, settings.BASE_DATA_DIR
-        )
+        command = "/usr/bin/wget {} -o /{}/dc-cron.log".format(url, settings.DATA_PATH)
     else:
         command = "/usr/bin/wget {} -o /dev/null".format(url)
     if settings.WORK_IN_CONTAINER:

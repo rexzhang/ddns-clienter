@@ -2,6 +2,9 @@
 pytest
 pytest-cov
 
+# typing
+mypy
+
 # lint
 flake8
 black

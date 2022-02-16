@@ -10,7 +10,7 @@ from ddns_clienter_core.constants import AddressInfo, EventLevel
 from ddns_clienter_core import models
 from ddns_clienter_core.runtimes.config import AddressConfig, TaskConfig
 from ddns_clienter_core.runtimes.address_providers import (
-    detect_ip_address_from_provider,
+    get_ip_address_from_provider,
     AddressProviderException,
 )
 from ddns_clienter_core.runtimes.dns_providers import (
@@ -26,10 +26,10 @@ logger = getLogger(__name__)
 class AddressDataItem:
     config: AddressConfig
     config_changed: bool
+
     ipv4_changed: bool
     ipv6_changed: bool
-    ipv4_newest_address: str | None
-    ipv6_newest_address: str | None
+    newest_address: AddressInfo
 
     @property
     def there_ars_changes(self) -> bool:
@@ -67,7 +67,7 @@ class AddressHub:
     @staticmethod
     def _compare_and_update_from_config_to_db(
         address_c: AddressConfig,
-    ) -> (bool, str | None, str | None):
+    ) -> (bool, AddressInfo | None):
         address_db = models.Address.objects.filter(name=address_c.name).first()
         if address_db is None:
             address_db = models.Address(**dataclass_as_dict(address_c))
@@ -75,7 +75,7 @@ class AddressHub:
             logger.info(
                 "Cannot found address:{} from db, create it.".format(address_c.name)
             )
-            return True, None, None
+            return True, None
 
         changed = compare_and_update_from_dataclass_to_db(address_c, address_db)
         if changed:
@@ -85,30 +85,35 @@ class AddressHub:
                     address_c.name
                 )
             )
-            return True, address_db.ipv4_last_address, address_db.ipv6_last_address
+            return (
+                True,
+                AddressInfo(
+                    address_db.ipv4_last_address,
+                    address_db.ipv6_last_address,
+                ),
+            )
 
         logger.debug("The address[{}] no change in config".format(address_c.name))
-        return False, address_db.ipv4_last_address, address_db.ipv6_last_address
+        return (
+            False,
+            AddressInfo(
+                address_db.ipv4_last_address,
+                address_db.ipv6_last_address,
+            ),
+        )
 
     def __init__(self, addresses_c: dict[str, AddressConfig]):
         self._data = dict()
 
         for address_c in addresses_c.values():
-            (
-                config_changed,
-                ipv4_newest_address,
-                ipv6_newest_address,
-            ) = self._compare_and_update_from_config_to_db(address_c)
+            (config_changed, address_info) = self._compare_and_update_from_config_to_db(
+                address_c
+            )
 
             self._data.update(
                 {
                     address_c.name: AddressDataItem(
-                        address_c,
-                        config_changed,
-                        False,
-                        False,
-                        ipv4_newest_address,
-                        ipv6_newest_address,
+                        address_c, config_changed, False, False, address_info
                     )
                 }
             )
@@ -123,21 +128,23 @@ class AddressHub:
         return data
 
     def update_ip_address(
-        self, name: str, ipv4_newest_address: str, ipv6_newest_address: str
+        self,
+        name: str,
+        newest_address: AddressInfo,
     ):
         address_data = self._data.get(name)
         now = timezone.now()
         address_db = models.Address.objects.filter(name=name).first()
 
         if (
-            ipv4_newest_address is not None
-            and ipv4_newest_address != address_data.ipv4_newest_address
+            newest_address.ipv4_address is not None
+            and newest_address.ipv4_address != address_data.newest_address.ipv4_address
         ):
             address_data.ipv4_changed = True
-            address_data.ipv4_newest_address = ipv4_newest_address
+            address_data.newest_address.ipv4_address = newest_address.ipv4_address
 
             address_db.ipv4_previous_address = address_db.ipv4_last_address
-            address_db.ipv4_last_address = ipv4_newest_address
+            address_db.ipv4_last_address = newest_address.ipv4_address
             address_db.ipv4_last_change_time = now
 
             send_event(
@@ -148,14 +155,14 @@ class AddressHub:
                 )
             )
 
-        if ipv6_newest_address is not None and (
-            ipv6_newest_address != address_data.ipv6_newest_address
+        if newest_address.ipv6_address is not None and (
+            newest_address.ipv6_address != address_data.newest_address.ipv6_address
         ):
             address_data.ipv6_changed = True
-            address_data.ipv6_newest_address = ipv6_newest_address
+            address_data.newest_address.ipv6_address = newest_address.ipv6_address
 
             address_db.ipv6_previous_address = address_db.ipv6_last_address
-            address_db.ipv6_last_address = ipv6_newest_address
+            address_db.ipv6_last_address = newest_address.ipv6_address
             address_db.ipv6_last_change_time = now
 
             send_event(
@@ -172,16 +179,12 @@ class AddressHub:
     def get_address_info_if_changed(
         self, name: str, force_update: bool  # TODO
     ) -> AddressInfo | None:
-        address_c = self._data.get(name)
-        if address_c is None:
+        address_data = self._data.get(name)
+        if address_data is None:
             raise CannotMatchAddressException()
 
-        if force_update or address_c.there_ars_changes:
-            return AddressInfo(
-                address_c.ipv4_newest_address,
-                address_c.ipv6_newest_address,
-                address_c.config.ipv6_prefix_length,
-            )
+        if force_update or address_data.there_ars_changes:
+            return address_data.newest_address
 
         return None
 
@@ -289,13 +292,13 @@ class TaskHub:
         if update_success:
             new_addresses = str()
             if db_task.ipv4 and address_info.ipv4_address is not None:
-                new_addresses += address_info.ipv4_address
+                new_addresses += address_info.ipv4_address_str
 
             if db_task.ipv6 and address_info.ipv6_address is not None:
                 if len(new_addresses) != 0:
                     new_addresses += ","
 
-                new_addresses += address_info.ipv6_address_with_prefix
+                new_addresses += address_info.ipv6_address_str_with_prefix
 
             db_task.last_update_time = now
             db_task._last_update_success = True
@@ -321,25 +324,16 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
     # get ip address, update ip address into hub
     for address_c in ah.to_be_update_addresses:
         try:
-            (
-                ipv4_newest_address,
-                ipv6_newest_address,
-            ) = detect_ip_address_from_provider(address_c)
+            address_info = get_ip_address_from_provider(address_c)
 
         except AddressProviderException as e:
             send_event(str(e), level=EventLevel.ERROR)
             continue
 
-        ah.update_ip_address(address_c.name, ipv4_newest_address, ipv6_newest_address)
+        # ah.update_ip_address(address_c.name, ipv4_newest_address, ipv6_newest_address)
+        ah.update_ip_address(address_c.name, address_info)
 
-        logger.debug(
-            "Address:{}, ipv4:{} ipv6:{}/{}".format(
-                address_c.name,
-                ipv4_newest_address,
-                ipv6_newest_address,
-                address_c.ipv6_prefix_length,
-            )
-        )
+        logger.debug("address info:{}, {}".format(address_c.name, address_info))
 
     # import address data from config and db
     th = TaskHub(settings.CONFIG.tasks)

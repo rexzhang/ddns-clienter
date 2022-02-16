@@ -15,6 +15,8 @@ class Address(models.Model):
     ipv6 = models.BooleanField()
     ipv6_prefix_length = models.IntegerField(null=True)
     ipv6_match_rule = models.TextField()
+    allow_private = models.BooleanField()
+    allow_loopback = models.BooleanField()
 
     # from address provider
     ipv4_previous_address = models.CharField(max_length=15, null=True)

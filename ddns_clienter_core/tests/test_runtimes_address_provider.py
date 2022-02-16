@@ -20,7 +20,9 @@ class MyTestCase(unittest.TestCase):
         )
         address_provider = AddressProviderHostName(address_info)
         print(address_provider)
-        self.assertEqual(address_provider.ipv4_address, IPv4Address("127.0.0.1"))
+        self.assertEqual(
+            address_provider.ip_address.ipv4_address, IPv4Address("127.0.0.1")
+        )
 
         address_info.parameter = "not-real-device"
         with self.assertRaises(AddressProviderException):

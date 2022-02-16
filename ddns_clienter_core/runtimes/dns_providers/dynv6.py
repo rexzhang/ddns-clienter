@@ -177,7 +177,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
                 domain=self.task_config.domain,
                 token=self.task_config.provider_token,
                 ipv4_address=self.address_info.ipv4_address,
-                ipv6_address=self.address_info.ipv6_address_with_prefix,
+                ipv6_address=self.address_info.ipv6_address_str_with_prefix,
                 real_update=self.real_update,
             )
 
@@ -185,8 +185,8 @@ class DDNSProviderDynv6(DDNSProviderAbs):
             logger.debug("update in Dynv6 REST API")
             call_rest_api = CallRestApi(
                 config_task=self.task_config,
-                ipv4_address=self.address_info.ipv4_address,
-                ipv6_address=self.address_info.ipv6_address,  # REST API 似乎不支持 /xx 这种方式定义 prefix
+                ipv4_address=self.address_info.ipv4_address_str,
+                ipv6_address=self.address_info.ipv6_address_str,  # REST API 似乎不支持 /xx 这种方式定义 prefix
                 real_update=self.real_update,
             )
 

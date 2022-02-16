@@ -17,10 +17,10 @@ from uuid import uuid4
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
-from ddns_clienter_core.runtimes.config import Config
+from ddns_clienter_core.runtimes.config import Config, ConfigException
 
 
-def str2bool(value: str, default: bool) -> bool:
+def str2bool(value: str | None, default: bool) -> bool:
     if not isinstance(value, str):
         return default
 
@@ -32,7 +32,7 @@ def str2bool(value: str, default: bool) -> bool:
     return value
 
 
-def str2int(value: str, default: int) -> int:
+def str2int(value: str | None, default: int) -> int:
     if not isinstance(value, str):
         return default
 
@@ -57,9 +57,13 @@ if WORK_IN_CONTAINER:
     CONFIG_FILE = "/etc/ddns-clienter.toml"
 else:
     DATA_PATH = BASE_DIR
-    CONFIG_FILE = "config.toml"
+    CONFIG_FILE = getenv("CONFIG_FILE", "config.toml")
 
-CONFIG = Config(CONFIG_FILE)
+try:
+    CONFIG = Config(CONFIG_FILE)
+except ConfigException:
+    # Fix: executor failed running [/bin/sh -c django-admin compilemessages --ignore venv]: exit code: 1
+    CONFIG = None
 
 DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 

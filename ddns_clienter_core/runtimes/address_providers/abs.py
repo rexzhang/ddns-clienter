@@ -3,6 +3,7 @@ import re
 from ipaddress import IPv4Address, IPv6Address, AddressValueError
 from logging import getLogger
 
+from ddns_clienter_core.constants import AddressInfo
 from ddns_clienter_core.runtimes import config
 
 logger = getLogger(__name__)
@@ -13,16 +14,10 @@ class AddressProviderException(Exception):
 
 
 class AddressProviderAbs:
-    _ipv4_address: IPv4Address | None
-    _ipv6_address: IPv6Address | None
-    ipv6_prefix: int | None
-
-    changed_address_s_id: int | None = None
+    ip_address: AddressInfo
 
     def __init__(self, address_c: config.AddressConfig):
-        self._ipv4_address = None
-        self._ipv6_address = None
-        self.ipv6_prefix = None
+        self.ip_address = AddressInfo()
 
         self._address_c = address_c
         self._detect_ip_address()
@@ -31,19 +26,11 @@ class AddressProviderAbs:
     def name(self):
         raise NotImplemented
 
-    @property
-    def ipv4_address(self):
-        return self._ipv4_address
-
-    @property
-    def ipv6_address(self):
-        return self._ipv6_address
-
     def _set_ip_address(
         self, ip_address: str, factory_class: ClassVar, match_rule: str
     ) -> IPv4Address | IPv6Address | None:
         if re.match(match_rule, ip_address) is None:
-            logger.warning("can not match rule:{}, {}".format(ip_address, match_rule))
+            logger.warning("can not match rule:{}, {}".format(match_rule, ip_address))
             return None
 
         try:
@@ -76,7 +63,7 @@ class AddressProviderAbs:
         if obj is None:
             return False
 
-        self._ipv4_address = obj
+        self.ip_address.ipv4_address = obj
         return True
 
     def set_ipv6_address(self, ip_address: str) -> bool:
@@ -86,7 +73,7 @@ class AddressProviderAbs:
         if obj is None:
             return False
 
-        self._ipv6_address = obj
+        self.ip_address.ipv6_address = obj
         return True
 
     def _detect_ip_address(self) -> None:
@@ -95,8 +82,8 @@ class AddressProviderAbs:
     def __repr__(self):
         return "{}:{} {}/{}, {}".format(
             self.name,
-            self._ipv4_address,
-            self._ipv6_address,
-            self.ipv6_prefix,
+            self.ip_address.ipv4_address,
+            self.ip_address.ipv6_address,
+            self.ip_address.ipv6_prefix_length,
             self._address_c,
         )
