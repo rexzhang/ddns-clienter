@@ -1,39 +1,39 @@
 # Dynamic DNS Clienter
 
-# Address Provider
+# Feature
 
-## hostname
+- Support multiple address provider
+    - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
+    - [ipify](https://www.ipify.org)
+- Support multiple DNS provider
+    - [dynv6](https://dynv6.com/docs/apis)
+    - [lexicon](https://github.com/AnalogJ/lexicon#id2)
+        - Aliyun.com
+        - AWS Route53
+        - Cloudflare
+        - DNSPod
+        - GoDaddy
+        - Namecheap
+        - MORE, please check lexicon's document
 
-Recommended for use in LAN
-
-## ipify
-
-https://www.ipify.org/
-
-# Dynamic DNS Provider
-
-## dynv6
-
-https://dynv6.com/docs/apis
-Update API and REST API mix
-
-# Docker
+# Quick Start
 
 ## Install
 
 ```shell
-docker run -dit -p 0.0.0.0:80:80 -v /tmp:/data --name ddns-clienter ray1ex/ddns-clienter
+docker pull ray1ex/ddns-clienter
 ```
 
 ## Config
 
-in `/data/config.toml`, [Example](config.toml)
+[Example](config.toml)
 
-## Environment Variables
+## Start
 
-### SENTRY_DSN
-
-default value: None
+```shell
+docker run -dit -p 0.0.0.0:8000:8000 -v /your/config.toml:/etc/ddns-clienter.toml \
+ --name ddns-clienter ray1ex/ddns-clienter
+```
 
 # Dev
 
