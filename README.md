@@ -7,7 +7,7 @@
     - [ipify](https://www.ipify.org)
 - Support multiple DNS provider
     - [dynv6](https://dynv6.com/docs/apis)
-    - [lexicon](https://github.com/AnalogJ/lexicon#id2)
+    - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
         - Aliyun.com
         - AWS Route53
         - Cloudflare
