@@ -29,7 +29,7 @@ domain = "example.com"
 host = "@"
 
 provider = "dynv6"
-provider_token = "this-is-token-for-this-zone"
+provider_auth = "this-is-token-for-this-zone"
 
 [tasks.ipv6_to_dynv6]
 ipv6 = true
@@ -39,4 +39,14 @@ domain = "example.com"
 host = "@"
 
 provider = "dynv6"
-provider_token = "this-is-token-for-this-zone"
+provider_auth = "this-is-token-for-this-zone"
+
+[tasks.ipv6_to_lexicon_cloudflare]
+ipv6 = true
+address_name = "from_hostname"
+
+domain = "example.com"
+host = "@"
+
+provider = "lexicon.cloudflare"
+provider_auth = "auth-token:this-is-token-for-this-zone"

@@ -5,6 +5,7 @@ django-ninja
 django-bootstrap5
 
 requests
+dns-lexicon
 
 ## Config
 toml

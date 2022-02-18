@@ -40,7 +40,7 @@ class Task(models.Model):
     ipv6 = models.BooleanField()
 
     provider = models.CharField(max_length=255)
-    provider_token = models.TextField()
+    provider_auth = models.TextField()
 
     domain = models.CharField(max_length=255)
     host = models.CharField(max_length=255)

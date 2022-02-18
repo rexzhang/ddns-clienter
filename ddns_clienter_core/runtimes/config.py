@@ -41,7 +41,7 @@ class TaskConfig:
     ipv6: bool = False
 
     provider: str = field(default=None)
-    provider_token: str = field(default=None)
+    provider_auth: str = field(default=None)
 
     domain: str = field(default=None)
     host: str = field(default=None)

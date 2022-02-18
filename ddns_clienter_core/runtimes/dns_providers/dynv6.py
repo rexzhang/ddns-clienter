@@ -59,7 +59,7 @@ class CallRestApi:
 
         self.headers = CaseInsensitiveDict()
         self.headers["Accept"] = "application/json"
-        self.headers["Authorization"] = "Bearer {}".format(self._c_task.provider_token)
+        self.headers["Authorization"] = "Bearer {}".format(self._c_task.provider_auth)
 
     def _call_rest_api_get(
         self,
@@ -182,7 +182,7 @@ class DDNSProviderDynv6(DDNSProviderAbs):
             logger.debug("update in Dynv6 UPDATE API")
             update_success, update_message = _call_update_api(
                 domain=self.task_config.domain,
-                token=self.task_config.provider_token,
+                token=self.task_config.provider_auth,
                 ipv4_address=self.address_info.ipv4_address_str,
                 ipv6_address=self.address_info.ipv6_address_str_with_prefix,
                 real_update=self.real_update,
