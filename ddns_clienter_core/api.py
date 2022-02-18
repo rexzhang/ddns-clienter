@@ -12,7 +12,7 @@ from ddns_clienter_core.runtimes.persistent_data import (
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
 
 AddressSchema = create_schema(Address, exclude=[])
-TaskSchema = create_schema(Task, exclude=["provider_token"])
+TaskSchema = create_schema(Task, exclude=["provider_auth"])
 StatusSchema = create_schema(Status, exclude=[])
 
 
