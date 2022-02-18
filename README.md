@@ -35,7 +35,28 @@ docker run -dit -p 0.0.0.0:8000:8000 -v /your/config.toml:/etc/ddns-clienter.tom
  --name ddns-clienter ray1ex/ddns-clienter
 ```
 
-# Dev
+# History
+
+## 0.5.0
+
+- Rewrite
+- Add many dns provider support on the lexicon
+
+## 0.4
+
+- Add i18n support and Chinese translate
+
+## 0.3
+
+- New web UI
+
+## 0.2
+
+- Add dynv6 REST API support
+
+## 0.1
+
+- First release
 
 # TODO
 
