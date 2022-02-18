@@ -13,11 +13,19 @@ COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
 COPY runserver.py /app
 COPY entrypoint.sh /app
+COPY cargo.config.toml /app
 
 # depends
 RUN \
     # install depends
-    pip install --no-cache-dir -r /app/requirements/docker.txt \
+    apk add --no-cache --virtual .build-deps build-base musl-dev python3-dev libffi-dev openssl-dev libxml2-dev libxslt-dev cargo ; \
+    if [ "$ENV" = "rex" ]; then echo "Change depends" \
+    && mkdir /root/.cargo && cp /app/cargo.config.toml /root/.cargo/config.toml \
+    ; fi \
+    && pip install --no-cache-dir -r /app/requirements/docker.txt \
+    && apk del .build-deps \
+    && rm -rf /root/.cargo \
+    && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
     && apk add --no-cache gettext \
     # prepare data path
     && mkdir /data \
