@@ -67,7 +67,7 @@ class AddressHub:
     @staticmethod
     def _compare_and_update_from_config_to_db(
         address_c: AddressConfig,
-    ) -> (bool, AddressInfo | None):
+    ) -> (bool, AddressInfo):
         address_db = models.Address.objects.filter(name=address_c.name).first()
         if address_db is None:
             address_db = models.Address(**dataclass_as_dict(address_c))
@@ -75,7 +75,7 @@ class AddressHub:
             logger.info(
                 "Cannot found address:{} from db, create it.".format(address_c.name)
             )
-            return True, None
+            return True, AddressInfo()
 
         changed = compare_and_update_from_dataclass_to_db(address_c, address_db)
         if changed:
@@ -332,9 +332,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             send_event(message, level=EventLevel.ERROR)
             continue
 
-        # ah.update_ip_address(address_c.name, ipv4_newest_address, ipv6_newest_address)
         ah.update_ip_address(address_c.name, address_info)
-
         logger.debug("address info:{}, {}".format(address_c.name, address_info))
 
     # import address data from config and db
