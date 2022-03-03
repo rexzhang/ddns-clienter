@@ -1,5 +1,9 @@
 # Dynamic DNS Clienter
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/ray1ex/ddns-clienter)](https://hub.docker.com/r/ray1ex/ddns-clienter)
+
+Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker 
+
 [Github](https://github.com/rexzhang/ddns-clienter)
 
 # Feature
