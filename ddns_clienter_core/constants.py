@@ -45,6 +45,11 @@ class AddressInfo:
         if ipv6_prefix_length:
             self.ipv6_prefix_length = ipv6_prefix_length
 
+    def __repr__(self):
+        return "<AddressInfo:{}, {}/{}>".format(
+            self.ipv4_address, self.ipv6_address.__str__(), self.ipv6_prefix_length
+        )
+
 
 class EventLevel(models.TextChoices):
     INFO = "INFO"

@@ -163,13 +163,14 @@ class AddressHub:
 
             address_db.ipv6_previous_address = address_db.ipv6_last_address
             address_db.ipv6_last_address = newest_address.ipv6_address
+            address_db.ipv6_prefix_length = address_data.config.ipv6_prefix_length
             address_db.ipv6_last_change_time = now
 
             message = "{}'s ipv6 changed:{}->{}/{}".format(
                 name,
                 address_db.ipv6_previous_address,
                 address_db.ipv6_last_address,
-                address_data.config.ipv6_prefix_length,
+                address_db.ipv6_prefix_length,
             )
             logger.info(message)
             send_event(message)
@@ -377,6 +378,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
 
         if not task.config.ipv6:
             address_info.ipv6_address = None
+            address_info.ipv6_prefix_length = None
 
         if address_info.ipv4_address is None and address_info.ipv6_address is None:
             message = "Skip task:{}, because address do not need update".format(
