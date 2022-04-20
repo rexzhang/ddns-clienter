@@ -158,22 +158,27 @@ class AddressHub:
         if newest_address.ipv6_address is not None and (
             newest_address.ipv6_address != address_data.newest_address.ipv6_address
         ):
+            message = "{}'s ipv6 changed:{}->{}/{}".format(
+                name,
+                address_db.ipv6_last_address,  # last
+                newest_address.ipv6_address,  # new
+                address_data.config.ipv6_prefix_length,
+            )
+            logger.info(message)
+            send_event(message)
+
+            # update to self._data
             address_data.ipv6_changed = True
             address_data.newest_address.ipv6_address = newest_address.ipv6_address
+            address_data.newest_address.ipv6_prefix_length = (
+                address_data.config.ipv6_prefix_length
+            )
 
+            # update to db
             address_db.ipv6_previous_address = address_db.ipv6_last_address
             address_db.ipv6_last_address = newest_address.ipv6_address
             address_db.ipv6_prefix_length = address_data.config.ipv6_prefix_length
             address_db.ipv6_last_change_time = now
-
-            message = "{}'s ipv6 changed:{}->{}/{}".format(
-                name,
-                address_db.ipv6_previous_address,
-                address_db.ipv6_last_address,
-                address_db.ipv6_prefix_length,
-            )
-            logger.info(message)
-            send_event(message)
 
         address_db.save()
 
