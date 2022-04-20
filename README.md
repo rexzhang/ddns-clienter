@@ -2,7 +2,7 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/ray1ex/ddns-clienter)](https://hub.docker.com/r/ray1ex/ddns-clienter)
 
-Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker 
+Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
 [Github](https://github.com/rexzhang/ddns-clienter)
 
@@ -37,11 +37,20 @@ docker pull ray1ex/ddns-clienter
 ## Start
 
 ```shell
-docker run -dit -p 0.0.0.0:8000:8000 -v /your/config.toml:/etc/ddns-clienter.toml \
- --name ddns-clienter ray1ex/ddns-clienter
+docker run -dit -p 0.0.0.0:8000:8000 \
+  -v /your/config.toml:/etc/ddns-clienter.toml \
+  --name ddns-clienter ray1ex/ddns-clienter
 ```
 
 # History
+
+## 0.5.3 - 20220420
+
+- Fix IPv6 prefix update
+
+## 0.5.2
+
+- Fix bug
 
 ## 0.5.0
 
