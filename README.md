@@ -1,6 +1,8 @@
 # Dynamic DNS Clienter
 
+![GitHub](https://img.shields.io/github/license/rexzhang/ddns-clienter)
 ![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/ray1ex/ddns-clienter/latest)
+![Pytest Workflow Status](https://github.com/rexzhang/ddns-clienter/actions/workflows/check-pytest.yaml/badge.svg)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ray1ex/ddns-clienter)](https://hub.docker.com/r/ray1ex/ddns-clienter)
 
 Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
