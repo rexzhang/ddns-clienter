@@ -47,6 +47,10 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # History
 
+## 0.5.4 - 20220716
+
+- Fix lexicon.cloudflare
+
 ## 0.5.3 - 20220420
 
 - Fix IPv6 prefix update
