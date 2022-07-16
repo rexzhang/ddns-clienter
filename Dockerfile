@@ -40,6 +40,7 @@ ENV DATA_DIR=/data
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 ENV SENTRY_DSN=""
 ENV WORK_IN_CONTAINER="true"
+ENV LEXICON_TLDEXTRACT_CACHE=/tmp
 
 # i18n
 RUN django-admin compilemessages --ignore venv
