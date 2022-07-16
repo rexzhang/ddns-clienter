@@ -9,6 +9,19 @@ logger = getLogger(__name__)
 
 
 class DDNSProviderLexicon(DDNSProviderAbs):
+    def _update_action(self, action: dict) -> dict:
+        match self.provider_name_sub:
+            case "cloudflare":
+                action.update(
+                    {
+                        "cloudflare": {
+                            "auth_token": self.task_config.provider_auth,
+                        }
+                    }
+                )
+
+        return action
+
     def _update_to_provider(self):
         update_success = True
         update_message = str()
@@ -22,7 +35,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                 "name": self.task_config.host,
                 "content": self.address_info.ipv4_address_str,
             }
-            config = ConfigResolver().with_dict(action)
+            config = ConfigResolver().with_dict(self._update_action(action))
             if not Client(config).execute():
                 update_success = False
                 update_message += "update ipv4 failed"
@@ -36,7 +49,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                 "name": self.task_config.host,
                 "content": self.address_info.ipv6_address_str,
             }
-            config = ConfigResolver().with_dict(action)
+            config = ConfigResolver().with_dict(self._update_action(action))
             if Client(config).execute():
                 update_success = False
                 update_message += "update ipv6 failed"

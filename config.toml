@@ -46,7 +46,7 @@ ipv6 = true
 address_name = "from_hostname"
 
 domain = "example.com"
-host = "@"
+host = "host"
 
 provider = "lexicon.cloudflare"
-provider_auth = "auth-token:this-is-token-for-this-zone"
+provider_auth = "this-is-token-for-this-zone"
