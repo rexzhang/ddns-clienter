@@ -19,15 +19,13 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                 "content": self.address_info.ipv4_address_str,
             }
         )
-        match self.provider_name_sub:
-            case "cloudflare":
-                action.update(
-                    {
-                        "cloudflare": {
-                            "auth_token": self.task_config.provider_auth,
-                        }
-                    }
-                )
+
+        extra_config_data = self.task_config.provider_auth.split(",")
+        extra_config = dict()
+        for data in extra_config_data:
+            data = data.split(":")
+            extra_config.update({data[0]: data[1]})
+        action.update({self.provider_name_sub: extra_config})
 
         result = Client(ConfigResolver().with_dict(action)).execute()
         if isinstance(result, bool):

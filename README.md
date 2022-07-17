@@ -47,6 +47,10 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # History
 
+## 0.6.0 -
+
+- Redesign config about lexicon
+
 ## 0.5.4 - 20220716
 
 - Fix lexicon.cloudflare
