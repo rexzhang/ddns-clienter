@@ -9,7 +9,16 @@ logger = getLogger(__name__)
 
 
 class DDNSProviderLexicon(DDNSProviderAbs):
-    def _update_action(self, action: dict) -> dict:
+    def _do_update(self, action: dict) -> (bool, str):
+        action.update(
+            {
+                "provider_name": self.provider_name_sub,
+                "action": "update",
+                "domain": self.task_config.domain,
+                "name": self.task_config.host,
+                "content": self.address_info.ipv4_address_str,
+            }
+        )
         match self.provider_name_sub:
             case "cloudflare":
                 action.update(
@@ -20,39 +29,28 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                     }
                 )
 
-        return action
+        result = Client(ConfigResolver().with_dict(action)).execute()
+        if isinstance(result, bool):
+            return result, ""
+
+        return False, str(result)
 
     def _update_to_provider(self):
-        update_success = True
-        update_message = str()
+        self.update_success = True
+        self.update_message = str()
 
         if self.task_config.ipv4:
-            action = {
-                "provider_name": self.provider_name_sub,
-                "action": "update",
-                "domain": self.task_config.domain,
-                "type": "A",
-                "name": self.task_config.host,
-                "content": self.address_info.ipv4_address_str,
-            }
-            config = ConfigResolver().with_dict(self._update_action(action))
-            if not Client(config).execute():
-                update_success = False
-                update_message += "update ipv4 failed"
+            action = {"type": "A"}
+            update_success, update_message = self._do_update(action)
+
+            if not update_success:
+                self.update_success = False
+                self.update_message += "update ipv4 failed" + update_message
 
         if self.task_config.ipv6:
-            action = {
-                "provider_name": self.provider_name_sub,
-                "action": "update",
-                "domain": self.task_config.domain,
-                "type": "AAAA",
-                "name": self.task_config.host,
-                "content": self.address_info.ipv6_address_str,
-            }
-            config = ConfigResolver().with_dict(self._update_action(action))
-            if Client(config).execute():
-                update_success = False
-                update_message += "update ipv6 failed"
+            action = {"type": "AAAA"}
+            update_success, update_message = self._do_update(action)
 
-        self.update_success = update_success
-        self.update_message = update_message
+            if not update_success:
+                self.update_success = False
+                self.update_message += "update ipv6 failed" + update_message
