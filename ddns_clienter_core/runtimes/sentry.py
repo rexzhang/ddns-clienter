@@ -2,7 +2,7 @@
 https://gist.github.com/rexzhang/74936b88e43b928149af4237d70c3fde
 """
 
-from typing import Optional, Any
+from typing import Any, Optional
 
 import sentry_sdk
 from sentry_sdk import configure_scope
@@ -64,7 +64,9 @@ def auto_drop_event_for_rate_limit(event: Event, _) -> Event:
 def get_mac_address() -> str:
     from uuid import getnode
 
-    mac = ":".join(hex(getnode())[i : i + 2] for i in range(2, 14, 2)).upper()
+    mac = ":".join(
+        ["{:02x}".format((getnode() >> ele) & 0xFF) for ele in range(0, 8 * 6, 8)][::-1]
+    ).upper()
     return mac
 
 
