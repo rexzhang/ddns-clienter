@@ -17,9 +17,7 @@ class MyTestCase(unittest.TestCase):
 
         username = "username"
         password = "password"
-        auth = parser_provider_auth(
-            f"username:{username},password:{password}"
-        )
+        auth = parser_provider_auth(f"username:{username},password:{password}")
         self.assertEqual(auth.get("username"), username)
         self.assertEqual(auth.get("password"), password)
 

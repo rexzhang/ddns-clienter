@@ -72,9 +72,7 @@ class AddressHub:
         if address_db is None:
             address_db = models.Address(**dataclass_as_dict(address_c))
             address_db.save()
-            logger.info(
-                f"Cannot found address:{address_c.name} from db, create it."
-            )
+            logger.info(f"Cannot found address:{address_c.name} from db, create it.")
             return True, AddressInfo()
 
         changed = compare_and_update_from_dataclass_to_db(address_c, address_db)
@@ -224,18 +222,14 @@ class TaskHub:
         if task_db is None:
             task_db = models.Task(**dataclass_as_dict(task_c))
             task_db.save()
-            logger.info(
-                f"Cannot found task:{task_c.name} from db, create it in db."
-            )
+            logger.info(f"Cannot found task:{task_c.name} from db, create it in db.")
 
             return True, False
 
         changed = compare_and_update_from_dataclass_to_db(task_c, task_db)
         if changed:
             task_db.save()
-            logger.info(
-                f"The task[{task_c.name}]'s config has changed, update to db."
-            )
+            logger.info(f"The task[{task_c.name}]'s config has changed, update to db.")
             return True, task_db.last_update_success
 
         logger.debug(f"The task[{task_c.name}] no change in config")
@@ -296,7 +290,7 @@ class TaskHub:
 
         now = timezone.now()
         if update_success:
-            new_addresses = ''
+            new_addresses = ""
             if db_task.ipv4 and address_info.ipv4_address is not None:
                 new_addresses += address_info.ipv4_address_str
 

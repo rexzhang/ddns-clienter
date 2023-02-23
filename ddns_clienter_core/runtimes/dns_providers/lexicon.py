@@ -35,7 +35,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
 
     def _update_to_provider(self):
         self.update_success = True
-        self.update_message = ''
+        self.update_message = ""
 
         if self.task_config.ipv4:
             action = {"type": "A"}

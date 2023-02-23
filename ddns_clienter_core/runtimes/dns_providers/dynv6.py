@@ -121,9 +121,7 @@ class CallRestApi:
             raise DDNSProviderException(f"Can not match zone id:{r}")
 
         # get record id
-        r = self._call_rest_api_get(
-            f"{_rest_api_url}/zones/{self.zone_id}/records"
-        )
+        r = self._call_rest_api_get(f"{_rest_api_url}/zones/{self.zone_id}/records")
 
         ipv4_record_id = None
         ipv6_record_id = None

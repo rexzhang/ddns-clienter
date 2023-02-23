@@ -6,3 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 addopts = "--cov=ddns_clienter_core --cov-report html"
+asyncio_mode = "auto"
+
+[tool.isort]
+profile = "black"

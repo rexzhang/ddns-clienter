@@ -41,9 +41,7 @@ class AddressProviderAbs:
             return None
 
         if obj.is_link_local or obj.is_multicast:
-            logger.warning(
-                f"ip address is_link_local or is_multicast, {ip_address}"
-            )
+            logger.warning(f"ip address is_link_local or is_multicast, {ip_address}")
             return None
 
         if obj.is_loopback and not self._address_c.allow_loopback:
