@@ -66,7 +66,7 @@ class Config:
     def load_from_file(self):
         try:
             obj = toml.load(self._file_name)
-        except FileNotFoundError as e:
+        except (FileNotFoundError, toml.decoder.TomlDecodeError) as e:
             logger.error(e)
             logger.error(f"Can not open config file:{self._file_name}")
             raise ConfigException(e)

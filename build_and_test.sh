@@ -9,7 +9,7 @@ docker build -t ray1ex/ddns-clienter . --build-arg ENV=rex
 
 mkdir /tmp/data
 docker run -dit -p 0.0.0.0:8000:8000 \
-  -v /Users/rex/p/ddns-clienter/dev-config.toml:/etc/ddns-clienter.toml \
+  -v /Users/rex/p/ddns-clienter/config.toml:/etc/ddns-clienter.toml \
   --env-file .env \
   --name ddns-clienter ray1ex/ddns-clienter
 docker image prune -f
