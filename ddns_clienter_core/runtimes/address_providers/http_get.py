@@ -19,7 +19,6 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
     @staticmethod
     def _detect_with_http_get(server_url: str) -> str | None:
-
         try:
             r = requests.get(server_url)
         except requests.exceptions.RequestException as e:

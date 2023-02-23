@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("ddns_clienter_core", "0004_address_allow_loopback_address_allow_private"),
     ]
