@@ -30,7 +30,7 @@ class AddressInfo:
         if self.ipv6_prefix_length is None:
             return self.ipv6_address.__str__()
 
-        return "{}/{}".format(self.ipv6_address.__str__(), self.ipv6_prefix_length)
+        return f"{self.ipv6_address.__str__()}/{self.ipv6_prefix_length}"
 
     def __init__(
         self,

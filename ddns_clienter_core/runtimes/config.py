@@ -68,7 +68,7 @@ class Config:
             obj = toml.load(self._file_name)
         except FileNotFoundError as e:
             logger.error(e)
-            logger.error("Can not open config file:{}".format(self._file_name))
+            logger.error(f"Can not open config file:{self._file_name}")
             raise ConfigException(e)
 
         # common

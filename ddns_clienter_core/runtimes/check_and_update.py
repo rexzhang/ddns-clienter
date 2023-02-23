@@ -73,7 +73,7 @@ class AddressHub:
             address_db = models.Address(**dataclass_as_dict(address_c))
             address_db.save()
             logger.info(
-                "Cannot found address:{} from db, create it.".format(address_c.name)
+                f"Cannot found address:{address_c.name} from db, create it."
             )
             return True, AddressInfo()
 
@@ -93,7 +93,7 @@ class AddressHub:
                 ),
             )
 
-        logger.debug("The address[{}] no change in config".format(address_c.name))
+        logger.debug(f"The address[{address_c.name}] no change in config")
         return (
             False,
             AddressInfo(
@@ -124,7 +124,7 @@ class AddressHub:
         for item in self._data.values():
             data.append(item.config)
 
-        logger.debug("To be update addresses:{}".format(data))
+        logger.debug(f"To be update addresses:{data}")
         return data
 
     def update_ip_address(
@@ -225,7 +225,7 @@ class TaskHub:
             task_db = models.Task(**dataclass_as_dict(task_c))
             task_db.save()
             logger.info(
-                "Cannot found task:{} from db, create it in db.".format(task_c.name)
+                f"Cannot found task:{task_c.name} from db, create it in db."
             )
 
             return True, False
@@ -234,11 +234,11 @@ class TaskHub:
         if changed:
             task_db.save()
             logger.info(
-                "The task[{}]'s config has changed, update to db.".format(task_c.name)
+                f"The task[{task_c.name}]'s config has changed, update to db."
             )
             return True, task_db.last_update_success
 
-        logger.debug("The task[{}] no change in config".format(task_c.name))
+        logger.debug(f"The task[{task_c.name}] no change in config")
         return False, task_db.last_update_success
 
     def __init__(self, tasks_c: dict[str, TaskConfig]):
@@ -280,7 +280,7 @@ class TaskHub:
             # other task
             data.append(item)
 
-        logger.debug("To be update tasks:{}".format(data))
+        logger.debug(f"To be update tasks:{data}")
         return data
 
     @staticmethod
@@ -296,7 +296,7 @@ class TaskHub:
 
         now = timezone.now()
         if update_success:
-            new_addresses = str()
+            new_addresses = ''
             if db_task.ipv4 and address_info.ipv4_address is not None:
                 new_addresses += address_info.ipv4_address_str
 
@@ -339,7 +339,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             continue
 
         ah.update_ip_address(address_c.name, address_info)
-        logger.debug("address info:{}, {}".format(address_c.name, address_info))
+        logger.debug(f"address info:{address_c.name}, {address_info}")
 
     # import address data from config and db
     th = TaskHub(settings.CONFIG.tasks)
@@ -352,7 +352,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             )
 
         except CannotMatchAddressException:
-            message = "Cannot found address:{}".format(task.config.address_name)
+            message = f"Cannot found address:{task.config.address_name}"
             logger.warning(message)
             send_event(message, level=EventLevel.WARNING)
             continue
@@ -407,11 +407,11 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             continue
 
         if update_success:
-            message = "update task:{} finished".format(task.config.name)
+            message = f"update task:{task.config.name} finished"
             logger.info(message)
             send_event(message)
         else:
-            message = "update task:{} failed".format(task.config.name)
+            message = f"update task:{task.config.name} failed"
             logger.warning(message)
             send_event(message, level=EventLevel.WARNING)
 

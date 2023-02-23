@@ -34,7 +34,7 @@ def _call_update_api(
         return True, ""
 
     r = requests.get(_update_api_url, params)
-    logger.debug("{} {}".format(r.status_code, r.content))
+    logger.debug(f"{r.status_code} {r.content}")
 
     if r.status_code == 200:
         return True, r.text
@@ -59,14 +59,14 @@ class CallRestApi:
 
         self.headers = CaseInsensitiveDict()
         self.headers["Accept"] = "application/json"
-        self.headers["Authorization"] = "Bearer {}".format(self._c_task.provider_auth)
+        self.headers["Authorization"] = f"Bearer {self._c_task.provider_auth}"
 
     def _call_rest_api_get(
         self,
         url,
     ) -> requests.Response:
         r = requests.get(url, headers=self.headers)
-        logger.debug("{} {}".format(r.status_code, r.content))
+        logger.debug(f"{r.status_code} {r.content}")
 
         if r.status_code != 200:
             raise DDNSProviderException(r)
@@ -78,11 +78,11 @@ class CallRestApi:
     ) -> requests.Response:
         j = {"name": host, "type": record_type, "data": ip_address}
         r = requests.post(
-            "{}/zones/{}/records".format(_rest_api_url, self.zone_id),
+            f"{_rest_api_url}/zones/{self.zone_id}/records",
             headers=self.headers,
             json=j,
         )
-        logger.debug("{} {}".format(r.status_code, r.content))
+        logger.debug(f"{r.status_code} {r.content}")
 
         if r.status_code != 200:
             raise DDNSProviderException(r)
@@ -94,12 +94,12 @@ class CallRestApi:
     ) -> requests.Response:
         j = {"type": record_type, "data": ip_address}
         r = requests.patch(
-            "{}/zones/{}/records/{}".format(_rest_api_url, self.zone_id, record_id),
+            f"{_rest_api_url}/zones/{self.zone_id}/records/{record_id}",
             headers=self.headers,
             json=j,
         )
 
-        logger.debug("{} {}".format(r.status_code, r.content))
+        logger.debug(f"{r.status_code} {r.content}")
 
         if r.status_code != 200:
             raise DDNSProviderException(r)
@@ -110,7 +110,7 @@ class CallRestApi:
         # https://dynv6.github.io/api-spec
 
         # get zone id
-        r = self._call_rest_api_get("{}/zones".format(_rest_api_url))
+        r = self._call_rest_api_get(f"{_rest_api_url}/zones")
 
         for item in r.json():
             if item.get("name") == self._c_task.domain:
@@ -118,11 +118,11 @@ class CallRestApi:
                 continue
 
         if self.zone_id is None:
-            raise DDNSProviderException("Can not match zone id:{}".format(r))
+            raise DDNSProviderException(f"Can not match zone id:{r}")
 
         # get record id
         r = self._call_rest_api_get(
-            "{}/zones/{}/records".format(_rest_api_url, self.zone_id)
+            f"{_rest_api_url}/zones/{self.zone_id}/records"
         )
 
         ipv4_record_id = None
@@ -173,7 +173,7 @@ class CallRestApi:
             update_success = True
         else:
             update_success = False
-        return update_success, "{} {}".format(r.status_code, r.text)
+        return update_success, f"{r.status_code} {r.text}"
 
 
 class DDNSProviderDynv6(DDNSProviderAbs):

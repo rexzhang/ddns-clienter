@@ -20,9 +20,9 @@ def init_crontab():
 
     url = "http://127.0.0.1:8000/api/check_and_update"
     if settings.DEBUG:
-        command = "/usr/bin/wget {} -o /{}/dc-cron.log".format(url, settings.DATA_PATH)
+        command = f"/usr/bin/wget {url} -o /{settings.DATA_PATH}/dc-cron.log"
     else:
-        command = "/usr/bin/wget {} -o /dev/null".format(url)
+        command = f"/usr/bin/wget {url} -o /dev/null"
     if settings.WORK_IN_CONTAINER:
         crontab_filename = "/etc/crontabs/root"
     else:
@@ -34,7 +34,7 @@ def init_crontab():
     job.minute.every(settings.CONFIG.common.check_intervals)
     cron.write(crontab_filename)
 
-    message = "crontab file:{} created/updated.".format(crontab_filename)
+    message = f"crontab file:{crontab_filename} created/updated."
     logger.info(message)
     send_event(message)
 

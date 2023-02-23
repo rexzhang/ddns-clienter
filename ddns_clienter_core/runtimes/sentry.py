@@ -54,7 +54,7 @@ def auto_drop_event_for_rate_limit(event: Event, _) -> Event:
         with configure_scope() as scope:
             scope.set_tag(
                 "rate_limit",
-                "{}@{}".format(EVENT_RATE_LIMIT_TIMES, EVENT_RATE_LIMIT_TIME_RANGE),
+                f"{EVENT_RATE_LIMIT_TIMES}@{EVENT_RATE_LIMIT_TIME_RANGE}",
             )
         return event
 
@@ -65,7 +65,7 @@ def get_mac_address() -> str:
     from uuid import getnode
 
     mac = ":".join(
-        ["{:02x}".format((getnode() >> ele) & 0xFF) for ele in range(0, 8 * 6, 8)][::-1]
+        [f"{(getnode() >> ele) & 0xFF:02x}" for ele in range(0, 8 * 6, 8)][::-1]
     ).upper()
     return mac
 
@@ -92,7 +92,7 @@ def init_sentry(
     sentry_sdk.init(
         dsn=dsn,
         environment=environment,
-        release="{}@{}".format(app_name, app_version),
+        release=f"{app_name}@{app_version}",
         integrations=integrations,
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
@@ -109,5 +109,5 @@ def init_sentry(
 
     if announce_at_startup:
         sentry_sdk.capture_exception(
-            StartupReport("{} v{}@{} is up.".format(app_name, app_version, mac_address))
+            StartupReport(f"{app_name} v{app_version}@{mac_address} is up.")
         )

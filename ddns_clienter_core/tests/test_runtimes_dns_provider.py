@@ -8,17 +8,17 @@ class MyTestCase(unittest.TestCase):
         token_key = "token"
         token_value = "this-is-token-for-this-zone"
 
-        auth = parser_provider_auth("{}".format(token_value))
+        auth = parser_provider_auth(f"{token_value}")
         self.assertEqual(auth.get(token_key), token_value)
 
         token_key2 = "auth-token"
-        auth = parser_provider_auth("{}:{}".format(token_key2, token_value))
+        auth = parser_provider_auth(f"{token_key2}:{token_value}")
         self.assertEqual(auth.get(token_key2), token_value)
 
         username = "username"
         password = "password"
         auth = parser_provider_auth(
-            "username:{},password:{}".format(username, password)
+            f"username:{username},password:{password}"
         )
         self.assertEqual(auth.get("username"), username)
         self.assertEqual(auth.get("password"), password)
