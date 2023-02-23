@@ -4,7 +4,7 @@ docker container stop ddns-clienter
 docker container rm ddns-clienter
 docker image rm ray1ex/ddns-clienter
 
-docker pull python:3.10-alpine
+docker pull python:3.11-alpine
 docker build -t ray1ex/ddns-clienter . --build-arg ENV=rex
 
 mkdir /tmp/data
