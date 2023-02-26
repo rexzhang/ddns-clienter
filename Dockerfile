@@ -3,8 +3,8 @@ FROM python:3.11-alpine
 ARG ENV
 
 RUN if [ "$ENV" = "rex" ]; then echo "Change depends" \
-    && pip config set global.index-url http://192.168.200.21:3141/root/pypi/+simple \
-    && pip config set install.trusted-host 192.168.200.21 \
+    && pip config set global.index-url http://192.168.200.61:13141/root/pypi/+simple \
+    && pip config set install.trusted-host 192.168.200.61 \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     ; fi
 
@@ -17,22 +17,22 @@ COPY cargo.config.toml /app
 
 # depends
 RUN \
-    # install depends
-    apk add --no-cache --virtual .build-deps build-base musl-dev python3-dev libffi-dev openssl-dev libxml2-dev libxslt-dev cargo ; \
-    if [ "$ENV" = "rex" ]; then echo "Change depends" \
-    && mkdir /root/.cargo && cp /app/cargo.config.toml /root/.cargo/config.toml \
-    ; fi \
+    # install depends \
+    # -- for dns-lexicon
+    apk add --no-cache py3-cryptography \
+    # -- for i18n
+    apk add --no-cache gettext py3-cryptography \
     && pip install --no-cache-dir -r /app/requirements/docker.txt \
+    # cleanup ---
     && apk del .build-deps \
-    && rm -rf /root/.cargo \
+    && rm -rf /root/.cache \
     && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
-    && apk add --no-cache gettext \
+    && find /usr/local/lib/python*/ -type d -name "__pycache__" -delete \
     # prepare data path
     && mkdir /data \
     && chown nobody:nobody /data
 
 WORKDIR /app
-#VOLUME /data
 EXPOSE 8000
 
 ENV PYTHONPATH=/app
