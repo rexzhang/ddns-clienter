@@ -1,10 +1,10 @@
 from logging import getLogger
 
-from django.conf import settings
-from django.core.management.base import BaseCommand
-from django.core import management
-
+from asgiref.sync import async_to_sync
 from crontab import CronTab
+from django.conf import settings
+from django.core import management
+from django.core.management.base import BaseCommand
 
 from ddns_clienter_core.runtimes.event import send_event
 
@@ -36,14 +36,14 @@ def init_crontab():
 
     message = f"crontab file:{crontab_filename} created/updated."
     logger.info(message)
-    send_event(message)
+    async_to_sync(send_event)(message)
 
 
 def init_db():
     management.call_command("migrate", interactive=False)
     message = "database init finished."
     logger.info(message)
-    send_event(message)
+    async_to_sync(send_event)(message)
 
 
 class Command(BaseCommand):
