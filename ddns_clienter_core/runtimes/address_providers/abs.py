@@ -1,7 +1,7 @@
-from typing import ClassVar
 import re
-from ipaddress import IPv4Address, IPv6Address, AddressValueError
+from ipaddress import AddressValueError, IPv4Address, IPv6Address
 from logging import getLogger
+from typing import ClassVar
 
 from ddns_clienter_core.constants import AddressInfo
 from ddns_clienter_core.runtimes import config
@@ -30,7 +30,7 @@ class AddressProviderAbs:
         self, ip_address: str, factory_class: ClassVar, match_rule: str
     ) -> IPv4Address | IPv6Address | None:
         if re.match(match_rule, ip_address) is None:
-            logger.warning(f"can not match rule:{match_rule}, {ip_address}")
+            logger.debug(f"can not match rule:{match_rule}, {ip_address}")
             return None
 
         try:

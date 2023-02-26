@@ -1,5 +1,6 @@
 from logging import getLogger
 
+import lexicon.exceptions
 from lexicon.client import Client
 from lexicon.config import ConfigResolver
 
@@ -27,7 +28,15 @@ class DDNSProviderLexicon(DDNSProviderAbs):
             extra_config.update({data[0]: data[1]})
         action.update({self.provider_name_sub: extra_config})
 
-        result = Client(ConfigResolver().with_dict(action)).execute()
+        try:
+            result = Client(ConfigResolver().with_dict(action)).execute()
+        except lexicon.exceptions.LexiconError as e:
+            raise DDNSProviderException(f"LexiconError: {str(e)}")
+        except Exception as e:
+            raise DDNSProviderException(
+                f"Call lexicon.client.Client() failed, {str(e)}"
+            )
+
         if isinstance(result, bool):
             return result, ""
 

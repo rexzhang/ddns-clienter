@@ -75,7 +75,10 @@ DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 SECRET_KEY = f"django-insecure-{uuid4().hex}"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str2bool(getenv("DEBUG"), False)
+if getenv("DJANGO_DEPLOY_LEVEL", "release") == "development":
+    DEBUG = True
+else:
+    DEBUG = str2bool(getenv("DEBUG"), False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -200,7 +203,9 @@ LOGGING = {
     },
 }
 
+#
 # django-ninja
+#
 NINJA_PAGINATION_PER_PAGE = 10
 
 #
@@ -220,8 +225,8 @@ if SENTRY_DSN:
     from sentry_sdk.integrations.logging import LoggingIntegration
 
     # from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-
-    from ddns_clienter import __name__ as app_name, __version__ as app_version
+    from ddns_clienter import __name__ as app_name
+    from ddns_clienter import __version__ as app_version
     from ddns_clienter_core.runtimes.sentry import init_sentry
 
     init_sentry(

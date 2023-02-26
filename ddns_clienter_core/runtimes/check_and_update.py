@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict as dataclass_as_dict
+import dataclasses
 from datetime import timedelta
 from logging import getLogger
 
@@ -6,23 +6,23 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
-from ddns_clienter_core.constants import AddressInfo, EventLevel
 from ddns_clienter_core import models
-from ddns_clienter_core.runtimes.config import AddressConfig, TaskConfig
+from ddns_clienter_core.constants import AddressInfo, EventLevel
 from ddns_clienter_core.runtimes.address_providers import (
-    get_ip_address_from_provider,
     AddressProviderException,
+    get_ip_address_from_provider,
 )
+from ddns_clienter_core.runtimes.config import AddressConfig, TaskConfig
 from ddns_clienter_core.runtimes.dns_providers import (
-    update_address_to_dns_provider,
     DDNSProviderException,
+    update_address_to_dns_provider,
 )
 from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
 
 
-@dataclass
+@dataclasses.dataclass
 class AddressDataItem:
     config: AddressConfig
     config_changed: bool
@@ -47,7 +47,7 @@ class CannotMatchAddressException(Exception):
 def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
     changed = False
     data = model_to_dict(db_obj)
-    for k, v in dataclass_as_dict(dc_obj).items():
+    for k, v in dataclasses.asdict(dc_obj).items():
         if data.get(k) != v:
             changed = True
             db_obj.__setattr__(k, v)
@@ -70,7 +70,7 @@ class AddressHub:
     ) -> (bool, AddressInfo):
         address_db = models.Address.objects.filter(name=address_c.name).first()
         if address_db is None:
-            address_db = models.Address(**dataclass_as_dict(address_c))
+            address_db = models.Address(**dataclasses.asdict(address_c))
             address_db.save()
             logger.info(f"Cannot found address:{address_c.name} from db, create it.")
             return True, AddressInfo()
@@ -193,7 +193,7 @@ class AddressHub:
         return None
 
 
-@dataclass
+@dataclasses.dataclass
 class TaskDataItem:
     config: TaskConfig
     _config_changed: bool
@@ -220,7 +220,7 @@ class TaskHub:
     def _compare_and_update_from_config_to_db(task_c: TaskConfig) -> (bool, bool):
         task_db = models.Task.objects.filter(name=task_c.name).first()
         if task_db is None:
-            task_db = models.Task(**dataclass_as_dict(task_c))
+            task_db = models.Task(**dataclasses.asdict(task_c))
             task_db.save()
             logger.info(f"Cannot found task:{task_c.name} from db, create it in db.")
 
@@ -405,7 +405,7 @@ def check_and_update(config_file_name: str | None = None, real_update: bool = Tr
             logger.info(message)
             send_event(message)
         else:
-            message = f"update task:{task.config.name} failed"
+            message = f"update task:{task.config.name} failed, {update_message}"
             logger.warning(message)
             send_event(message, level=EventLevel.WARNING)
 
