@@ -23,6 +23,7 @@ class AddressProviderAbs:
 
     async def __call__(self, *args, **kwargs):
         await self._detect_ip_address()
+        return self
 
     @property
     def name(self):
