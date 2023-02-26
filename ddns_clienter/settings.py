@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_bootstrap5",
+    "ninja",
     "ddns_clienter_core",
 ]
 
