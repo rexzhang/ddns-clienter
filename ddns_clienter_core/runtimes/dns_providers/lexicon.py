@@ -42,7 +42,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
 
         return False, str(result)
 
-    def _update_to_provider(self):
+    async def _update_to_provider(self) -> None:
         self.update_success = True
         self.update_message = ""
 

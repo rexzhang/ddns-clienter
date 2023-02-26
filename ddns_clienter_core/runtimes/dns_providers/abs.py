@@ -63,5 +63,5 @@ class DDNSProviderAbs:
 
         return self
 
-    def _update_to_provider(self):
+    async def _update_to_provider(self) -> None:
         raise NotImplemented
