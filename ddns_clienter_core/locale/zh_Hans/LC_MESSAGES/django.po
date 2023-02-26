@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-18 17:05+0800\n"
+"POT-Creation-Date: 2023-02-27 01:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,103 +18,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: templates/index_v2.html:36
+#: templates/index_v2.html:23
 msgid "Addresses"
 msgstr "地址"
 
-#: templates/index_v2.html:37
+#: templates/index_v2.html:24
 msgid "Check Intervals"
 msgstr "检查间隔"
 
-#: templates/index_v2.html:37 templates/index_v2.html:75
+#: templates/index_v2.html:25 templates/index_v2.html:63
 msgid "minutes"
 msgstr "分钟"
 
-#: templates/index_v2.html:42 templates/index_v2.html:80
+#: templates/index_v2.html:30 templates/index_v2.html:68
 msgid "Name"
 msgstr "名称"
 
-#: templates/index_v2.html:43 templates/index_v2.html:81
+#: templates/index_v2.html:31 templates/index_v2.html:69
 msgid "Provider"
 msgstr "提供者"
 
-#: templates/index_v2.html:44
+#: templates/index_v2.html:32
 msgid "IPv4 Address"
 msgstr "现 IPv4 地址"
 
-#: templates/index_v2.html:45
+#: templates/index_v2.html:33
 msgid "IPv4 Previous Address"
 msgstr "原 IPv4 地址"
 
-#: templates/index_v2.html:46
+#: templates/index_v2.html:34
 msgid "IPv4 Change Time"
 msgstr "IPv4 更改时间"
 
-#: templates/index_v2.html:47
+#: templates/index_v2.html:35
 msgid "IPv6 Address"
 msgstr "现 IPv6 地址"
 
-#: templates/index_v2.html:48
+#: templates/index_v2.html:36
 msgid "IPv6 Previous Address"
 msgstr "原 IPv6 地址"
 
-#: templates/index_v2.html:49
+#: templates/index_v2.html:37
 msgid "IPv6 Change Time"
 msgstr "IPv6 更改时间"
 
-#: templates/index_v2.html:60 templates/index_v2.html:64
-#: templates/index_v2.html:101 templates/index_v2.html:103
+#: templates/index_v2.html:48 templates/index_v2.html:52
+#: templates/index_v2.html:89 templates/index_v2.html:91
 msgid "ago"
 msgstr "之前"
 
-#: templates/index_v2.html:74
+#: templates/index_v2.html:62
 msgid "Tasks"
 msgstr "任务"
 
-#: templates/index_v2.html:74
+#: templates/index_v2.html:62
 msgid "Force Update Intervals"
 msgstr "强制更新间隔"
 
-#: templates/index_v2.html:82
+#: templates/index_v2.html:70
 msgid "Domain"
 msgstr "域名"
 
-#: templates/index_v2.html:83
+#: templates/index_v2.html:71
 msgid "IP Addresses"
 msgstr "IP 地址"
 
-#: templates/index_v2.html:84
+#: templates/index_v2.html:72
 msgid "Update Success"
 msgstr "更新成功"
 
-#: templates/index_v2.html:85
+#: templates/index_v2.html:73
 msgid "Last Success Time"
 msgstr "最后一次更新成功时间"
 
-#: templates/index_v2.html:86
+#: templates/index_v2.html:74
 msgid "Last Update Time"
 msgstr "最后一次更新时间"
 
-#: templates/index_v2.html:113
+#: templates/index_v2.html:101
 msgid "Events"
 msgstr "事件"
 
-#: templates/index_v2.html:117
+#: templates/index_v2.html:105
 msgid "Timestamp"
 msgstr "时间戳"
 
-#: templates/index_v2.html:118
+#: templates/index_v2.html:106
 msgid "Level"
 msgstr "级别"
 
-#: templates/index_v2.html:119
+#: templates/index_v2.html:107
 msgid "Message"
 msgstr "信息"
-
-#: templates/index_v2.html:140
-msgid "Docs"
-msgstr "文档"
-
-#: templates/index_v2.html:140
-msgid "Example"
-msgstr "范例"

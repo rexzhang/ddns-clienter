@@ -1,22 +1,13 @@
-from django.shortcuts import render
 from django.conf import settings
 from django.views.generic import TemplateView
 
-from ddns_clienter import __name__ as name, __version__, __project_url__
+from ddns_clienter import __name__ as name
+from ddns_clienter import __project_url__, __version__
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
-    get_tasks_values,
     get_events_values,
+    get_tasks_values,
 )
-
-
-def index_view(request):
-    context = {
-        "name": name,
-        "version": __version__,
-        "project_url": __project_url__,
-    }
-    return render(request, "index.html", context)
 
 
 def convert_none_to_symbol(data: dict) -> dict:
