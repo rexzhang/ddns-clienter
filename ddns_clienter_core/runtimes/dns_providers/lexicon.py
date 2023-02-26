@@ -17,7 +17,6 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                 "action": "update",
                 "domain": self.task_config.domain,
                 "name": self.task_config.host,
-                "content": self.address_info.ipv4_address_str,
             }
         )
 
@@ -47,7 +46,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
         self.update_message = ""
 
         if self.task_config.ipv4:
-            action = {"type": "A"}
+            action = {"type": "A", "content": self.address_info.ipv4_address_str}
             update_success, update_message = self._do_update(action)
 
             if not update_success:
@@ -55,7 +54,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
                 self.update_message += "update ipv4 failed" + update_message
 
         if self.task_config.ipv6:
-            action = {"type": "AAAA"}
+            action = {"type": "AAAA", "content": self.address_info.ipv6_address_str}
             update_success, update_message = self._do_update(action)
 
             if not update_success:
