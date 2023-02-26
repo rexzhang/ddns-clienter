@@ -41,7 +41,7 @@ docker pull ray1ex/ddns-clienter
 
 ```shell
 docker run -dit -p 0.0.0.0:8000:8000 \
-  -v /your/config.toml:/etc/ddns-clienter.toml \
+  -v /your/config.toml:/etc/ddns-clienter.toml:ro \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
 

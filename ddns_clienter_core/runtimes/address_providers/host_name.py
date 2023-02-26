@@ -11,7 +11,7 @@ class AddressProviderHostName(AddressProviderAbs):
     def name(self):
         return "hostname"
 
-    def _detect_ip_address(self) -> None:
+    async def _detect_ip_address(self) -> None:
         try:
             data = socket.getaddrinfo(self._address_c.parameter, 80)
         except socket.gaierror as e:

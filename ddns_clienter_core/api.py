@@ -1,15 +1,15 @@
 from django.shortcuts import get_object_or_404
-from ninja import NinjaAPI, Router, ModelSchema
+from ninja import ModelSchema, NinjaAPI, Router
 from ninja.orm import create_schema
-from ninja.pagination import paginate, PageNumberPagination
+from ninja.pagination import PageNumberPagination, paginate
 
 from ddns_clienter_core.constants import EventLevel
-from ddns_clienter_core.models import Status, Address, Task, Event
+from ddns_clienter_core.models import Address, Event, Status, Task
+from ddns_clienter_core.runtimes.check_and_update import check_and_update
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_values,
 )
-from ddns_clienter_core.runtimes.check_and_update import check_and_update
 
 AddressSchema = create_schema(Address, exclude=[])
 TaskSchema = create_schema(Task, exclude=["provider_auth"])
@@ -79,8 +79,8 @@ api_inside = Router(auth=auth_local_host, tags=["Inside"])
 
 
 @api_inside.get("/check_and_update")
-def api_check_and_update(request):
-    check_and_update()
+async def api_check_and_update(request):
+    await check_and_update()
     return
 
 

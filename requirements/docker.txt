@@ -1,7 +1,7 @@
 -r base.txt
 
 # Web Server
-uvicorn
+uvicorn[standard]
 
 # debug
 sentry_sdk

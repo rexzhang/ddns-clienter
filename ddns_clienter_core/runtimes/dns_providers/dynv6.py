@@ -1,9 +1,9 @@
 from logging import getLogger
 
-import requests
-from requests.structures import CaseInsensitiveDict
+import httpx
 
 from ddns_clienter_core.runtimes.config import TaskConfig
+
 from .abs import DDNSProviderAbs, DDNSProviderException
 
 logger = getLogger(__name__)
@@ -12,7 +12,7 @@ _update_api_url = "https://dynv6.com/api/update"
 _rest_api_url = "https://dynv6.com/api/v2"
 
 
-def _call_update_api(
+async def _call_update_api(
     domain: str,
     token: str,
     ipv4_address: str | None,
@@ -33,7 +33,8 @@ def _call_update_api(
     if not real_update:
         return True, ""
 
-    r = requests.get(_update_api_url, params)
+    async with httpx.AsyncClient() as client:
+        r = await client.get(_update_api_url, params=params)
     logger.debug(f"{r.status_code} {r.content}")
 
     if r.status_code == 200:
@@ -57,15 +58,16 @@ class CallRestApi:
         self.ipv6_address = ipv6_address
         self.real_update = real_update
 
-        self.headers = CaseInsensitiveDict()
+        self.headers = httpx.Headers()
         self.headers["Accept"] = "application/json"
         self.headers["Authorization"] = f"Bearer {self._c_task.provider_auth}"
 
-    def _call_rest_api_get(
+    async def _call_rest_api_get(
         self,
         url,
-    ) -> requests.Response:
-        r = requests.get(url, headers=self.headers)
+    ) -> httpx.Response:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, headers=self.headers)
         logger.debug(f"{r.status_code} {r.content}")
 
         if r.status_code != 200:
@@ -73,15 +75,16 @@ class CallRestApi:
 
         return r
 
-    def _call_rest_api_add_record(
+    async def _call_rest_api_add_record(
         self, host: str, record_type: str, ip_address: str
-    ) -> requests.Response:
+    ) -> httpx.Response:
         j = {"name": host, "type": record_type, "data": ip_address}
-        r = requests.post(
-            f"{_rest_api_url}/zones/{self.zone_id}/records",
-            headers=self.headers,
-            json=j,
-        )
+        async with httpx.AsyncClient() as client:
+            r = await client.post(
+                f"{_rest_api_url}/zones/{self.zone_id}/records",
+                headers=self.headers,
+                json=j,
+            )
         logger.debug(f"{r.status_code} {r.content}")
 
         if r.status_code != 200:
@@ -89,15 +92,16 @@ class CallRestApi:
 
         return r
 
-    def _call_rest_api_update_record(
+    async def _call_rest_api_update_record(
         self, record_id: str, record_type: str, ip_address: str
-    ) -> requests.Response:
+    ) -> httpx.Response:
         j = {"type": record_type, "data": ip_address}
-        r = requests.patch(
-            f"{_rest_api_url}/zones/{self.zone_id}/records/{record_id}",
-            headers=self.headers,
-            json=j,
-        )
+        async with httpx.AsyncClient() as client:
+            r = await client.patch(
+                f"{_rest_api_url}/zones/{self.zone_id}/records/{record_id}",
+                headers=self.headers,
+                json=j,
+            )
 
         logger.debug(f"{r.status_code} {r.content}")
 
@@ -106,11 +110,11 @@ class CallRestApi:
 
         return r
 
-    def process(self) -> (bool, str):
+    async def process(self) -> (bool, str):
         # https://dynv6.github.io/api-spec
 
         # get zone id
-        r = self._call_rest_api_get(f"{_rest_api_url}/zones")
+        r = await self._call_rest_api_get(f"{_rest_api_url}/zones")
 
         for item in r.json():
             if item.get("name") == self._c_task.domain:
@@ -121,7 +125,9 @@ class CallRestApi:
             raise DDNSProviderException(f"Can not match zone id:{r}")
 
         # get record id
-        r = self._call_rest_api_get(f"{_rest_api_url}/zones/{self.zone_id}/records")
+        r = await self._call_rest_api_get(
+            f"{_rest_api_url}/zones/{self.zone_id}/records"
+        )
 
         ipv4_record_id = None
         ipv6_record_id = None
@@ -138,14 +144,14 @@ class CallRestApi:
         if self.ipv4_address:
             if ipv4_record_id is None:
                 # add a new record
-                self._call_rest_api_add_record(
+                await self._call_rest_api_add_record(
                     host=self._c_task.host,
                     record_type="A",
                     ip_address=self.ipv4_address,
                 )
             else:
                 # update a record
-                self._call_rest_api_update_record(
+                await self._call_rest_api_update_record(
                     record_id=ipv4_record_id,
                     record_type="A",
                     ip_address=self.ipv4_address,
@@ -154,14 +160,14 @@ class CallRestApi:
         if self.ipv6_address:
             if ipv6_record_id is None:
                 # add a new record
-                self._call_rest_api_add_record(
+                await self._call_rest_api_add_record(
                     host=self._c_task.host,
                     record_type="AAAA",
                     ip_address=self.ipv6_address,
                 )
             else:
                 # update a record
-                self._call_rest_api_update_record(
+                await self._call_rest_api_update_record(
                     record_id=ipv6_record_id,
                     record_type="AAAA",
                     ip_address=self.ipv6_address,

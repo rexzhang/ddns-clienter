@@ -1,7 +1,7 @@
 from ipaddress import ip_address as ip_address_string_check
 from logging import getLogger
 
-import requests
+import httpx
 
 from .abs import AddressProviderAbs, AddressProviderException
 
@@ -18,10 +18,11 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         raise NotImplemented
 
     @staticmethod
-    def _detect_with_http_get(server_url: str) -> str | None:
+    async def _detect_with_http_get(server_url: str) -> str | None:
         try:
-            r = requests.get(server_url)
-        except requests.exceptions.RequestException as e:
+            async with httpx.AsyncClient() as client:
+                r = await client.get(server_url)
+        except httpx.HTTPError as e:
             raise AddressProviderException(e)
 
         if r.status_code != 200:
@@ -39,12 +40,12 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
         return ip_address
 
-    def _detect_ip_address(self) -> None:
+    async def _detect_ip_address(self) -> None:
         if self._address_c.ipv4 and self._ipv4_url:
-            self.set_ipv4_address(self._detect_with_http_get(self._ipv4_url))
+            self.set_ipv4_address(await self._detect_with_http_get(self._ipv4_url))
 
         if self._address_c.ipv6:
-            self.set_ipv6_address(self._detect_with_http_get(self._ipv6_url))
+            self.set_ipv6_address(await self._detect_with_http_get(self._ipv6_url))
 
 
 class AddressProviderIpify(AddressProviderHttpGetAbs):

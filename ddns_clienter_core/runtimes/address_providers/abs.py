@@ -20,7 +20,9 @@ class AddressProviderAbs:
         self.ip_address = AddressInfo()
 
         self._address_c = address_c
-        self._detect_ip_address()
+
+    async def __call__(self, *args, **kwargs):
+        await self._detect_ip_address()
 
     @property
     def name(self):
@@ -74,7 +76,7 @@ class AddressProviderAbs:
         self.ip_address.ipv6_address = obj
         return True
 
-    def _detect_ip_address(self) -> None:
+    async def _detect_ip_address(self) -> None:
         raise NotImplemented
 
     def __repr__(self):

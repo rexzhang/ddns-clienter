@@ -4,7 +4,7 @@ django
 django-ninja
 django-bootstrap5
 
-requests
+httpx
 dns-lexicon[full]
 
 ## Config
