@@ -7,7 +7,6 @@ docker image rm ray1ex/ddns-clienter
 docker pull python:3.11-alpine
 docker build -t ray1ex/ddns-clienter . --build-arg ENV=rex
 
-mkdir /tmp/data
 docker run -dit -p 0.0.0.0:8000:8000 \
   -v /Users/rex/p/ddns-clienter/config.toml:/etc/ddns-clienter.toml \
   --env-file .env \

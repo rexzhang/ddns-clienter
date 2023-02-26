@@ -13,7 +13,6 @@ COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
 COPY runserver.py /app
 COPY entrypoint.sh /app
-COPY cargo.config.toml /app
 
 # depends
 RUN \
@@ -21,16 +20,16 @@ RUN \
     # -- for dns-lexicon
     apk add --no-cache py3-cryptography \
     # -- for i18n
-    apk add --no-cache gettext py3-cryptography \
+    && apk add --no-cache gettext \
     && pip install --no-cache-dir -r /app/requirements/docker.txt \
     # cleanup ---
-    && apk del .build-deps \
     && rm -rf /root/.cache \
     && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
     && find /usr/local/lib/python*/ -type d -name "__pycache__" -delete \
-    # prepare data path
+    # prepare data path ---
     && mkdir /data \
-    && chown nobody:nobody /data
+    && mkdir /data/lexicon_tld_set \
+    && chown nobody:nobody -R /data
 
 WORKDIR /app
 EXPOSE 8000
@@ -40,7 +39,7 @@ ENV DATA_DIR=/data
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 ENV SENTRY_DSN=""
 ENV WORK_IN_CONTAINER="true"
-ENV LEXICON_TLDEXTRACT_CACHE=/tmp
+ENV LEXICON_TLDEXTRACT_CACHE=/data/lexicon_tld_set
 
 # i18n
 RUN django-admin compilemessages --ignore venv
