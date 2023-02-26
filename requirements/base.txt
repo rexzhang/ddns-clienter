@@ -1,5 +1,6 @@
 # base 3rd package
 
+asgiref
 django
 django-ninja
 django-bootstrap5
