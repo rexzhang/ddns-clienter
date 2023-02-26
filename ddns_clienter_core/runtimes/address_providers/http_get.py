@@ -70,8 +70,8 @@ class AddressProviderNoip(AddressProviderHttpGetAbs):
 
     @property
     def _ipv4_url(self):
-        return "https://api.ipify.org/"
+        return "http://ip1.dynupdate.no-ip.com/"
 
     @property
     def _ipv6_url(self):
-        return "https://api64.ipify.org/"
+        return "http://ip1.dynupdate6.no-ip.com/"
