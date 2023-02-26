@@ -1,6 +1,7 @@
 -r base.txt
 
 # Web Server
+ASGIMiddlewareStaticFile
 uvicorn[standard]
 
 # debug
