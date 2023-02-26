@@ -26,7 +26,7 @@ RUN \
     && rm -rf /root/.cache \
     && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
     && find /usr/local/lib/python*/ -type d -name "__pycache__" -delete \
-    # prepare data path ---
+    # prepare data path --- \
     && mkdir /data \
     && mkdir /data/lexicon_tld_set \
     && chown nobody:nobody -R /data
@@ -39,7 +39,7 @@ ENV DATA_DIR=/data
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 ENV SENTRY_DSN=""
 ENV WORK_IN_CONTAINER="true"
-ENV LEXICON_TLDEXTRACT_CACHE=/data/lexicon_tld_set
+ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
 
 # i18n
 RUN django-admin compilemessages --ignore venv
