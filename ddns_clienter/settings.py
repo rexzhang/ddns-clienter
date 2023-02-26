@@ -204,6 +204,14 @@ LOGGING = {
 NINJA_PAGINATION_PER_PAGE = 10
 
 #
+# django-bootstrap5
+#
+BOOTSTRAP5 = {
+    "css_url": {"url": "/static/css/bootstrap.5.3.0-alpha1.min.css"},
+    "javascript_url": {"url": "/static/js/bootstrap.5.3.0-alpha1.bundle.min.js"},
+}
+
+#
 # Sentry
 #
 SENTRY_DSN = getenv("SENTRY_DSN", "")

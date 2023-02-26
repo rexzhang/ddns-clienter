@@ -11,6 +11,7 @@ RUN if [ "$ENV" = "rex" ]; then echo "Change depends" \
 COPY ddns_clienter /app/ddns_clienter
 COPY ddns_clienter_core /app/ddns_clienter_core
 COPY requirements /app/requirements
+COPY manage.py /app
 COPY runserver.py /app
 COPY entrypoint.sh /app
 
@@ -42,7 +43,8 @@ ENV WORK_IN_CONTAINER="true"
 ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
 
 # i18n
-RUN django-admin compilemessages --ignore venv
+RUN django-admin compilemessages --ignore venv \
+    && ./manage.py collectstatic --no-input
 
 CMD /app/entrypoint.sh
 

@@ -1,29 +1,18 @@
 <!doctype html>{% load static %}{% load django_bootstrap5 %}
 {% load i18n %}{% load l10n %}
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The page supports both dark and light color schemes,
-       and the page author prefers / default is light. -->
-  <meta name="color-scheme" content="light dark">
   {% bootstrap_css %}
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-  <!-- Load the alternate CSS first ...
-       in this case the Bootstrap-Dark Variant CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-night.min.css" rel="stylesheet"
-        media="(prefers-color-scheme: dark)">
-  <!-- and then the primary CSS last ...
-       in this case the (original) Bootstrap Variant CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        media="(prefers-color-scheme: light)">
-
+  <link rel="stylesheet" href="{% static '/css/bootstrap-icons.1.10.3.css' %}">
+  <script src="{% static '/js/bootstrap-color-modes.js' %} "></script>
   <title>{{ app_name }}</title>
 </head>
-<body class="dark-mode with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
       data-sidebar-shortcut-enabled="true">
 <header>
-  <nav class="navbar navbar-dark bg-dark">
+  <nav class="navbar bg-primary bg-gradient">
     <div class="container">
       <span class="navbar-brand">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </span>
     </div>
@@ -48,7 +37,7 @@
         <th scope="col">{% translate "IPv6 Change Time" %}</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
       {% for item in addresses %}
         <tr>
           <th scope="row">{{ item.name }}</th>
@@ -85,7 +74,7 @@
         <th scope="col">{% translate "Last Update Time" %}</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
       {% for item in tasks %}
         <tr>
           <th scope="row">{{ item.name }}</th>
@@ -118,9 +107,9 @@
         <th scope="col">{% translate "Message" %}</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
       {% for item in events %}
-        <tr {% if item.highlight %} bgcolor="orange" {% endif %}>
+        <tr {% if item.highlight %} class="bg-warning" {% endif %}>
           <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
           <td>{{ item.level }}</td>
           <td class="font-monospace">{{ item.message }}</td>
@@ -132,7 +121,6 @@
     </table>
   </div>
 </main>
-
 <footer>
   <hr class="mb-1">
   <div class="container font-monospace pb-2"><small>
