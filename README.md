@@ -35,7 +35,7 @@ docker pull ray1ex/ddns-clienter
 
 ## Config
 
-[Example](https://github.com/rexzhang/asgi-webdav/docs/config.toml)
+[Example](https://github.com/rexzhang/ddns-clienter/blob/main/docs/config.toml)
 
 ## Start
 
@@ -47,9 +47,17 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # History
 
-## 0.6.0 -
+## 0.6.0 - 20230227
 
-- Redesign config about lexicon
+- Broken change
+    - config about lexicon
+- Update python to 3.11
+- Optimizing Dockerfile
+- Fix lexicon's environment variable
+- Update bootstrap to 5.3.0-alpha-1(support auto dark mode)
+- Update, host ninjia's js/css file
+- Update, usage httpx async mode Instead of request
+- Fix noip's ip detection API
 
 ## 0.5.4 - 20220716
 
