@@ -181,10 +181,10 @@ class CallRestApi:
 
 
 class DDNSProviderDynv6(DDNSProviderAbs):
-    def _update_to_provider(self):
+    async def _update_to_provider(self):
         if self.task_config.host is None or len(self.task_config.host) == 0:
             logger.debug("update in Dynv6 UPDATE API")
-            update_success, update_message = _call_update_api(
+            update_success, update_message = await _call_update_api(
                 domain=self.task_config.domain,
                 token=self.task_config.provider_auth,
                 ipv4_address=self.address_info.ipv4_address_str,

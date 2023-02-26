@@ -337,7 +337,7 @@ async def check_and_update(
     # get ip address, update ip address into hub
     for address_c in ah.to_be_update_addresses:
         try:
-            address_info = get_ip_address_from_provider(address_c)
+            address_info = await get_ip_address_from_provider(address_c)
 
         except AddressProviderException as e:
             message = str(e)
@@ -403,7 +403,7 @@ async def check_and_update(
             continue
 
         try:
-            update_success, update_message = update_address_to_dns_provider(
+            update_success, update_message = await update_address_to_dns_provider(
                 task.config, address_info, real_update
             )
 

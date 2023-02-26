@@ -7,7 +7,7 @@ from ddns_clienter_core.runtimes.dns_providers.lexicon import DDNSProviderLexico
 __all__ = ["DDNSProviderException", "update_address_to_dns_provider"]
 
 
-def update_address_to_dns_provider(
+async def update_address_to_dns_provider(
     task_config: config.TaskConfig,
     address_info: AddressInfo | None,
     real_update: bool = True,
@@ -21,5 +21,7 @@ def update_address_to_dns_provider(
         case _:
             raise DDNSProviderException("Can not match DNS provider")
 
-    provider = provider_class(provider_name, task_config, address_info, real_update)
+    provider = await provider_class(
+        provider_name, task_config, address_info, real_update
+    )()
     return provider.update_success, provider.update_message

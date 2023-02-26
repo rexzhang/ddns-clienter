@@ -58,8 +58,10 @@ class DDNSProviderAbs:
         self.real_update = real_update
         self.address_info = address_info
 
-        # update
-        self._update_to_provider()
+    async def __call__(self, *args, **kwargs):
+        await self._update_to_provider()
+
+        return self
 
     def _update_to_provider(self):
         raise NotImplemented

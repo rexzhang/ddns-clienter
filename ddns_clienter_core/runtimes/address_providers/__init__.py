@@ -18,7 +18,7 @@ __all__ = [
 ]
 
 
-def get_ip_address_from_provider(
+async def get_ip_address_from_provider(
     address_config: config.AddressConfig,
 ) -> AddressInfo:
     if address_config.provider == "hostname":
@@ -31,5 +31,5 @@ def get_ip_address_from_provider(
     else:
         raise
 
-    provider = provider_class(address_config)
+    provider = await provider_class(address_config)()
     return provider.ip_address
