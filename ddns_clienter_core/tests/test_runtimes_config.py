@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        config = Config(BASE_DIR.joinpath("config.toml").as_posix())
+        config = Config(BASE_DIR.joinpath("docs").joinpath("config.toml").as_posix())
         self.assertEqual(config.addresses.get("from_hostname").name, "from_hostname")
         self.assertEqual(config.addresses.get("from_hostname").provider, "hostname")
         self.assertEqual(config.addresses.get("from_hostname").ipv6, True)

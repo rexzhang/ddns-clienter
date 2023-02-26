@@ -35,7 +35,7 @@ docker pull ray1ex/ddns-clienter
 
 ## Config
 
-[Example](config.toml)
+[Example](https://github.com/rexzhang/asgi-webdav/docs/config.toml)
 
 ## Start
 
@@ -88,3 +88,5 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 - Address 条目/信息不存在
 - disable 某个 task/address
+- 如果已经有进程在执行，跳过
+- 进程超时处理
