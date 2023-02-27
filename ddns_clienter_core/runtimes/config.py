@@ -1,7 +1,6 @@
+import tomllib
 from dataclasses import dataclass, field
 from logging import getLogger
-
-import toml
 
 logger = getLogger(__name__)
 
@@ -65,8 +64,9 @@ class Config:
 
     def load_from_file(self):
         try:
-            obj = toml.load(self._file_name)
-        except (FileNotFoundError, toml.decoder.TomlDecodeError) as e:
+            with open(self._file_name, "rb") as f:
+                obj = tomllib.load(f)
+        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
             logger.error(e)
             logger.error(f"Can not open config file:{self._file_name}")
             raise ConfigException(e)

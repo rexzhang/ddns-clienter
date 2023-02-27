@@ -9,7 +9,6 @@ httpx
 dns-lexicon[full]
 
 ## Config
-toml
 python-dotenv
 python-crontab
 
