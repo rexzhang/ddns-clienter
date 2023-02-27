@@ -19,7 +19,7 @@ COPY entrypoint.sh /app
 RUN \
     # install depends \
     # -- for dns-lexicon
-    apk add --no-cache py3-cryptography \
+    apk add --no-cache py3-cryptography py3-cffi \
     # -- for i18n
     && apk add --no-cache gettext \
     && pip install --no-cache-dir -r /app/requirements/docker.txt \
