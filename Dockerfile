@@ -18,12 +18,14 @@ COPY entrypoint.sh /app
 # depends
 RUN \
     # install depends \
+    apk add --no-cache --virtual .build-deps build-base libffi-dev \
     # -- for dns-lexicon
-    apk add --no-cache py3-cryptography py3-cffi \
+    && apk add --no-cache py3-cryptography \
     # -- for i18n
     && apk add --no-cache gettext \
     && pip install --no-cache-dir -r /app/requirements/docker.txt \
-    # cleanup ---
+    # cleanup --- \
+    && apk del .build-deps \
     && rm -rf /root/.cache \
     && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
     && find /usr/local/lib/python*/ -type d -name "__pycache__" -delete \
