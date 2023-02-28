@@ -7,35 +7,32 @@ logger = getLogger(__name__)
 
 
 class AddressProviderHostName(AddressProviderAbs):
-    @property
-    def name(self):
-        return "hostname"
+    name = "hostname"
 
-    async def _detect_ip_address(self) -> None:
+    async def _get_address(
+        self, ipv4: bool, ipv6: bool, parameter: str
+    ) -> (list[str], list[str]):
         try:
-            data = socket.getaddrinfo(self._address_c.parameter, 80)
+            data = socket.getaddrinfo(parameter, 80)
         except socket.gaierror as e:
             message = "Detect IP Address failed, hostname:'{}', message:{}".format(
-                self._address_c.parameter, e
+                parameter, e
             )
             logger.error(message)
             raise AddressProviderException(message)
 
+        ipv4_addresses = list()
+        ipv6_addresses = list()
+
         for item in data:
-            if (
-                item[0] == socket.AF_INET
-                and item[1] == socket.SOCK_STREAM
-                and self._address_c.ipv4
-            ):
+            if item[0] == socket.AF_INET and item[1] == socket.SOCK_STREAM and ipv4:
                 ip_address = item[4][0]
-                self.set_ipv4_address(ip_address)
+                ipv4_addresses.append(ip_address)
                 continue
 
-            if (
-                item[0] == socket.AF_INET6
-                and item[1] == socket.SOCK_STREAM
-                and self._address_c.ipv6
-            ):
+            if item[0] == socket.AF_INET6 and item[1] == socket.SOCK_STREAM and ipv6:
                 ip_address = item[4][0]
-                self.set_ipv6_address(ip_address)
+                ipv6_addresses.append(ip_address)
                 continue
+
+        return ipv4_addresses, ipv6_addresses

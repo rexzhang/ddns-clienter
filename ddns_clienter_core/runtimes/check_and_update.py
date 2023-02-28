@@ -13,7 +13,7 @@ from ddns_clienter_core.runtimes.address_providers import (
     AddressProviderException,
     get_ip_address_from_provider,
 )
-from ddns_clienter_core.runtimes.config import AddressConfig, TaskConfig
+from ddns_clienter_core.runtimes.config import AddressProviderConfig, TaskConfig
 from ddns_clienter_core.runtimes.dns_providers import (
     DDNSProviderException,
     update_address_to_dns_provider,
@@ -25,7 +25,7 @@ logger = getLogger(__name__)
 
 @dataclasses.dataclass
 class AddressDataItem:
-    config: AddressConfig
+    config: AddressProviderConfig
     config_changed: bool
 
     ipv4_changed: bool
@@ -62,27 +62,33 @@ class AddressHub:
     # 等待并导入所有并行处理结果
     # 获得已经改变的 changed_address_names
 
-    _address_configs: dict[str, AddressConfig]
+    _address_provider_config_mapper: dict[str, AddressProviderConfig]
     _data: dict[str, AddressDataItem]
     _changed_names: set[str]
 
     @staticmethod
     async def _compare_and_update_from_config_to_db(
-        address_c: AddressConfig,
+        address_provider_config: AddressProviderConfig,
     ) -> (bool, AddressInfo):
-        address_db = await models.Address.objects.filter(name=address_c.name).afirst()
+        address_db = await models.Address.objects.filter(
+            name=address_provider_config.name
+        ).afirst()
         if address_db is None:
-            address_db = models.Address(**dataclasses.asdict(address_c))
+            address_db = models.Address(**dataclasses.asdict(address_provider_config))
             await sync_to_async(address_db.save)()
-            logger.info(f"Cannot found address:{address_c.name} from db, create it.")
+            logger.info(
+                f"Cannot found address:{address_provider_config.name} from db, create it."
+            )
             return True, AddressInfo()
 
-        changed = compare_and_update_from_dataclass_to_db(address_c, address_db)
+        changed = compare_and_update_from_dataclass_to_db(
+            address_provider_config, address_db
+        )
         if changed:
             await sync_to_async(address_db.save)()
             logger.info(
                 "The address[{}]'s config has changed, update to db.".format(
-                    address_c.name
+                    address_provider_config.name
                 )
             )
             return (
@@ -93,7 +99,7 @@ class AddressHub:
                 ),
             )
 
-        logger.debug(f"The address[{address_c.name}] no change in config")
+        logger.debug(f"The address[{address_provider_config.name}] no change in config")
         return (
             False,
             AddressInfo(
@@ -102,22 +108,22 @@ class AddressHub:
             ),
         )
 
-    def __init__(self, address_configs: dict[str, AddressConfig]):
-        self._address_configs = address_configs
+    def __init__(self, address_provider_config: dict[str, AddressProviderConfig]):
+        self._address_provider_config_mapper = address_provider_config
 
     async def __call__(self, *args, **kwargs):
         self._data = dict()
 
-        for address_c in self._address_configs.values():
+        for address_provider in self._address_provider_config_mapper.values():
             (
                 config_changed,
                 address_info,
-            ) = await self._compare_and_update_from_config_to_db(address_c)
+            ) = await self._compare_and_update_from_config_to_db(address_provider)
 
             self._data.update(
                 {
-                    address_c.name: AddressDataItem(
-                        address_c, config_changed, False, False, address_info
+                    address_provider.name: AddressDataItem(
+                        address_provider, config_changed, False, False, address_info
                     )
                 }
             )
@@ -125,7 +131,7 @@ class AddressHub:
         return self
 
     @property
-    def to_be_update_addresses(self) -> list[AddressConfig]:
+    def to_be_update_addresses(self) -> list[AddressProviderConfig]:
         data = list()
         for item in self._data.values():
             data.append(item.config)

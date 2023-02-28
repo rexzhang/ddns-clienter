@@ -9,27 +9,28 @@ from ddns_clienter_core.runtimes.address_providers.http_get import (
     AddressProviderNoip,
 )
 
-__all__ = [
-    "AddressProviderException",
-    "get_ip_address_from_provider",
-    "AddressProviderHostName",
-    "AddressProviderIpify",
-    "AddressProviderNoip",
-]
+__all__ = ["AddressProviderException", "get_ip_address_from_provider"]
+
+_address_provider_class_mapper = {
+    provider_class.name: provider_class
+    for provider_class in [
+        AddressProviderHostName,
+        AddressProviderIpify,
+        AddressProviderNoip,
+    ]
+}
 
 
 async def get_ip_address_from_provider(
-    address_config: config.AddressConfig,
+    address_provider_config: config.AddressProviderConfig,
 ) -> AddressInfo:
-    if address_config.provider == "hostname":
-        provider_class = AddressProviderHostName
-    elif address_config.provider == "ipify":
-        provider_class = AddressProviderIpify
-    elif address_config.provider == "noip":
-        provider_class = AddressProviderNoip
+    print(_address_provider_class_mapper)
+    provider_class = _address_provider_class_mapper.get(
+        address_provider_config.provider_name
+    )
+    if provider_class is None:
+        raise AddressProviderException(
+            f"Can not match AddressProvider:{address_provider_config.provider_name}"
+        )
 
-    else:
-        raise
-
-    provider = await provider_class(address_config)()
-    return provider.ip_address
+    return await provider_class()(address_provider_config)

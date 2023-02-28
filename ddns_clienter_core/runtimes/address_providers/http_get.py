@@ -40,18 +40,23 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
         return ip_address
 
-    async def _detect_ip_address(self) -> None:
-        if self._address_c.ipv4 and self._ipv4_url:
-            self.set_ipv4_address(await self._detect_with_http_get(self._ipv4_url))
+    async def _get_address(
+        self, ipv4: bool, ipv6: bool, parameter: str
+    ) -> (list[str], list[str]):
+        ipv4_addresses = list()
+        ipv6_addresses = list()
 
-        if self._address_c.ipv6:
-            self.set_ipv6_address(await self._detect_with_http_get(self._ipv6_url))
+        if ipv4 and self._ipv4_url:
+            ipv4_addresses.append(await self._detect_with_http_get(self._ipv4_url))
+
+        if ipv6 and self._ipv6_url:
+            ipv6_addresses.append(await self._detect_with_http_get(self._ipv6_url))
+
+        return ipv4_addresses, ipv6_addresses
 
 
 class AddressProviderIpify(AddressProviderHttpGetAbs):
-    @property
-    def name(self):
-        return "ipify"
+    name = "ipify"
 
     @property
     def _ipv4_url(self):
@@ -64,9 +69,7 @@ class AddressProviderIpify(AddressProviderHttpGetAbs):
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):
-    @property
-    def name(self):
-        return "noip"
+    name = "noip"
 
     @property
     def _ipv4_url(self):

@@ -12,7 +12,7 @@ class Common:
 
 
 @dataclass
-class AddressConfig:
+class AddressProviderConfig:
     name: str
 
     ipv4: bool = False
@@ -23,8 +23,8 @@ class AddressConfig:
     allow_private: bool = False
     allow_loopback: bool = False
 
-    provider: str = field(default=None)  # ip address provider's name
-    parameter: str = ""  # for ip address provider
+    provider_name: str = field(default=None)  # ip address provider's name
+    provider_parameter: str = ""  # ip address provider's parameter
 
     def __post_init__(self):
         if self.allow_loopback:
@@ -52,7 +52,7 @@ class ConfigException(Exception):
 
 class Config:
     common: Common
-    addresses: dict[str, AddressConfig]
+    addresses: dict[str, AddressProviderConfig]
     tasks: dict[str, TaskConfig]
 
     def __init__(self, file_name: str):
@@ -85,11 +85,15 @@ class Config:
             raise
 
         for name, data in addresses_obj.items():
-            address_info = AddressConfig(name=name, **data)
-            if not address_info.ipv4 and not address_info.ipv6:
+            try:
+                address_provider_config = AddressProviderConfig(name=name, **data)
+            except TypeError as e:
+                raise Exception(f"Parser Config file failed, [addresses.{name}], {e}")
+
+            if not address_provider_config.ipv4 and not address_provider_config.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 
-            self.addresses.update({name: address_info})
+            self.addresses.update({name: address_provider_config})
 
         # tasks
         for name, data in tasks_obj.items():
