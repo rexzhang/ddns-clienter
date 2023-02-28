@@ -48,7 +48,11 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # Screenshot
 
+## WebUI
+
 ![WebUI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-42-35.420Z.png)
+
+## OpenAPI
 
 ![OpenAPI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-43-14.434Z.png)
 
