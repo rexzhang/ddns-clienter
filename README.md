@@ -46,6 +46,12 @@ docker run -dit -p 0.0.0.0:8000:8000 \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
 
+# Screenshot
+
+![](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-42-35.420Z.png)
+
+![](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-43-14.434Z.png)
+
 # History
 
 ## 0.7.0
