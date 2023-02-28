@@ -17,8 +17,6 @@ from uuid import uuid4
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
-from ddns_clienter_core.runtimes.config import Config, ConfigException
-
 
 def str2bool(value: str | None, default: bool) -> bool:
     if not isinstance(value, str):
