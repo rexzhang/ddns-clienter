@@ -3,7 +3,6 @@ from datetime import timedelta
 from logging import getLogger
 
 from asgiref.sync import sync_to_async
-from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
@@ -13,7 +12,12 @@ from ddns_clienter_core.runtimes.address_providers import (
     AddressProviderException,
     get_ip_address_from_provider,
 )
-from ddns_clienter_core.runtimes.config import AddressProviderConfig, TaskConfig
+from ddns_clienter_core.runtimes.config import (
+    AddressProviderConfig,
+    Config,
+    TaskConfig,
+    get_config,
+)
 from ddns_clienter_core.runtimes.dns_providers import (
     DDNSProviderException,
     update_address_to_dns_provider,
@@ -272,7 +276,7 @@ class TaskHub:
             )
         return self
 
-    async def to_be_update_tasks(self) -> list[TaskDataItem]:
+    async def to_be_update_tasks(self, config: Config) -> list[TaskDataItem]:
         now = timezone.now()
         data = list()
         for item in self._data.values():
@@ -280,7 +284,7 @@ class TaskHub:
 
             if task_db.last_update_success_time is None or (
                 task_db.last_update_success_time
-                + timedelta(minutes=settings.CONFIG.common.force_update_intervals)
+                + timedelta(minutes=config.common.force_update_intervals)
                 < now
             ):
                 # force_update_intervals timeout
@@ -334,11 +338,10 @@ class TaskHub:
 async def check_and_update(
     config_file_name: str | None = None, real_update: bool = True
 ):
-    if config_file_name is not None:
-        raise "TODO"
+    config = get_config(config_file_name)
 
     # import address data from config and db
-    ah = await AddressHub(settings.CONFIG.addresses)()
+    ah = await AddressHub(config.addresses)()
 
     # get ip address, update ip address into hub
     for address_c in ah.to_be_update_addresses:
@@ -355,10 +358,10 @@ async def check_and_update(
         logger.debug(f"address info:{address_c.name}, {address_info}")
 
     # import address data from config and db
-    th = await TaskHub(settings.CONFIG.tasks)()
+    th = await TaskHub(config.tasks)()
 
     # update to DNS provider
-    for task in await th.to_be_update_tasks():
+    for task in await th.to_be_update_tasks(config):
         try:
             address_info = ah.get_address_info_if_changed(
                 task.config.address_name, task.force_update

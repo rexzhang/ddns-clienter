@@ -44,7 +44,7 @@ ENV WORK_IN_CONTAINER="true"
 ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
 
 # i18n
-RUN django-admin compilemessages --ignore venv \
+RUN ./manage.py compilemessages --ignore venv \
     && ./manage.py collectstatic --no-input
 
 CMD /app/entrypoint.sh

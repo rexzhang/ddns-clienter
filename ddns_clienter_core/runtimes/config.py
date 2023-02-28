@@ -2,6 +2,8 @@ import tomllib
 from dataclasses import dataclass, field
 from logging import getLogger
 
+from django.conf import settings
+
 logger = getLogger(__name__)
 
 
@@ -104,3 +106,10 @@ class Config:
             self.tasks.update({name: task})
 
         # TODO: check
+
+
+def get_config(config_file_name: str = None):
+    if config_file_name is None:
+        config_file_name = settings.CONFIG_FILE
+
+    return Config(config_file_name)

@@ -7,8 +7,8 @@ class Address(models.Model):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
 
-    provider = models.CharField(max_length=255)
-    parameter = models.TextField()
+    provider_name = models.CharField(max_length=255)
+    provider_parameter = models.TextField()
 
     ipv4 = models.BooleanField()
     ipv4_match_rule = models.TextField()

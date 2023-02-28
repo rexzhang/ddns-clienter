@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
 
+from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
@@ -31,7 +32,7 @@ def init_crontab():
     cron = CronTab()
     cron.remove_all(comment=_CRON_COMMENT_TAG)
     job = cron.new(command=command, comment=_CRON_COMMENT_TAG)
-    job.minute.every(settings.CONFIG.common.check_intervals)
+    job.minute.every(get_config().common.check_intervals)
     cron.write(crontab_filename)
 
     message = f"crontab file:{crontab_filename} created/updated."

@@ -14,6 +14,7 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 - Support multiple address provider
     - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
     - [ipify](https://www.ipify.org)
+    - noip
 - Support multiple DNS provider
     - [dynv6](https://dynv6.com/docs/apis)
     - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
@@ -46,6 +47,12 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 ```
 
 # History
+
+## 0.7.0
+
+- Broken change
+    - config about [addresses.XYZ]
+- Refactor AddressProvider:XYZ
 
 ## 0.6.0 - 20230227
 
@@ -98,3 +105,4 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 - disable 某个 task/address
 - 如果已经有进程在执行，跳过
 - 进程超时处理
+- 消息推送 webhook

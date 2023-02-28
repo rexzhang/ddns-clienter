@@ -41,7 +41,7 @@
       {% for item in addresses %}
         <tr>
           <th scope="row">{{ item.name }}</th>
-          <td>{{ item.provider }}</td>
+          <td>{{ item.provider_name }}</td>
           <td>{{ item.ipv4_last_address }}</td>
           <td>{{ item.ipv4_previous_address }}</td>
           <td>{% if item.ipv4_last_change_time == None %}-{% else %}

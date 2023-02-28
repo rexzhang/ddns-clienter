@@ -6,6 +6,7 @@ from ninja.pagination import PageNumberPagination, paginate
 from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.models import Address, Event, Status, Task
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
+from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_values,
@@ -33,8 +34,8 @@ api_public = Router(tags=["Public"])
 
 
 @api_public.get("/addresses", response=list[AddressSchema])
-def list_addresses(request, full: bool = False):
-    return get_addresses_values(full)
+def list_addresses(request, debug: bool = False):
+    return get_addresses_values(config=get_config(), debug=debug)
 
 
 @api_public.get("/addresses/{name}", response=AddressSchema)
@@ -44,8 +45,8 @@ def get_address(request, name: str):
 
 
 @api_public.get("/tasks", response=list[TaskSchema])
-def list_tasks(request, full: bool = False):
-    return get_tasks_values(full)
+def list_tasks(request, debug: bool = False):
+    return get_tasks_values(config=get_config(), debug=debug)
 
 
 @api_public.get("/tasks/{name}", response=TaskSchema)
@@ -67,10 +68,6 @@ def _get_pagination_range(page: int) -> [int, int]:
 @api_public.get("/events", response=list[EventSchema])
 @paginate(PageNumberPagination)
 def get_events(request, **kwargs):
-    # TODO ninja's bug?
-    # page_range = _get_pagination_range(kwargs.get("pagination").page)
-    # events = Event.objects.order_by("-time")[page_range[0] : page_range[1]]
-    # return events
     events = Event.objects.order_by("-time").all()
     return events
 

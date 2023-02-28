@@ -59,12 +59,6 @@ else:
     DATA_PATH = BASE_DIR
     CONFIG_FILE = getenv("CONFIG_FILE", "config.toml")
 
-try:
-    CONFIG = Config(CONFIG_FILE)
-except ConfigException:
-    # Fix: executor failed running
-    # [/bin/sh -c django-admin compilemessages --ignore venv]: exit code: 1
-    CONFIG = None
 
 DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
 
