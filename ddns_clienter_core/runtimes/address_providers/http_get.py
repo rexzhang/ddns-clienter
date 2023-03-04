@@ -17,13 +17,14 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
     def _ipv6_url(self):
         raise NotImplemented
 
-    @staticmethod
-    async def _detect_with_http_get(server_url: str) -> str | None:
+    async def _detect_with_http_get(self, server_url: str) -> str | None:
         try:
             async with httpx.AsyncClient() as client:
                 r = await client.get(server_url)
         except httpx.HTTPError as e:
-            raise AddressProviderException(e)
+            message = f"Detect IP Address failed, provider:{self.name}, message:{e}"
+            logger.error(message)
+            raise AddressProviderException(message)
 
         if r.status_code != 200:
             return None
