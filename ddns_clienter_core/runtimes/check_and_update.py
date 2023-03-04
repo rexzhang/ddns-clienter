@@ -352,7 +352,7 @@ async def check_and_update(
             address_info.ipv6_prefix_length = None
 
         if address_info.ipv4_address is None and address_info.ipv6_address is None:
-            message = "Skip task:{}, because address do not need update".format(
+            message = "Skip task:[{}], because address do not need update".format(
                 task.config.name
             )
             logger.warning(message)
@@ -373,11 +373,11 @@ async def check_and_update(
             continue
 
         if update_success:
-            message = f"update task:{task.config.name} finished"
+            message = f"Update task:[{task.config.name}] finished"
             logger.info(message)
             await send_event(message)
         else:
-            message = f"update task:{task.config.name} failed, {update_message}"
+            message = f"Update task:[{task.config.name}] failed, {update_message}"
             logger.warning(message)
             await send_event(message, level=EventLevel.WARNING)
 
