@@ -63,6 +63,8 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 - Broken change
     - config about [addresses.XYZ], [tasks.XYZ]
 - Refactor AddressProvider:XYZ
+- Refactor DDNSProvider:XYZ
+- Task support enable/disable;
 
 ## 0.6.0 - 20230227
 
