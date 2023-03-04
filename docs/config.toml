@@ -24,42 +24,54 @@ provider_name = "noip"
 
 [tasks]
 
+[tasks.disabled]
+enable = false
+
+ipv4 = true
+address_name = "public_ip"
+
+provider_name = "dynv6"
+provider_auth = "this_is_token_for_this_zone"
+
+domain = "disabled.example.com"
+host = ""
+
 [tasks.ipv4_to_dynv6]
 ipv4 = true
 address_name = "from_ipify"
 
 domain = "example.com"
-host = "@"
+host = ""
 
 provider_name = "dynv6"
-provider_auth = "this-is-token-for-this-zone"
+provider_auth = "this_is_token_for_this_zone"
 
 [tasks.ipv6_to_dynv6]
 ipv6 = true
 address_name = "from_hostname"
 
 domain = "example.com"
-host = "@"
+host = ""
 
 provider_name = "dynv6"
-provider_auth = "this-is-token-for-this-zone"
+provider_auth = "this_is_token_for_this_zone"
 
 [tasks.ipv4_to_lexicon_cloudflare]
 ipv4 = true
 address_name = "from_ipify"
 
 domain = "example.com"
-host = "host-4"
+host = "host4"
 
 provider_name = "lexicon.cloudflare"
-provider_auth = "auth_token:this-is-token-for-this-zone"
+provider_auth = "auth_token:this_is_token_for_this_zone"
 
 [tasks.ipv6_to_lexicon_cloudflare]
 ipv6 = true
 address_name = "from_hostname"
 
 domain = "example.com"
-host = "host-6"
+host = "host6"
 
 provider_name = "lexicon.cloudflare"
-provider_auth = "auth_username:name@example.com,auth_token:this-is-token-for-this-zone"
+provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
