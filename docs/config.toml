@@ -22,7 +22,6 @@ ipv6 = true
 
 provider_name = "noip"
 
-
 [tasks]
 
 [tasks.ipv4_to_dynv6]
@@ -32,7 +31,7 @@ address_name = "from_ipify"
 domain = "example.com"
 host = "@"
 
-provider = "dynv6"
+provider_name = "dynv6"
 provider_auth = "this-is-token-for-this-zone"
 
 [tasks.ipv6_to_dynv6]
@@ -42,7 +41,7 @@ address_name = "from_hostname"
 domain = "example.com"
 host = "@"
 
-provider = "dynv6"
+provider_name = "dynv6"
 provider_auth = "this-is-token-for-this-zone"
 
 [tasks.ipv4_to_lexicon_cloudflare]
@@ -52,7 +51,7 @@ address_name = "from_ipify"
 domain = "example.com"
 host = "host-4"
 
-provider = "lexicon.cloudflare"
+provider_name = "lexicon.cloudflare"
 provider_auth = "auth_token:this-is-token-for-this-zone"
 
 [tasks.ipv6_to_lexicon_cloudflare]
@@ -62,5 +61,5 @@ address_name = "from_hostname"
 domain = "example.com"
 host = "host-6"
 
-provider = "lexicon.cloudflare"
+provider_name = "lexicon.cloudflare"
 provider_auth = "auth_username:name@example.com,auth_token:this-is-token-for-this-zone"

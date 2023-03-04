@@ -34,12 +34,13 @@ class Address(models.Model):
 class Task(models.Model):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
+    enable = models.BooleanField(default=True)
 
     address_name = models.CharField(max_length=255)
     ipv4 = models.BooleanField()
     ipv6 = models.BooleanField()
 
-    provider = models.CharField(max_length=255)
+    provider_name = models.CharField(max_length=255)
     provider_auth = models.TextField()
 
     domain = models.CharField(max_length=255)

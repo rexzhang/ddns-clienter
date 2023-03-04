@@ -181,6 +181,8 @@ class CallRestApi:
 
 
 class DDNSProviderDynv6(DDNSProviderAbs):
+    name = "dynv6"
+
     async def _update_to_provider(self) -> None:
         if self.task_config.host is None or len(self.task_config.host) == 0:
             logger.debug("update in Dynv6 UPDATE API")

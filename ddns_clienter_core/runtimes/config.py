@@ -38,14 +38,18 @@ class TaskConfig:
     name: str
 
     address_name: str
+
+    provider_name: str
+    provider_auth: str
+
+    domain: str
+    host: str
+
+    # have default value
+    enable: bool = True
+
     ipv4: bool = False
     ipv6: bool = False
-
-    provider: str = field(default=None)
-    provider_auth: str = field(default=None)
-
-    domain: str = field(default=None)
-    host: str = field(default=None)
 
 
 class ConfigException(Exception):
@@ -99,7 +103,11 @@ class Config:
 
         # tasks
         for name, data in tasks_obj.items():
-            task = TaskConfig(name=name, **data)
+            try:
+                task = TaskConfig(name=name, **data)
+            except TypeError as e:
+                raise Exception(f"Parser Config file failed, [tasks.{name}], {e}")
+
             if not task.ipv4 and not task.ipv6:
                 raise Exception("ipv4 ipv6 both disable")
 

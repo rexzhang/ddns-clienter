@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.views.generic import TemplateView
 
 from ddns_clienter import __name__ as name
@@ -7,12 +6,12 @@ from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_events_values,
-    get_tasks_values,
+    get_tasks_queryset,
 )
 
 
 def convert_none_to_symbol(data: dict) -> dict:
-    for key in data.keys():
+    for key in list(data.keys()):
         if "time" in key:
             continue
 
@@ -30,19 +29,19 @@ class IndexView(TemplateView):
         kwargs = super().get_context_data(**kwargs)
 
         addresses = list()
-        for data in get_addresses_values(config):
+        for data in get_addresses_values(config).values():
             data = convert_none_to_symbol(data)
 
             addresses.append(data)
 
         tasks = list()
-        for data in get_tasks_values(config):
-            if data["host"] is None or data["host"] == "":
+        for data in get_tasks_queryset(config).values():
+            data = convert_none_to_symbol(data)
+
+            if data["host"] == "-":
                 data["full_domain"] = data["domain"]
             else:
                 data["full_domain"] = "{}.{}".format(data["host"], data["domain"])
-
-            # data = convert_none_to_symbol(data)
 
             tasks.append(data)
 

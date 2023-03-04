@@ -32,36 +32,31 @@ class DDNSProviderConnectException(DDNSProviderException):
 
 
 class DDNSProviderAbs:
-    provider_name = None
-    provider_name_sub = None
+    name: str = None
+    provider_name: str = None
     address_info: AddressInfo
     update_success: bool
     update_message: str
 
     def __init__(
         self,
-        provider_name: list[str],
+        provider_name: str,
         task_config: config.TaskConfig,
         address_info: AddressInfo,
         real_update: bool,
     ):
-        match len(provider_name):
-            case 1:
-                self.provider_name = provider_name[0]
-            case 2:
-                self.provider_name = provider_name[0]
-                self.provider_name_sub = provider_name[1]
-            case _:
-                raise
+        if self.name is None:
+            raise NotImplementedError("DDNSProviderAbs.name")
 
+        self.provider_name = provider_name
         self.task_config = task_config
         self.real_update = real_update
         self.address_info = address_info
 
-    async def __call__(self, *args, **kwargs):
+    async def __call__(self, *args, **kwargs) -> (bool, str):
         await self._update_to_provider()
 
-        return self
+        return self.update_success, self.update_message
 
     async def _update_to_provider(self) -> None:
         raise NotImplemented

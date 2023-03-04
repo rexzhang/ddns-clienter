@@ -9,7 +9,7 @@ from ddns_clienter_core.runtimes.check_and_update import check_and_update
 from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
-    get_tasks_values,
+    get_tasks_queryset,
 )
 
 AddressSchema = create_schema(Address, exclude=[])
@@ -46,7 +46,7 @@ def get_address(request, name: str):
 
 @api_public.get("/tasks", response=list[TaskSchema])
 def list_tasks(request, debug: bool = False):
-    return get_tasks_values(config=get_config(), debug=debug)
+    return get_tasks_queryset(config=get_config(), debug=debug)
 
 
 @api_public.get("/tasks/{name}", response=TaskSchema)

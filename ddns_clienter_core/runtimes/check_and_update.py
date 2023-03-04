@@ -3,7 +3,6 @@ from datetime import timedelta
 from logging import getLogger
 
 from asgiref.sync import sync_to_async
-from django.forms.models import model_to_dict
 from django.utils import timezone
 
 from ddns_clienter_core import models
@@ -23,6 +22,9 @@ from ddns_clienter_core.runtimes.dns_providers import (
     update_address_to_dns_provider,
 )
 from ddns_clienter_core.runtimes.event import send_event
+from ddns_clienter_core.runtimes.persistent_data import (
+    compare_and_update_config_info_from_dict_to_db,
+)
 
 logger = getLogger(__name__)
 
@@ -49,17 +51,6 @@ class CannotMatchAddressException(Exception):
     pass
 
 
-def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
-    changed = False
-    data = model_to_dict(db_obj)
-    for k, v in dataclasses.asdict(dc_obj).items():
-        if data.get(k) != v:
-            changed = True
-            db_obj.__setattr__(k, v)
-
-    return changed
-
-
 class AddressHub:
     # 导入 Address Config+DB 信息
     # 计算获取 需要获取的 addresses 清单，交给 address_provider 去并行处理
@@ -70,48 +61,6 @@ class AddressHub:
     _data: dict[str, AddressDataItem]
     _changed_names: set[str]
 
-    @staticmethod
-    async def _compare_and_update_from_config_to_db(
-        address_provider_config: AddressProviderConfig,
-    ) -> (bool, AddressInfo):
-        address_db = await models.Address.objects.filter(
-            name=address_provider_config.name
-        ).afirst()
-        if address_db is None:
-            address_db = models.Address(**dataclasses.asdict(address_provider_config))
-            await sync_to_async(address_db.save)()
-            logger.info(
-                f"Cannot found address:{address_provider_config.name} from db, create it."
-            )
-            return True, AddressInfo()
-
-        changed = compare_and_update_from_dataclass_to_db(
-            address_provider_config, address_db
-        )
-        if changed:
-            await sync_to_async(address_db.save)()
-            logger.info(
-                "The address[{}]'s config has changed, update to db.".format(
-                    address_provider_config.name
-                )
-            )
-            return (
-                True,
-                AddressInfo(
-                    address_db.ipv4_last_address,
-                    address_db.ipv6_last_address,
-                ),
-            )
-
-        logger.debug(f"The address[{address_provider_config.name}] no change in config")
-        return (
-            False,
-            AddressInfo(
-                address_db.ipv4_last_address,
-                address_db.ipv6_last_address,
-            ),
-        )
-
     def __init__(self, address_provider_config: dict[str, AddressProviderConfig]):
         self._address_provider_config_mapper = address_provider_config
 
@@ -119,10 +68,20 @@ class AddressHub:
         self._data = dict()
 
         for address_provider in self._address_provider_config_mapper.values():
-            (
-                config_changed,
-                address_info,
-            ) = await self._compare_and_update_from_config_to_db(address_provider)
+            config_changed = await sync_to_async(
+                compare_and_update_config_info_from_dict_to_db
+            )(
+                config_item_dict=dataclasses.asdict(address_provider),
+                model=models.Address,
+            )
+
+            address_db = await models.Address.objects.filter(
+                name=address_provider.name
+            ).afirst()
+            address_info = AddressInfo(
+                address_db.ipv4_last_address,
+                address_db.ipv6_last_address,
+            )
 
             self._data.update(
                 {
@@ -235,41 +194,32 @@ class TaskHub:
     _config_tasks: dict[str, TaskConfig]
     _data: dict[str, TaskDataItem]
 
-    @staticmethod
-    async def _compare_and_update_from_config_to_db(task_c: TaskConfig) -> (bool, bool):
-        task_db = await models.Task.objects.filter(name=task_c.name).afirst()
-        if task_db is None:
-            task_db = models.Task(**dataclasses.asdict(task_c))
-            await sync_to_async(task_db.save)()
-            logger.info(f"Cannot found task:{task_c.name} from db, create it in db.")
-
-            return True, False
-
-        changed = compare_and_update_from_dataclass_to_db(task_c, task_db)
-        if changed:
-            await sync_to_async(task_db.save)()
-            logger.info(f"The task[{task_c.name}]'s config has changed, update to db.")
-            return True, task_db.last_update_success
-
-        logger.debug(f"The task[{task_c.name}] no change in config")
-        return False, task_db.last_update_success
-
     def __init__(self, tasks_c: dict[str, TaskConfig]):
         self._data = dict()
         self._config_tasks = tasks_c
 
     async def __call__(self, *args, **kwargs):
-        for tasks_c in self._config_tasks.values():
-            (
-                config_changed,
-                last_update_success,
-            ) = await self._compare_and_update_from_config_to_db(tasks_c)
+        for task_config_item in self._config_tasks.values():
+            if not task_config_item.enable:
+                continue
+
+            config_changed = await sync_to_async(
+                compare_and_update_config_info_from_dict_to_db
+            )(
+                config_item_dict=dataclasses.asdict(task_config_item),
+                model=models.Task,
+            )
+
+            task_db = await models.Task.objects.filter(
+                name=task_config_item.name
+            ).afirst()
+
             self._data.update(
                 {
-                    tasks_c.name: TaskDataItem(
-                        tasks_c,
+                    task_config_item.name: TaskDataItem(
+                        task_config_item,
                         config_changed,
-                        last_update_success,
+                        task_db.last_update_success,
                         False,
                     )
                 }

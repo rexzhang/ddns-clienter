@@ -10,10 +10,12 @@ logger = getLogger(__name__)
 
 
 class DDNSProviderLexicon(DDNSProviderAbs):
+    name = "lexicon"
+
     def _do_update(self, action: dict) -> (bool, str):
         action.update(
             {
-                "provider_name": self.provider_name_sub,
+                "provider_name": self.provider_name,
                 "action": "update",
                 "domain": self.task_config.domain,
                 "name": self.task_config.host,
@@ -25,7 +27,7 @@ class DDNSProviderLexicon(DDNSProviderAbs):
         for data in extra_config_data:
             data = data.split(":")
             extra_config.update({data[0]: data[1]})
-        action.update({self.provider_name_sub: extra_config})
+        action.update({self.provider_name: extra_config})
 
         try:
             result = Client(ConfigResolver().with_dict(action)).execute()

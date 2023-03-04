@@ -24,7 +24,6 @@ _address_provider_class_mapper = {
 async def get_ip_address_from_provider(
     address_provider_config: config.AddressProviderConfig,
 ) -> AddressInfo:
-    print(_address_provider_class_mapper)
     provider_class = _address_provider_class_mapper.get(
         address_provider_config.provider_name
     )

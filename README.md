@@ -61,7 +61,7 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 ## 0.7.0
 
 - Broken change
-    - config about [addresses.XYZ]
+    - config about [addresses.XYZ], [tasks.XYZ]
 - Refactor AddressProvider:XYZ
 
 ## 0.6.0 - 20230227
