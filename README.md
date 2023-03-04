@@ -58,7 +58,7 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # History
 
-## 0.7.0
+## 0.7.0 - 20220304
 
 - Broken change
     - config about [addresses.XYZ], [tasks.XYZ]
