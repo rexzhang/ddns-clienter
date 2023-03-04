@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
             config.tasks.get("ipv6_to_dynv6").address_name, "from_hostname"
         )
         self.assertEqual(config.tasks.get("ipv6_to_dynv6").ipv6, True)
-        self.assertEqual(config.tasks.get("ipv6_to_dynv6").provider, "dynv6")
+        self.assertEqual(config.tasks.get("ipv6_to_dynv6").provider_name, "dynv6")
 
 
 if __name__ == "__main__":
