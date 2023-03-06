@@ -122,7 +122,7 @@ class AddressHub:
             address_db.ipv4_last_address = newest_address.ipv4_address
             address_db.ipv4_last_change_time = now
 
-            message = "{}'s ipv4 changed:{}->{}".format(
+            message = "[{}]'s ipv4 changed:{}->{}".format(
                 name,
                 address_db.ipv4_previous_address,
                 address_db.ipv4_last_address,
@@ -133,7 +133,7 @@ class AddressHub:
         if newest_address.ipv6_address is not None and (
             newest_address.ipv6_address != address_data.newest_address.ipv6_address
         ):
-            message = "{}'s ipv6 changed:{}->{}/{}".format(
+            message = "[{}]'s ipv6 changed:{}->{}/{}".format(
                 name,
                 address_db.ipv6_last_address,  # last
                 newest_address.ipv6_address,  # new
@@ -334,8 +334,8 @@ async def check_and_update(
             continue
 
         if address_info.ipv4_address is None and address_info.ipv6_address is None:
-            message = "{}: ipv4_address and ipv6_address both None".format(
-                task.config.address_name
+            message = (
+                f"[{task.config.address_name}]: ipv4_address and ipv6_address both None"
             )
             logger.warning(message)
             await send_event(message, level=EventLevel.WARNING)

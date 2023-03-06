@@ -42,7 +42,9 @@ class AddressProviderAbs:
                     continue
 
                 if obj.version != 4:
-                    logger.warning(f"{ip_address} is not IPv4")
+                    logger.warning(
+                        f"AddressProvider:{self.name}:{ip_address} is not IPv4"
+                    )
                     continue
 
                 ipv4_address = obj
@@ -62,7 +64,9 @@ class AddressProviderAbs:
                     continue
 
                 if obj.version != 6:
-                    logger.warning(f"{ip_address} is not IPv6")
+                    logger.warning(
+                        f"AddressProvider:{self.name}:{ip_address} is not IPv6"
+                    )
                     continue
 
                 ipv6_address = obj
