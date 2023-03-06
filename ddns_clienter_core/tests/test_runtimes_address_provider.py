@@ -21,7 +21,6 @@ async def test_something():
         provider_parameter="localhost",
     )
     ip_address = await AddressProviderHostName()(address_provider_config)
-    print(ip_address)
     assert ip_address.ipv4_address == IPv4Address("127.0.0.1")
     assert ip_address.ipv6_address == IPv6Address("::1")
 

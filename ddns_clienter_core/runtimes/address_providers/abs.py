@@ -27,8 +27,6 @@ class AddressProviderAbs:
             address_provider_config.ipv6,
             address_provider_config.provider_parameter,
         )
-        print(ipv4_addresses)
-        print(ipv6_addresses)
 
         ipv4_address = None
         if address_provider_config.ipv4:
