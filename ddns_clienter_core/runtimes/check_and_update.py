@@ -1,3 +1,4 @@
+import asyncio
 import dataclasses
 from datetime import timedelta
 from logging import getLogger
@@ -27,6 +28,7 @@ from ddns_clienter_core.runtimes.persistent_data import (
 )
 
 logger = getLogger(__name__)
+_task_lock = asyncio.Lock()
 
 
 @dataclasses.dataclass
@@ -286,6 +288,18 @@ class TaskHub:
 
 
 async def check_and_update(
+    config_file_name: str | None = None, real_update: bool = True
+) -> str | None:
+    if _task_lock.locked():
+        return "There are already tasks in progress, please try later"
+
+    async with _task_lock:
+        await _check_an_update(config_file_name, real_update)
+
+    return None
+
+
+async def _check_an_update(
     config_file_name: str | None = None, real_update: bool = True
 ):
     config = get_config(config_file_name)

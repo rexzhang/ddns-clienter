@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ninja import ModelSchema, NinjaAPI, Router
 from ninja.orm import create_schema
@@ -72,13 +73,15 @@ def get_events(request, **kwargs):
     return events
 
 
-api_inside = Router(auth=auth_local_host, tags=["Inside"])
+if settings.DEBUG:
+    api_inside = Router(tags=["Inside"])
+else:
+    api_inside = Router(auth=auth_local_host, tags=["Inside"])
 
 
 @api_inside.get("/check_and_update")
 async def api_check_and_update(request):
-    await check_and_update()
-    return
+    return await check_and_update()
 
 
 api = NinjaAPI(title="DDNS Clienter API")
