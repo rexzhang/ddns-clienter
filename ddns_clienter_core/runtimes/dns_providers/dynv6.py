@@ -33,9 +33,12 @@ async def _call_update_api(
     if not real_update:
         return True, ""
 
-    async with httpx.AsyncClient() as client:
-        r = await client.get(_update_api_url, params=params)
-    logger.debug(f"{r.status_code} {r.content}")
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(_update_api_url, params=params)
+        logger.debug(f"{r.status_code} {r.content}")
+    except (httpx.HTTPError, httpx.StreamError) as e:
+        return False, str(e)
 
     if r.status_code == 200:
         return True, r.text
