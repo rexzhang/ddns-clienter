@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 
 from ddns_clienter import __name__ as name
 from ddns_clienter import __project_url__, __version__
+from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_running
 from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
@@ -60,6 +61,7 @@ class IndexView(TemplateView):
                 "app_version": __version__,
                 "app_url": __project_url__,
                 "app_config": config,
+                "check_and_update_is_running": check_and_update_is_running(),
                 "addresses": addresses,
                 "tasks": tasks,
                 "events": events,

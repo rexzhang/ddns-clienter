@@ -28,7 +28,8 @@ from ddns_clienter_core.runtimes.persistent_data import (
 )
 
 logger = getLogger(__name__)
-_task_lock = asyncio.Lock()
+
+_check_and_update_running_lock = asyncio.Lock()
 
 
 @dataclasses.dataclass
@@ -287,13 +288,17 @@ class TaskHub:
         await sync_to_async(db_task.save)()
 
 
+def check_and_update_is_running() -> bool:
+    return _check_and_update_running_lock.locked()
+
+
 async def check_and_update(
     config_file_name: str | None = None, real_update: bool = True
 ) -> str | None:
-    if _task_lock.locked():
+    if _check_and_update_running_lock.locked():
         return "There are already tasks in progress, please try later"
 
-    async with _task_lock:
+    async with _check_and_update_running_lock:
         await _check_an_update(config_file_name, real_update)
 
     return None
