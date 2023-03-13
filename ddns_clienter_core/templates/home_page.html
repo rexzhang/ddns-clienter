@@ -1,45 +1,6 @@
 {% extends "base.html" %}{% load i18n %}{% load l10n %}
 {% block content %}
   <div class="container pt-2">
-    <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
-      {{ app_config.common.force_update_intervals }}{% translate "minutes" %}</small></small>
-    </h4>
-    <table class="table table-striped align-middle">
-      <thead>
-      <tr>
-        <th scope="col">{% translate "Name" %}</th>
-        <th scope="col">{% translate "Provider" %}</th>
-        <th scope="col">{% translate "Domain" %}</th>
-        <th scope="col">{% translate "IP Addresses" %}</th>
-        <th scope="col">{% translate "Status" %}</th>
-        <th scope="col">{% translate "Last Success Time" %}</th>
-        <th scope="col">{% translate "Last Update Time" %}</th>
-      </tr>
-      </thead>
-      <tbody class="table-group-divider">
-      {% for item in tasks %}
-        <tr {% if not item.enable %}class="bg-secondary"{% endif %}>
-          <th scope="row">{{ item.name }}</th>
-          <td>{{ item.provider_name }}</td>
-          <td>{{ item.full_domain }}</td>
-          <td>{{ item.last_ip_addresses }}</td>
-          <td>{% if item.last_update_time is None %}<i class="bi bi-plus-circle-dotted"></i>
-            {% else %}{% if item.last_update_success %}<i class="bi bi-check-lg"></i>
-            {% else %}<i class="bi bi-x-lg"></i>{% endif %}{% endif %}
-          </td>
-          <td>{% if item.last_update_success_time == None %}-{% else %}
-            {{ item.last_update_success_time|timesince }} {% translate "ago" %}{% endif %}</td>
-          <td>{% if item.last_update_time == None %}-{% else %}
-            {{ item.last_update_time|timesince }} {% translate "ago" %}{% endif %}</td>
-        </tr>
-      {% empty %}
-        <th>Sorry, no data in this list.</th>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="container pt-2">
     <h4>{% translate "Addresses" %} <small><small class="fw-lighter">
       {% translate "Check Intervals" %}:
       {{ app_config.common.check_intervals }}{% translate "minutes" %}</small></small>
@@ -78,5 +39,43 @@
     </table>
   </div>
 
+  <div class="container pt-2">
+    <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
+      {{ app_config.common.force_update_intervals }}{% translate "minutes" %}</small></small>
+    </h4>
+    <table class="table table-striped align-middle">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Name" %}</th>
+        <th scope="col">{% translate "Provider" %}</th>
+        <th scope="col">{% translate "Domain" %}</th>
+        <th scope="col">{% translate "IP Addresses" %}</th>
+        <th scope="col">{% translate "Status" %}</th>
+        <th scope="col">{% translate "Last Success Time" %}</th>
+        <th scope="col">{% translate "Last Update Time" %}</th>
+      </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      {% for item in tasks %}
+        <tr {% if not item.enable %}class="bg-secondary"{% endif %}>
+          <th scope="row">{{ item.name }}</th>
+          <td>{{ item.provider_name }}</td>
+          <td>{{ item.full_domain }}</td>
+          <td>{{ item.last_ip_addresses }}</td>
+          <td>{% if item.last_update_time is None %}<i class="bi bi-plus-circle-dotted"></i>
+            {% else %}{% if item.last_update_success %}<i class="bi bi-check-lg"></i>
+            {% else %}<i class="bi bi-x-lg"></i>{% endif %}{% endif %}
+          </td>
+          <td>{% if item.last_update_success_time == None %}-{% else %}
+            {{ item.last_update_success_time|timesince }} {% translate "ago" %}{% endif %}</td>
+          <td>{% if item.last_update_time == None %}-{% else %}
+            {{ item.last_update_time|timesince }} {% translate "ago" %}{% endif %}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
 
