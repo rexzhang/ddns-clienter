@@ -1,0 +1,67 @@
+<!doctype html>{% load static %}{% load django_bootstrap5 %}
+{% load i18n %}{% load l10n %}
+<html lang="en" data-bs-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% bootstrap_css %}
+  <link rel="stylesheet" href="{% static '/css/bootstrap-icons.1.10.3.css' %}">
+  <script src="{% static '/js/bootstrap-color-modes.js' %} "></script>
+  <title>{{ app_name }}</title>
+</head>
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
+      data-sidebar-shortcut-enabled="true">
+<header>
+  <nav class="navbar navbar-expand-lg bg-primary bg-gradient">
+    <div class="container">
+      <a class="navbar-brand" href="/">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto">
+          {% if check_and_update_is_running %}
+            <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Check/Update is running</span>
+            </li>{% endif %}
+          <li class="nav-item my-auto"><a class="nav-link" href="/api/docs">{OpenAPI}</a></li>
+          <li class="nav-item my-auto"><a class="nav-link" href="{{ app_url }}">
+            <i class="bi-github" style="font-size: 1.2rem"></i>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+<main class="pt-4 pb-4">
+  {% block content %}{% endblock %}
+
+  <div class="container pt-2">
+    <h4>{% translate "Events" %}</h4>
+    <table class="table table-striped align-middle">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Timestamp" %}</th>
+        <th scope="col">{% translate "Level" %}</th>
+        <th scope="col">{% translate "Message" %}</th>
+      </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      {% for item in events %}
+        <tr {% if item.highlight %} class="bg-warning" {% endif %}>
+          <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
+          <td>{{ item.level }}</td>
+          <td class="font-monospace">{{ item.message }}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+{#<footer>#}
+{#  <hr class="mb-1">#}
+{#  <div class="container font-monospace pb-2"><small>#}
+{#    <a href="/api/docs">OpenAPI</a> | <a href="{{ app_url }}"><i class="bi bi-github"></i> GitHub</a>#}
+{#  </small></div>#}
+{#</footer>#}
+{% bootstrap_javascript %}
+</body>
+</html>

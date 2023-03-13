@@ -97,7 +97,7 @@ def get_tasks_queryset(config: Config, debug: bool = False) -> QuerySet:
     return queryset.order_by("name")
 
 
-def get_events_values(config: Config, debug: bool = False) -> QuerySet:
+def get_events_values(debug: bool = False) -> QuerySet:
     if debug:
         queryset = Event.objects.all()
     else:

@@ -2,6 +2,8 @@ from ipaddress import IPv4Address, IPv6Address
 
 from django.db import models
 
+CHECK_INTERVALS = 5
+
 
 class AddressInfo:
     ipv4_address: IPv4Address | None = None

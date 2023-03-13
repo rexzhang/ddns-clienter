@@ -113,8 +113,14 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 # TODO
 
-- Address 条目/信息不存在
-- disable 某个 task/address
-- 如果已经有进程在执行，跳过
+- 用户错误提示友好
+    - 在 WebUI 提示配置错误
+    - 显示任务正在执行
+- 日志
+    - 全面整理日志信息输出
+    - 所有 INFO 以及以上级别的logging自动进日志
+    - 消息推送 webhook
+- 安全的任务调用
+    - docker中可以call api
+    - 可以通过 token 认证
 - 进程超时处理
-- 消息推送 webhook

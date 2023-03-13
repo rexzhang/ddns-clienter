@@ -13,14 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
 from django.urls import path
 
 from ddns_clienter_core.api import api
-from ddns_clienter_core.views import IndexView
+from ddns_clienter_core.views import FailedViewLoadConfig, HomePageView
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path("", IndexView.as_view()),
+    path("", HomePageView.as_view()),
     path("api/", api.urls),
+    path(
+        "failed_load_config/", FailedViewLoadConfig.as_view(), name="failed_load_config"
+    ),
 ]

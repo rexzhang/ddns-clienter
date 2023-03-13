@@ -308,6 +308,9 @@ async def _check_an_update(
     config_file_name: str | None = None, real_update: bool = True
 ):
     config = get_config(config_file_name)
+    if config is None:
+        logger.critical("load config failed!")
+        return
 
     # import address data from config and db
     ah = await AddressHub(config.addresses)()

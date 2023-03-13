@@ -4,12 +4,14 @@ from logging import getLogger
 
 from django.conf import settings
 
+from ddns_clienter_core.constants import CHECK_INTERVALS
+
 logger = getLogger(__name__)
 
 
 @dataclass
 class Common:
-    check_intervals: int = field(default=5)  # minutes
+    check_intervals: int = field(default=CHECK_INTERVALS)  # minutes
     force_update_intervals: int = field(default=1440)  # minutes, 1day
 
 
@@ -72,7 +74,7 @@ class Config:
         try:
             with open(self._file_name, "rb") as f:
                 obj = tomllib.load(f)
-        except (FileNotFoundError, tomllib.TOMLDecodeError) as e:
+        except (OSError, tomllib.TOMLDecodeError) as e:
             logger.error(e)
             logger.error(f"Can not open config file:{self._file_name}")
             raise ConfigException(e)
@@ -116,8 +118,14 @@ class Config:
         # TODO: check
 
 
-def get_config(config_file_name: str = None):
+def get_config(config_file_name: str = None) -> Config | None:
     if config_file_name is None:
         config_file_name = settings.CONFIG_FILE
 
-    return Config(config_file_name)
+    try:
+        config = Config(config_file_name)
+    except ConfigException as e:
+        logger.error(e)
+        config = None
+
+    return config

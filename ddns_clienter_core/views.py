@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from ddns_clienter import __name__ as name
@@ -22,21 +23,62 @@ def convert_none_to_symbol(data: dict) -> dict:
     return data
 
 
-class IndexView(TemplateView):
-    template_name = "index_v2.html"
+class DCException(Exception):
+    pass
+
+
+class DCExceptionLoadConfigFailed(DCException):
+    pass
+
+
+class DCTemplateView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        try:
+            context = self.get_context_data(**kwargs)
+        except DCExceptionLoadConfigFailed:
+            return redirect("failed_load_config")
+        except DCException:
+            raise
+
+        if not isinstance(context, dict):
+            raise
+
+        context.update(
+            {
+                "app_name": name,
+                "app_version": __version__,
+                "app_url": __project_url__,
+            }
+        )
+        return self.render_to_response(context)
+
+
+class HomePageView(DCTemplateView):
+    template_name = "home_page.html"
+
+    # def get(self, request, *args, **kwargs):
+    #     context = self.get_context_data(**kwargs)
+    #     if context is None:
+    #         return redirect("failed_load_config")
+    #
+    #     else:
+    #         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
-        config = get_config()
+        app_config = get_config()
+        if app_config is None:
+            raise DCExceptionLoadConfigFailed
+
         kwargs = super().get_context_data(**kwargs)
 
         addresses = list()
-        for data in get_addresses_values(config).values():
+        for data in get_addresses_values(app_config).values():
             data = convert_none_to_symbol(data)
 
             addresses.append(data)
 
         tasks = list()
-        for data in get_tasks_queryset(config).values():
+        for data in get_tasks_queryset(app_config).values():
             data = convert_none_to_symbol(data)
 
             if data["host"] == "-":
@@ -47,7 +89,7 @@ class IndexView(TemplateView):
             tasks.append(data)
 
         events = list()
-        for data in get_events_values(config):
+        for data in get_events_values():
             if data["level"] in {"WARNING", "ERROR", "CRITICAL"}:
                 data["highlight"] = True
             else:
@@ -57,10 +99,7 @@ class IndexView(TemplateView):
 
         kwargs.update(
             {
-                "app_name": name,
-                "app_version": __version__,
-                "app_url": __project_url__,
-                "app_config": config,
+                "app_config": app_config,
                 "check_and_update_is_running": check_and_update_is_running(),
                 "addresses": addresses,
                 "tasks": tasks,
@@ -68,3 +107,7 @@ class IndexView(TemplateView):
             }
         )
         return kwargs
+
+
+class FailedViewLoadConfig(DCTemplateView):
+    template_name = "failed_load_config.html"
