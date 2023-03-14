@@ -1,3 +1,4 @@
+from asgiref.sync import async_to_sync
 from django.core.management.base import BaseCommand, CommandError
 
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
@@ -11,6 +12,6 @@ class Command(BaseCommand):
         parser.add_argument("--real-update", action="store_true")
 
     def handle(self, *args, **options):
-        check_and_update(
+        async_to_sync(check_and_update)(
             config_file_name=options["config"], real_update=options["real_update"]
         )
