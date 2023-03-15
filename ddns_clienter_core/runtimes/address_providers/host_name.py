@@ -1,7 +1,10 @@
 import socket
 from logging import getLogger
 
-from .abs import AddressProviderAbs, AddressProviderException
+from ddns_clienter_core.runtimes.address_providers.abs import (
+    AddressProviderAbs,
+    AddressProviderException,
+)
 
 logger = getLogger(__name__)
 
