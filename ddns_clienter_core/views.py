@@ -1,8 +1,7 @@
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from ddns_clienter import __name__ as name
-from ddns_clienter import __project_url__, __version__
+from ddns_clienter_core.apps import running_contents
 from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_running
 from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
@@ -43,13 +42,7 @@ class DCTemplateView(TemplateView):
         if not isinstance(context, dict):
             raise
 
-        context.update(
-            {
-                "app_name": name,
-                "app_version": __version__,
-                "app_url": __project_url__,
-            }
-        )
+        context.update(running_contents)
         return self.render_to_response(context)
 
 

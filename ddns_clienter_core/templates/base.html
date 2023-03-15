@@ -56,12 +56,14 @@
     </table>
   </div>
 </main>
-{#<footer>#}
-{#  <hr class="mb-1">#}
-{#  <div class="container font-monospace pb-2"><small>#}
-{#    <a href="/api/docs">OpenAPI</a> | <a href="{{ app_url }}"><i class="bi bi-github"></i> GitHub</a>#}
-{#  </small></div>#}
-{#</footer>#}
+<footer>
+  <hr class="mb-1">
+  <div class="container font-monospace pb-2"><small>
+    {% for k,v in web_ui_footer.items %}
+      {{ k }}: {{ v }}
+    {% endfor %}
+  </small></div>
+</footer>
 {% bootstrap_javascript %}
 </body>
 </html>
