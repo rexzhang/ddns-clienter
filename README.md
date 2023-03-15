@@ -111,6 +111,28 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 
 - First release
 
+# Trouble Shooting
+
+## Can't detect ipv4/6 both on provider `ipify` and `noip`
+
+check your Docker container DNS server, do you reach it ?
+
+## Can't detect any ip address from provider `hostname`
+
+check your Docker container DNS server, is it your local network master dns server? you can check with:
+
+```shell
+ping your-host-name
+ping6 your-host-name
+ping -6 your-host-name
+```
+
+## Can't detect ipv6 from provider `hostname`
+
+check your docker host network config
+
+in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
+
 # TODO
 
 - 用户错误提示友好
