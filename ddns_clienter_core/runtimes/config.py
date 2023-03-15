@@ -75,9 +75,8 @@ class Config:
             with open(self._file_name, "rb") as f:
                 obj = tomllib.load(f)
         except (OSError, tomllib.TOMLDecodeError) as e:
-            logger.error(e)
-            logger.error(f"Can not open config file:{self._file_name}")
-            raise ConfigException(e)
+            message = f"Open config file file:{self._file_name} failed; {e}"
+            raise ConfigException(message)
 
         # common
         common_obj = obj.get("common")
@@ -96,10 +95,12 @@ class Config:
             try:
                 address_provider_config = AddressProviderConfig(name=name, **data)
             except TypeError as e:
-                raise Exception(f"Parser Config file failed, [addresses.{name}], {e}")
+                message = f"Parser Config file failed, [addresses.{name}]; {e}"
+                raise ConfigException(message)
 
             if not address_provider_config.ipv4 and not address_provider_config.ipv6:
-                raise Exception("ipv4 ipv6 both disable")
+                message = f"Parser Config file failed, [addresses.{name}]; ipv4 ipv6 both disable"
+                raise ConfigException(message)
 
             self.addresses.update({name: address_provider_config})
 
@@ -108,24 +109,24 @@ class Config:
             try:
                 task = TaskConfig(name=name, **data)
             except TypeError as e:
-                raise Exception(f"Parser Config file failed, [tasks.{name}], {e}")
+                message = f"Parser Config file failed, [tasks.{name}]; {e}"
+                raise ConfigException(message)
 
             if not task.ipv4 and not task.ipv6:
-                raise Exception("ipv4 ipv6 both disable")
+                message = (
+                    f"Parser Config file failed, [tasks.{name}]; ipv4 ipv6 both disable"
+                )
+                raise ConfigException(message)
 
             self.tasks.update({name: task})
 
         # TODO: check
 
 
-def get_config(config_file_name: str = None) -> Config | None:
+def get_config(config_file_name: str = None) -> Config:
     if config_file_name is None:
         config_file_name = settings.CONFIG_FILE
 
-    try:
-        config = Config(config_file_name)
-    except ConfigException as e:
-        logger.error(e)
-        config = None
+    config = Config(config_file_name)
 
     return config

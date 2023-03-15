@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from ddns_clienter_core.apps import running_contents
 from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_running
-from ddns_clienter_core.runtimes.config import get_config
+from ddns_clienter_core.runtimes.config import ConfigException, get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_events_values,
@@ -32,35 +33,26 @@ class DCExceptionLoadConfigFailed(DCException):
 
 class DCTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
-        try:
-            context = self.get_context_data(**kwargs)
-        except DCExceptionLoadConfigFailed:
-            return redirect("failed_load_config")
-        except DCException:
-            raise
-
-        if not isinstance(context, dict):
-            raise
+        context = self.get_context_data(**kwargs)
+        if context is None:
+            return redirect("trouble_shooting")
 
         context.update(running_contents)
         return self.render_to_response(context)
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     pass
 
 
 class HomePageView(DCTemplateView):
     template_name = "home_page.html"
 
-    # def get(self, request, *args, **kwargs):
-    #     context = self.get_context_data(**kwargs)
-    #     if context is None:
-    #         return redirect("failed_load_config")
-    #
-    #     else:
-    #         return self.render_to_response(context)
-
     def get_context_data(self, **kwargs):
-        app_config = get_config()
-        if app_config is None:
-            raise DCExceptionLoadConfigFailed
+        try:
+            app_config = get_config()
+        except ConfigException as e:
+            messages.add_message(self.request, messages.ERROR, str(e))
+            return None
 
         kwargs = super().get_context_data(**kwargs)
 
@@ -102,5 +94,5 @@ class HomePageView(DCTemplateView):
         return kwargs
 
 
-class FailedViewLoadConfig(DCTemplateView):
-    template_name = "failed_load_config.html"
+class TroubleShootingView(DCTemplateView):
+    template_name = "trouble_shooting.html"

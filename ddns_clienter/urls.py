@@ -16,12 +16,10 @@ Including another URLconf
 from django.urls import path
 
 from ddns_clienter_core.api import api
-from ddns_clienter_core.views import FailedViewLoadConfig, HomePageView
+from ddns_clienter_core.views import HomePageView, TroubleShootingView
 
 urlpatterns = [
     path("", HomePageView.as_view()),
     path("api/", api.urls),
-    path(
-        "failed_load_config/", FailedViewLoadConfig.as_view(), name="failed_load_config"
-    ),
+    path("trouble_shooting/", TroubleShootingView.as_view(), name="trouble_shooting"),
 ]

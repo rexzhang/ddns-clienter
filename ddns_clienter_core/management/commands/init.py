@@ -7,7 +7,7 @@ from django.core import management
 from django.core.management.base import BaseCommand
 
 from ddns_clienter_core.constants import CHECK_INTERVALS
-from ddns_clienter_core.runtimes.config import get_config
+from ddns_clienter_core.runtimes.config import ConfigException, get_config
 from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
@@ -30,15 +30,17 @@ def init_crontab():
     else:
         crontab_filename = "/tmp/dc-crontab"
 
-    config = get_config()
-
     cron = CronTab()
     cron.remove_all(comment=_CRON_COMMENT_TAG)
     job = cron.new(command=command, comment=_CRON_COMMENT_TAG)
-    if config is None:
-        job.minute.every(CHECK_INTERVALS)
-    else:
+
+    try:
+        config = get_config()
         job.minute.every(config.common.check_intervals)
+    except ConfigException as e:
+        job.minute.every(CHECK_INTERVALS)
+        logger.critical(e)
+
     cron.write(crontab_filename)
 
     message = f"crontab file:{crontab_filename} created/updated."

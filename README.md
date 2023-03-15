@@ -41,7 +41,7 @@ docker pull ray1ex/ddns-clienter
 ## Start
 
 ```shell
-docker run -dit -p :8000:8000 --restart=always \
+docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   --dns 192.168.1.1 \
   -v /your/config.toml:/etc/ddns-clienter.toml:ro \
   --name ddns-clienter ray1ex/ddns-clienter
@@ -149,6 +149,7 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
     - 全面整理日志信息输出
     - 所有 INFO 以及以上级别的logging自动进日志
     - 消息推送 webhook
+- 时间信息自动使用浏览器本地化时区
 - 安全的任务调用
     - docker中可以call api
     - 可以通过 token 认证

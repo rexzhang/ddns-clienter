@@ -7,7 +7,6 @@ from ninja.pagination import PageNumberPagination, paginate
 from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.models import Address, Event, Status, Task
 from ddns_clienter_core.runtimes.check_and_update import check_and_update
-from ddns_clienter_core.runtimes.config import get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_queryset,
@@ -36,7 +35,7 @@ api_public = Router(tags=["Public"])
 
 @api_public.get("/addresses", response=list[AddressSchema])
 def list_addresses(request, debug: bool = False):
-    return get_addresses_values(config=get_config(), debug=debug)
+    return get_addresses_values(debug=debug)
 
 
 @api_public.get("/addresses/{name}", response=AddressSchema)
@@ -47,7 +46,7 @@ def get_address(request, name: str):
 
 @api_public.get("/tasks", response=list[TaskSchema])
 def list_tasks(request, debug: bool = False):
-    return get_tasks_queryset(config=get_config(), debug=debug)
+    return get_tasks_queryset(debug=debug)
 
 
 @api_public.get("/tasks/{name}", response=TaskSchema)

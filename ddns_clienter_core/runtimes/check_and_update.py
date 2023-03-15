@@ -8,13 +8,11 @@ from django.utils import timezone
 
 from ddns_clienter_core import models
 from ddns_clienter_core.constants import AddressInfo, EventLevel
-from ddns_clienter_core.runtimes.address_providers import (
-    AddressProviderException,
-    get_ip_address_from_provider,
-)
+from ddns_clienter_core.runtimes.address_providers import get_ip_address_from_provider
 from ddns_clienter_core.runtimes.config import (
     AddressProviderConfig,
     Config,
+    ConfigException,
     TaskConfig,
     get_config,
 )
@@ -307,9 +305,10 @@ async def check_and_update(
 async def _check_an_update(
     config_file_name: str | None = None, real_update: bool = True
 ):
-    config = get_config(config_file_name)
-    if config is None:
-        logger.critical("load config failed!")
+    try:
+        config = get_config(config_file_name)
+    except ConfigException as e:
+        logger.critical(e)
         return
 
     # import address data from config and db

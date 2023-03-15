@@ -1,0 +1,45 @@
+{% extends "base.html" %}{% load django_bootstrap5 %}
+{% block content %}
+  <div class="container pt-2">
+    {% bootstrap_messages %}
+  </div>
+
+  {% include "events.html" %}
+
+  <div class="container pt-2">
+    <h4>Quick Example: config.toml</h4>
+    <pre><code>
+[addresses]
+
+[addresses.from_ipify]
+provider_name = "ipify"
+ipv4 = true
+
+[addresses.from_hostname]
+provider_name = "hostname"
+provider_parameter = "localhost"
+ipv6 = true
+ipv6_match_rule = "^240e:"
+
+[tasks]
+
+[tasks.ipv4_to_lexicon_cloudflare]
+provider_name = "lexicon.cloudflare"
+provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
+address_name = "from_ipify"
+ipv4 = true
+domain = "example.com"
+host = "host4"
+
+[tasks.ipv6_to_dynv6]
+provider_name = "dynv6"
+provider_auth = "this_is_token_for_this_zone"
+address_name = "from_hostname"
+ipv6 = true
+domain = "example.com"
+host = ""
+    </code></pre>
+
+    <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
+  </div>
+{% endblock %}

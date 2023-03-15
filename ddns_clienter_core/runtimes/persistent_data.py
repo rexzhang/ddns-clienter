@@ -8,7 +8,7 @@ from django.forms.models import model_to_dict
 from django.utils import timezone
 
 from ddns_clienter_core.models import Address, Event, Task
-from ddns_clienter_core.runtimes.config import Config
+from ddns_clienter_core.runtimes.config import get_config
 
 logger = getLogger(__name__)
 
@@ -69,7 +69,9 @@ def compare_and_update_config_info_from_dict_to_db(
     return False
 
 
-def get_addresses_values(config: Config, debug: bool = False) -> QuerySet:
+def get_addresses_values(debug: bool = False) -> QuerySet:
+    config = get_config()
+
     for _, address_config_item in config.addresses.items():
         compare_and_update_config_info_from_dict_to_db(
             dataclasses.asdict(address_config_item), Address
@@ -83,7 +85,9 @@ def get_addresses_values(config: Config, debug: bool = False) -> QuerySet:
     return queryset.order_by("name")
 
 
-def get_tasks_queryset(config: Config, debug: bool = False) -> QuerySet:
+def get_tasks_queryset(debug: bool = False) -> QuerySet:
+    config = get_config()
+
     for _, task_config_item in config.tasks.items():
         compare_and_update_config_info_from_dict_to_db(
             dataclasses.asdict(task_config_item), Task
