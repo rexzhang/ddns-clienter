@@ -3,7 +3,8 @@ from logging import getLogger
 
 import httpx
 
-from .abs import AddressProviderAbs, AddressProviderException
+from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderAbs
+from ddns_clienter_core.runtimes.event import event
 
 logger = getLogger(__name__)
 
@@ -24,7 +25,8 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         except httpx.HTTPError as e:
             message = f"Detect IP Address failed, provider:{self.name}, message:{e}"
             logger.error(message)
-            raise AddressProviderException(message)
+            await event.error(message)
+            return None
 
         if r.status_code != 200:
             return None
@@ -48,10 +50,14 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         ipv6_addresses = list()
 
         if ipv4 and self._ipv4_url:
-            ipv4_addresses.append(await self._detect_with_http_get(self._ipv4_url))
+            ip_address = await self._detect_with_http_get(self._ipv4_url)
+            if ip_address is not None:
+                ipv4_addresses.append(ip_address)
 
         if ipv6 and self._ipv6_url:
-            ipv6_addresses.append(await self._detect_with_http_get(self._ipv6_url))
+            ip_address = await self._detect_with_http_get(self._ipv6_url)
+            if ip_address is not None:
+                ipv6_addresses.append(ip_address)
 
         return ipv4_addresses, ipv6_addresses
 
@@ -61,12 +67,12 @@ class AddressProviderIpify(AddressProviderHttpGetAbs):
 
     @property
     def _ipv4_url(self):
-        return "https://api.ipify.org/"
+        return "http://api4.ipify.org/"
 
     @property
     def _ipv6_url(self):
-        return "https://api64.ipify.org/"
-        # return "https://api6.ipify.org/"  # ipv6 only server
+        return "http://api64.ipify.org/"
+        # return "http://api6.ipify.org/"  # ipv6 only server
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):

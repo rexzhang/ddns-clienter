@@ -317,14 +317,7 @@ async def _check_an_update(
 
     # get ip address, update ip address into hub
     for address_c in ah.to_be_update_addresses:
-        try:
-            address_info = await get_ip_address_from_provider(address_c)
-
-        except AddressProviderException as e:
-            message = str(e)
-            logger.error(message)
-            await send_event(message, level=EventLevel.ERROR)
-            continue
+        address_info = await get_ip_address_from_provider(address_c)
 
         await ah.update_ip_address(address_c.name, address_info)
         logger.debug(f"address info:{address_c.name}, {address_info}")
