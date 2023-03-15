@@ -41,7 +41,8 @@ docker pull ray1ex/ddns-clienter
 ## Start
 
 ```shell
-docker run -dit -p 0.0.0.0:8000:8000 \
+docker run -dit -p :8000:8000 --restart=always \
+  --dns 192.168.1.1 \
   -v /your/config.toml:/etc/ddns-clienter.toml:ro \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
@@ -57,6 +58,12 @@ docker run -dit -p 0.0.0.0:8000:8000 \
 ![OpenAPI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-43-14.434Z.png)
 
 # History
+
+## 0.7.1 - 20220315
+
+- Add more debug info
+- Add, display config file load error in WebUI(WIP)
+- Add, display DNS info on WebUI
 
 ## 0.7.0 - 20220304
 
