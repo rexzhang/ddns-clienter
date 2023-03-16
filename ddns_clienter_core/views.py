@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
@@ -7,7 +8,7 @@ from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_run
 from ddns_clienter_core.runtimes.config import ConfigException, get_config
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
-    get_events_values,
+    get_events_queryset,
     get_tasks_queryset,
 )
 
@@ -46,22 +47,17 @@ class HomePageView(DCTemplateView):
         kwargs = super().get_context_data(**kwargs)
 
         addresses = list()
-        for data in get_addresses_values().values():
+        for data in get_addresses_values(settings.DEBUG).values():
             data = convert_none_to_symbol(data)
             addresses.append(data)
 
         tasks = list()
-        for data in get_tasks_queryset().values():
+        for data in get_tasks_queryset(settings.DEBUG).values():
             data = convert_none_to_symbol(data)
             tasks.append(data)
 
         events = list()
-        for data in get_events_values():
-            if data["level"] in {"WARNING", "ERROR", "CRITICAL"}:
-                data["highlight"] = True
-            else:
-                data["highlight"] = False
-
+        for data in get_events_queryset(settings.DEBUG).values():
             events.append(data)
 
         kwargs.update(

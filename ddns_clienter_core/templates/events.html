@@ -12,11 +12,17 @@
       </thead>
       <tbody class="table-group-divider">
       {% for item in events %}
-        <tr {% if item.highlight %} class="bg-warning" {% endif %}>
-          <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
-          <td>{{ item.level }}</td>
-          <td class="font-monospace">{{ item.message }}</td>
-        </tr>
+        {% if item.level == "WARNING" %}
+          <tr class="bg-warning-subtle">
+            {% elif item.level == "ERROR" %}
+          <tr class="bg-danger-subtle">
+            {% elif item.level == "CRITICAL" %}
+          <tr class="bg-danger-subtle">
+        {% endif %}
+      <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
+      <td>{{ item.level }}</td>
+      <td class="font-monospace">{{ item.message }}</td>
+      </tr>
       {% empty %}
         <th>Sorry, no data in this list.</th>
       {% endfor %}
