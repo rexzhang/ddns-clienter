@@ -23,14 +23,6 @@ def convert_none_to_symbol(data: dict) -> dict:
     return data
 
 
-class DCException(Exception):
-    pass
-
-
-class DCExceptionLoadConfigFailed(DCException):
-    pass
-
-
 class DCTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -39,9 +31,6 @@ class DCTemplateView(TemplateView):
 
         context.update(running_contents)
         return self.render_to_response(context)
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     pass
 
 
 class HomePageView(DCTemplateView):

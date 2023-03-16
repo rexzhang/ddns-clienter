@@ -122,11 +122,27 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## Can't detect ipv4/6 both on provider `ipify` and `noip`
 
-check your Docker container DNS server, do you reach it ?
+Please check your Docker container DNS server, do you reach it?
+
+## Can't detect ipv6 on provider `ipify` and `noip`, but ipv4 is ok
+
+Please check your docker config file `/etc/docker/daemon.json`
+
+Also, you can use the following command inside the container to test
+
+```shell
+ping6 api6.ipify.org
+wget api6.ipify.org
+```
+
+ref:
+
+- https://docs.docker.com/config/daemon/ipv6/
+- https://gdevillele.github.io/engine/userguide/networking/default_network/ipv6/
 
 ## Can't detect any ip address from provider `hostname`
 
-check your Docker container DNS server, is it your local network master dns server? you can check with:
+Please check your Docker container DNS server, Is it your local network master dns server? you can check with:
 
 ```shell
 ping your-host-name

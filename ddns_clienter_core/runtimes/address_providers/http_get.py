@@ -10,35 +10,45 @@ logger = getLogger(__name__)
 
 
 class AddressProviderHttpGetAbs(AddressProviderAbs):
-    @property
-    def _ipv4_url(self):
-        raise NotImplemented
+    name = "abs"
+    ipv4_url: str | None = None
+    ipv6_url: str | None = None
 
-    @property
-    def _ipv6_url(self):
-        raise NotImplemented
+    @staticmethod
+    async def _logging_error_message(message):
+        logger.error(message)
+        await event.error(message)
 
     async def _detect_with_http_get(self, server_url: str) -> str | None:
         try:
             async with httpx.AsyncClient() as client:
                 r = await client.get(server_url)
         except httpx.HTTPError as e:
-            message = f"Detect IP Address failed, provider:{self.name}, message:{e}"
-            logger.error(message)
-            await event.error(message)
+            await self._logging_error_message(
+                f"Detect IP Address failed; provider:{self.name}, url:{server_url}, message:{e}"
+            )
             return None
 
         if r.status_code != 200:
+            await self._logging_error_message(
+                f"Detect IP Address failed; provider:{self.name}, url:{server_url}, status_code{r.status_code}!=200"
+            )
             return None
 
         ip_address = r.text.rstrip("\n ")
         if len(ip_address) == 0:
+            await self._logging_error_message(
+                f"Detect IP Address failed; provider:{self.name}, url:{server_url}, bad ip address:{ip_address}"
+            )
             return None
 
         try:
             ip_address_string_check(ip_address)
 
-        except ValueError:
+        except ValueError as e:
+            await self._logging_error_message(
+                f"Detect IP Address failed; provider:{self.name}, url:{server_url}, message:{e}"
+            )
             return None
 
         return ip_address
@@ -49,13 +59,13 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         ipv4_addresses = list()
         ipv6_addresses = list()
 
-        if ipv4 and self._ipv4_url:
-            ip_address = await self._detect_with_http_get(self._ipv4_url)
+        if ipv4 and self.ipv4_url:
+            ip_address = await self._detect_with_http_get(self.ipv4_url)
             if ip_address is not None:
                 ipv4_addresses.append(ip_address)
 
-        if ipv6 and self._ipv6_url:
-            ip_address = await self._detect_with_http_get(self._ipv6_url)
+        if ipv6 and self.ipv6_url:
+            ip_address = await self._detect_with_http_get(self.ipv6_url)
             if ip_address is not None:
                 ipv6_addresses.append(ip_address)
 
@@ -64,24 +74,11 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
 class AddressProviderIpify(AddressProviderHttpGetAbs):
     name = "ipify"
-
-    @property
-    def _ipv4_url(self):
-        return "http://api4.ipify.org/"
-
-    @property
-    def _ipv6_url(self):
-        return "http://api64.ipify.org/"
-        # return "http://api6.ipify.org/"  # ipv6 only server
+    ipv4_url: str | None = "http://api4.ipify.org/"
+    ipv6_url: str | None = "http://api6.ipify.org/"
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):
     name = "noip"
-
-    @property
-    def _ipv4_url(self):
-        return "http://ip1.dynupdate.no-ip.com/"
-
-    @property
-    def _ipv6_url(self):
-        return "http://ip1.dynupdate6.no-ip.com/"
+    ipv4_url: str | None = "http://ip1.dynupdate.no-ip.com/"
+    ipv6_url: str | None = "http://ip1.dynupdate6.no-ip.com/"
