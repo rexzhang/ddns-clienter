@@ -57,6 +57,7 @@ class CallRestApi:
         real_update: bool,
     ):
         self._c_task = config_task
+        self.config_host, self.config_domain = config_task.domain.split(".", maxsplit=1)
         self.ipv4_address = ipv4_address
         self.ipv6_address = ipv6_address
         self.real_update = real_update
@@ -65,10 +66,7 @@ class CallRestApi:
         self.headers["Accept"] = "application/json"
         self.headers["Authorization"] = f"Bearer {self._c_task.provider_auth}"
 
-    async def _call_rest_api_get(
-        self,
-        url,
-    ) -> httpx.Response:
+    async def _call_rest_api_get(self, url) -> httpx.Response:
         async with httpx.AsyncClient() as client:
             r = await client.get(url, headers=self.headers)
         logger.debug(f"{r.status_code} {r.content}")
@@ -120,7 +118,7 @@ class CallRestApi:
         r = await self._call_rest_api_get(f"{_rest_api_url}/zones")
 
         for item in r.json():
-            if item.get("name") == self._c_task.domain:
+            if item.get("name") == self.config_domain:
                 self.zone_id = item.get("id")
                 continue
 
@@ -135,7 +133,7 @@ class CallRestApi:
         ipv4_record_id = None
         ipv6_record_id = None
         for item in r.json():
-            if item.get("name") != self._c_task.host:
+            if item.get("name") != self.config_host:
                 continue
 
             record_type = item.get("type")
@@ -148,7 +146,7 @@ class CallRestApi:
             if ipv4_record_id is None:
                 # add a new record
                 await self._call_rest_api_add_record(
-                    host=self._c_task.host,
+                    host=self.config_host,
                     record_type="A",
                     ip_address=self.ipv4_address,
                 )
@@ -164,7 +162,7 @@ class CallRestApi:
             if ipv6_record_id is None:
                 # add a new record
                 await self._call_rest_api_add_record(
-                    host=self._c_task.host,
+                    host=self.config_host,
                     record_type="AAAA",
                     ip_address=self.ipv6_address,
                 )

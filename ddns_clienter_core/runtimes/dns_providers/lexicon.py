@@ -13,12 +13,13 @@ class DDNSProviderLexicon(DDNSProviderAbs):
     name = "lexicon"
 
     def _do_update(self, action: dict) -> (bool, str):
+        host, domain = self.task_config.domain.split(".", maxsplit=1)
         action.update(
             {
                 "provider_name": self.provider_name,
                 "action": "update",
-                "domain": self.task_config.domain,
-                "name": self.task_config.host,
+                "domain": domain,
+                "name": host,
             }
         )
 

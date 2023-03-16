@@ -19,6 +19,9 @@ class Common:
 class AddressProviderConfig:
     name: str
 
+    provider_name: str = field(default=None)
+    provider_parameter: str = ""
+
     ipv4: bool = False
     ipv6: bool = False
     ipv6_prefix_length: int | None = None
@@ -26,9 +29,6 @@ class AddressProviderConfig:
     ipv6_match_rule: str = ""
     allow_private: bool = False
     allow_loopback: bool = False
-
-    provider_name: str = field(default=None)  # ip address provider's name
-    provider_parameter: str = ""  # ip address provider's parameter
 
     def __post_init__(self):
         if self.allow_loopback:
@@ -39,13 +39,12 @@ class AddressProviderConfig:
 class TaskConfig:
     name: str
 
-    address_name: str
-
     provider_name: str
     provider_auth: str
 
+    address_name: str
+
     domain: str
-    host: str
 
     # have default value
     enable: bool = True
@@ -106,6 +105,13 @@ class Config:
 
         # tasks
         for name, data in tasks_obj.items():
+            host = data.pop("host", None)
+            if host is not None and len(host) >= 1:
+                message = f"task.host is deprecated"  # TODO
+
+                domain = data.get("domain", "")
+                data["domain"] = f"{host}.{domain}"
+
             try:
                 task = TaskConfig(name=name, **data)
             except TypeError as e:
@@ -119,8 +125,6 @@ class Config:
                 raise ConfigException(message)
 
             self.tasks.update({name: task})
-
-        # TODO: check
 
 
 def get_config(config_file_name: str = None) -> Config:
