@@ -1,9 +1,10 @@
-{% extends "base.html" %}{% load i18n %}{% load l10n %}
-{% block content %}
+{% extends "base.html" %}{% load i18n %}{% load l10n %}{% load tz %}
+{% block content %}{% localtime on %}
   <div class="container pt-2">
     <h4>{% translate "Addresses" %} <small><small class="fw-lighter">
-      {% translate "Check Intervals" %}:
-      {{ app_config.common.check_intervals }}{% translate "minutes" %}</small></small>
+      {% translate "Check Intervals" %}:{{ app_config.common.check_intervals }}{% translate "minutes" %},
+      {% translate "Next Time" %}:{{ next_addresses_check_time }}
+    </small></small>
     </h4>
     <table class="table table-striped align-middle">
       <thead>
@@ -40,8 +41,10 @@
   </div>
 
   <div class="container pt-2">
-    <h4>{% translate "Tasks" %} <small><small class="fw-light">{% translate "Force Update Intervals" %}:
-      {{ app_config.common.force_update_intervals }}{% translate "minutes" %}</small></small>
+    <h4>{% translate "Tasks" %} <small><small class="fw-light">
+      {% translate "Force Update Intervals" %}:{{ app_config.common.force_update_intervals }}{% translate "minutes" %},
+      {% translate "Next Time" %}:{{ next_task_force_update_time }}
+    </small></small>
     </h4>
     <table class="table table-striped align-middle">
       <thead>
@@ -77,7 +80,7 @@
       </tbody>
     </table>
   </div>
-
+{% endlocaltime %}
   {% include "events.html" %}
 {% endblock %}
 

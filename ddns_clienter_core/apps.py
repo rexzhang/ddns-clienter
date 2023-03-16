@@ -12,10 +12,10 @@ def _init_running_contents():
 
     web_ui_footer = {"DNS": f"{','.join(get_dns_servers())}"}
     running_contents = {
-        "debug_mode": settings.DEBUG,
         "app_name": ddns_clienter.__name__,
         "app_version": ddns_clienter.__version__,
         "app_url": ddns_clienter.__project_url__,
+        "status_debug_mode": settings.DEBUG,
         "web_ui_footer": web_ui_footer,
     }
 

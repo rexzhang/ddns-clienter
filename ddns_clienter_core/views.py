@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.generic import TemplateView
 
 from ddns_clienter_core.apps import running_contents
@@ -60,10 +63,18 @@ class HomePageView(DCTemplateView):
         for data in get_events_queryset(settings.DEBUG).values():
             events.append(data)
 
+        next_addresses_check_time = timezone.now() + timedelta(
+            minutes=app_config.common.check_intervals
+        )
+        next_task_force_update_time = timezone.now() + timedelta(
+            minutes=app_config.common.force_update_intervals
+        )
         kwargs.update(
             {
                 "app_config": app_config,
-                "check_and_update_is_running": check_and_update_is_running(),
+                "status_check_and_update_is_running": check_and_update_is_running(),
+                "next_addresses_check_time": next_addresses_check_time,
+                "next_task_force_update_time": next_task_force_update_time,
                 "addresses": addresses,
                 "tasks": tasks,
                 "events": events,
