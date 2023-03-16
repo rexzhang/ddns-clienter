@@ -6,6 +6,7 @@ from ddns_clienter_core.runtimes.address_providers.abs import AddressProviderExc
 from ddns_clienter_core.runtimes.address_providers.host_name import (
     AddressProviderHostName,
 )
+from ddns_clienter_core.runtimes.address_providers.http_get import pick_out_ip_address
 from ddns_clienter_core.runtimes.config import AddressProviderConfig
 
 
@@ -26,3 +27,14 @@ async def test_something():
     address_provider_config.provider_parameter = "not-real-device"
     with pytest.raises(AddressProviderException):
         await AddressProviderHostName()(address_provider_config)
+
+
+def test_address_provider_cip():
+    data = """<div><pre>
+    URL	: http://www.cip.cc/111.222.333.444
+    </pre>
+    </div>
+    <div class="i-don-t-like-you">
+    </div>"""
+
+    assert pick_out_ip_address(4, data) == "111.222.333.444"

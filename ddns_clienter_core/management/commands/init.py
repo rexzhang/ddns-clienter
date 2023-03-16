@@ -1,7 +1,6 @@
 from logging import getLogger
 
 from asgiref.sync import async_to_sync
-from crontab import CronTab
 from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
