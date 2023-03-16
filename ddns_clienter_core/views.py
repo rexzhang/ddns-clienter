@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from ddns_clienter_core.apps import running_contents
 from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_running
 from ddns_clienter_core.runtimes.config import ConfigException, get_config
+from ddns_clienter_core.runtimes.crontab import get_crontab_next_time
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_events_queryset,
@@ -63,11 +64,11 @@ class HomePageView(DCTemplateView):
         for data in get_events_queryset(settings.DEBUG).values():
             events.append(data)
 
-        next_addresses_check_time = timezone.now() + timedelta(
-            minutes=app_config.common.check_intervals
+        next_addresses_check_time = get_crontab_next_time(
+            app_config.common.check_intervals
         )
-        next_task_force_update_time = timezone.now() + timedelta(
-            minutes=app_config.common.force_update_intervals
+        next_task_force_update_time = get_crontab_next_time(
+            app_config.common.force_update_intervals
         )
         kwargs.update(
             {

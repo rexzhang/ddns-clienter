@@ -10,7 +10,10 @@ dns-lexicon[full]
 
 ## Config
 python-dotenv
+
+## crontab
 python-crontab
+croniter
 
 ## CLI
 click

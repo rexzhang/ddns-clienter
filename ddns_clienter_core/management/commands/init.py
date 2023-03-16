@@ -6,8 +6,7 @@ from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
 
-from ddns_clienter_core.constants import CHECK_INTERVALS
-from ddns_clienter_core.runtimes.config import ConfigException, get_config
+from ddns_clienter_core.runtimes.crontab import update_crontab_file
 from ddns_clienter_core.runtimes.event import send_event
 
 logger = getLogger(__name__)
@@ -20,32 +19,7 @@ def init_crontab():
         logger.info("crontab update skipped!")
         return
 
-    url = "http://127.0.0.1:8000/api/check_and_update"
-    if settings.DEBUG:
-        command = f"/usr/bin/wget {url} -o /{settings.DATA_PATH}/dc-cron.log"
-    else:
-        command = f"/usr/bin/wget {url} -o /dev/null"
-    if settings.WORK_IN_CONTAINER:
-        crontab_filename = "/etc/crontabs/root"
-    else:
-        crontab_filename = "/tmp/dc-crontab"
-
-    cron = CronTab()
-    cron.remove_all(comment=_CRON_COMMENT_TAG)
-    job = cron.new(command=command, comment=_CRON_COMMENT_TAG)
-
-    try:
-        config = get_config()
-        job.minute.every(config.common.check_intervals)
-    except ConfigException as e:
-        job.minute.every(CHECK_INTERVALS)
-        logger.critical(e)
-
-    cron.write(crontab_filename)
-
-    message = f"crontab file:{crontab_filename} created/updated."
-    logger.info(message)
-    async_to_sync(send_event)(message)
+    update_crontab_file()
 
 
 def init_db():
