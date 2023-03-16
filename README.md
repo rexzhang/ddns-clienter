@@ -59,6 +59,10 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.7.3 - 20220316
+
+- Add new address provider: ipip(ipip.net), cip(cip.cc)
+
 ## 0.7.2 - 20220316
 
 - Refactor, Splitting DDNS provider dynv6 to dynv6,dynv6.rest
@@ -170,6 +174,8 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
         - 各种 ping 的结果来展示问题
 - 日志
     - 全面整理日志信息输出
+    - 任务失败后的详细日志信息
+        - Update task xxx failed
     - 所有 INFO 以及以上级别的logging自动进日志
     - 消息推送 webhook
 - 安全的任务调用
