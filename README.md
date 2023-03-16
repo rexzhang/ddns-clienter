@@ -59,6 +59,13 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.7.2 - 20220316
+
+- Refactor, Splitting DDNS provider dynv6 to dynv6,dynv6.rest
+- Update, `task.host` is deprecated
+- Update, WebUI support auto timezone
+- Add, show next time in WebUI
+
 ## 0.7.1 - 20220315
 
 - Add more debug info
@@ -158,14 +165,13 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 
 # TODO
 
-- 用户错误提示友好
-    - 在 WebUI 提示配置错误
-    - 显示任务正在执行
+- 更友好的用户提示
+    - 问题处理页面
+        - 各种 ping 的结果来展示问题
 - 日志
     - 全面整理日志信息输出
     - 所有 INFO 以及以上级别的logging自动进日志
     - 消息推送 webhook
-- 时间信息自动使用浏览器本地化时区
 - 安全的任务调用
     - docker中可以call api
     - 可以通过 token 认证
