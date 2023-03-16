@@ -20,6 +20,9 @@
           {% if check_and_update_is_running %}
             <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Check/Update is running</span>
             </li>{% endif %}
+          {% if debug_mode %}
+            <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Debug Mode</span>
+            </li>{% endif %}
           <li class="nav-item my-auto"><a class="nav-link" href="/api/docs">{OpenAPI}</a></li>
           <li class="nav-item my-auto"><a class="nav-link" href="{{ app_url }}">
             <i class="bi-github" style="font-size: 1.2rem"></i>
