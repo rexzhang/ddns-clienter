@@ -1,24 +1,25 @@
-{% load i18n %}{% load l10n %}
-<div class="container pt-2">
-  <h4>{% translate "Events" %}</h4>
-  <table class="table table-striped align-middle">
-    <thead>
-    <tr>
-      <th scope="col">{% translate "Timestamp" %}</th>
-      <th scope="col">{% translate "Level" %}</th>
-      <th scope="col">{% translate "Message" %}</th>
-    </tr>
-    </thead>
-    <tbody class="table-group-divider">
-    {% for item in events %}
-      <tr {% if item.highlight %} class="bg-warning" {% endif %}>
-        <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
-        <td>{{ item.level }}</td>
-        <td class="font-monospace">{{ item.message }}</td>
+{% load i18n %}{% load l10n %}{% load tz %}
+{% localtime on %}
+  <div class="container pt-2">
+    <h4>{% translate "Events" %}</h4>
+    <table class="table table-striped align-middle">
+      <thead>
+      <tr>
+        <th scope="col">{% translate "Timestamp" %}</th>
+        <th scope="col">{% translate "Level" %}</th>
+        <th scope="col">{% translate "Message" %}</th>
       </tr>
-    {% empty %}
-      <th>Sorry, no data in this list.</th>
-    {% endfor %}
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody class="table-group-divider">
+      {% for item in events %}
+        <tr {% if item.highlight %} class="bg-warning" {% endif %}>
+          <td>{{ item.time|date:"DATETIME_FORMAT" }}</td>
+          <td>{{ item.level }}</td>
+          <td class="font-monospace">{{ item.message }}</td>
+        </tr>
+      {% empty %}
+        <th>Sorry, no data in this list.</th>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>{% endlocaltime %}

@@ -102,9 +102,13 @@ def get_tasks_queryset(debug: bool = False) -> QuerySet:
 
 
 def get_events_values(debug: bool = False) -> QuerySet:
-    if debug:
-        queryset = Event.objects.all()
-    else:
-        queryset = Event.objects.filter(time__gt=(timezone.now() - timedelta(days=2)))
+    queryset_init = Event.objects.order_by("-id")
 
-    return queryset.order_by("-id").values()
+    if debug:
+        return queryset_init.values()
+
+    queryset = queryset_init.filter(time__gt=(timezone.now() - timedelta(days=2)))
+    if len(queryset) < 10:
+        return queryset_init.order_by("-id")[:10].values()
+    else:
+        return queryset.values()
