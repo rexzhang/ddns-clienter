@@ -46,12 +46,12 @@ class HomePageView(DCTemplateView):
         kwargs = super().get_context_data(**kwargs)
 
         addresses = list()
-        for data in get_addresses_values(app_config).values():
+        for data in get_addresses_values().values():
             data = convert_none_to_symbol(data)
             addresses.append(data)
 
         tasks = list()
-        for data in get_tasks_queryset(app_config).values():
+        for data in get_tasks_queryset().values():
             data = convert_none_to_symbol(data)
             tasks.append(data)
 
