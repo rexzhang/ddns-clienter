@@ -187,26 +187,26 @@ class DDNSProviderDynv6(DDNSProviderAbs):
     name = "dynv6"
 
     async def _update_to_provider(self) -> None:
-        if self.task_config.host is None or len(self.task_config.host) == 0:
-            logger.debug("update in Dynv6 UPDATE API")
-            update_success, update_message = await _call_update_api(
-                domain=self.task_config.domain,
-                token=self.task_config.provider_auth,
-                ipv4_address=self.address_info.ipv4_address_str,
-                ipv6_address=self.address_info.ipv6_address_str_with_prefix,
-                real_update=self.real_update,
-            )
+        logger.debug("update in Dynv6 UPDATE API")
+        self.update_success, self.update_message = await _call_update_api(
+            domain=self.task_config.domain,
+            token=self.task_config.provider_auth,
+            ipv4_address=self.address_info.ipv4_address_str,
+            ipv6_address=self.address_info.ipv6_address_str_with_prefix,
+            real_update=self.real_update,
+        )
 
-        else:
-            logger.debug("update in Dynv6 REST API")
-            call_rest_api = CallRestApi(
-                config_task=self.task_config,
-                ipv4_address=self.address_info.ipv4_address_str,
-                ipv6_address=self.address_info.ipv6_address_str,  # REST API 似乎不支持 /xx 这种方式定义 prefix
-                real_update=self.real_update,
-            )
 
-            update_success, update_message = call_rest_api.process()
+class DDNSProviderDynv6REST(DDNSProviderAbs):
+    name = "dynv6.rest"
 
-        self.update_success = update_success
-        self.update_message = update_message
+    async def _update_to_provider(self) -> None:
+        logger.debug("update in Dynv6 REST API")
+        call_rest_api = CallRestApi(
+            config_task=self.task_config,
+            ipv4_address=self.address_info.ipv4_address_str,
+            ipv6_address=self.address_info.ipv6_address_str,  # REST API 似乎不支持 /xx 这种方式定义 prefix
+            real_update=self.real_update,
+        )
+
+        self.update_success, self.update_message = call_rest_api.process()

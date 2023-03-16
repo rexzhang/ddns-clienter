@@ -1,7 +1,10 @@
 from ddns_clienter_core.constants import AddressInfo
 from ddns_clienter_core.runtimes import config
 from ddns_clienter_core.runtimes.dns_providers.abs import DDNSProviderException
-from ddns_clienter_core.runtimes.dns_providers.dynv6 import DDNSProviderDynv6
+from ddns_clienter_core.runtimes.dns_providers.dynv6 import (
+    DDNSProviderDynv6,
+    DDNSProviderDynv6REST,
+)
 from ddns_clienter_core.runtimes.dns_providers.lexicon import DDNSProviderLexicon
 
 __all__ = ["DDNSProviderException", "update_address_to_dns_provider"]
@@ -9,7 +12,11 @@ __all__ = ["DDNSProviderException", "update_address_to_dns_provider"]
 
 _dns_provider_class_mapper = {
     provider_class.name: provider_class
-    for provider_class in [DDNSProviderDynv6, DDNSProviderLexicon]
+    for provider_class in [
+        DDNSProviderDynv6,
+        DDNSProviderDynv6REST,
+        DDNSProviderLexicon,
+    ]
 }
 
 
