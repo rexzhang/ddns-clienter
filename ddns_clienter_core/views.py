@@ -48,18 +48,11 @@ class HomePageView(DCTemplateView):
         addresses = list()
         for data in get_addresses_values(app_config).values():
             data = convert_none_to_symbol(data)
-
             addresses.append(data)
 
         tasks = list()
         for data in get_tasks_queryset(app_config).values():
             data = convert_none_to_symbol(data)
-
-            if data["host"] == "-":
-                data["full_domain"] = data["domain"]
-            else:
-                data["full_domain"] = "{}.{}".format(data["host"], data["domain"])
-
             tasks.append(data)
 
         events = list()

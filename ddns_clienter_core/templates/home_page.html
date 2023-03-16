@@ -60,7 +60,7 @@
         <tr {% if not item.enable %}class="bg-secondary"{% endif %}>
           <th scope="row">{{ item.name }}</th>
           <td>{{ item.provider_name }}</td>
-          <td>{{ item.full_domain }}</td>
+          <td>{{ item.domain }}</td>
           <td>{{ item.last_ip_addresses }}</td>
           <td>{% if item.last_update_time is None %}<i class="bi bi-plus-circle-dotted"></i>
             {% else %}{% if item.last_update_success %}<i class="bi bi-check-lg"></i>
