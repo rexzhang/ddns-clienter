@@ -6,6 +6,7 @@ from ddns_clienter_core.constants import EventLevel
 class Address(models.Model):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
+    enable = models.BooleanField(default=True)
 
     provider_name = models.CharField(max_length=255)
     provider_parameter = models.TextField()

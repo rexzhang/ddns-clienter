@@ -1,9 +1,6 @@
-from datetime import timedelta
-
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.utils import timezone
 from django.views.generic import TemplateView
 
 from ddns_clienter_core.apps import running_contents
