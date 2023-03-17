@@ -24,18 +24,31 @@ def pick_out_ip_address(ipv: int, text: str) -> str:
 
 class AddressProviderHttpGetAbs(AddressProviderAbs):
     name = "abs"
-    ipv4_url: str | None = None
-    ipv6_url: str | None = None
+    url_ipv4 = None
+    url_ipv6 = None
+    user_agent: str | None = None
 
     @staticmethod
     async def _logging_error_message(message):
         logger.error(message)
         await event.error(message)
 
-    async def _detect_with_http_get(self, ipv: int, server_url: str) -> str | None:
+    async def _detect_with_http_get(self, ipv: int) -> str | None:
+        if ipv == 4:
+            url = self.url_ipv4
+        elif ipv == 6:
+            url = self.url_ipv6
+        else:
+            raise
+
+        if self.user_agent is None:
+            headers = None
+        else:
+            headers = {"user-agent": self.user_agent}
+
         try:
             async with httpx.AsyncClient() as client:
-                r = await client.get(server_url)
+                r = await client.get(url, headers=headers)
         except httpx.HTTPError as e:
             await self._logging_error_message(
                 f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, message:{e}"
@@ -44,7 +57,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
         if r.status_code != 200:
             await self._logging_error_message(
-                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, status_code{r.status_code}!=200"
+                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, status_code:{r.status_code}!=200"
             )
             return None
 
@@ -72,13 +85,13 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         ipv4_addresses = list()
         ipv6_addresses = list()
 
-        if ipv4 and self.ipv4_url:
-            ip_address = await self._detect_with_http_get(4, self.ipv4_url)
+        if ipv4 and self.url_ipv4:
+            ip_address = await self._detect_with_http_get(4)
             if ip_address is not None:
                 ipv4_addresses.append(ip_address)
 
-        if ipv6 and self.ipv6_url:
-            ip_address = await self._detect_with_http_get(6, self.ipv6_url)
+        if ipv6 and self.url_ipv6:
+            ip_address = await self._detect_with_http_get(6)
             if ip_address is not None:
                 ipv6_addresses.append(ip_address)
 
@@ -87,23 +100,27 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
 class AddressProviderIpify(AddressProviderHttpGetAbs):
     name = "ipify"
-    ipv4_url: str | None = "https://api4.ipify.org/"
-    ipv6_url: str | None = "http://api6.ipify.org/"
+    url_ipv4 = "https://api4.ipify.org/"
+    url_ipv6 = "http://api6.ipify.org/"
 
 
 class AddressProviderNoip(AddressProviderHttpGetAbs):
     name = "noip"
-    ipv4_url: str | None = "https://ip1.dynupdate.no-ip.com/"
-    ipv6_url: str | None = "http://ip1.dynupdate6.no-ip.com/"
+    url_ipv4 = "https://ip1.dynupdate.no-ip.com/"
+    url_ipv6 = "http://ip1.dynupdate6.no-ip.com/"
 
 
 class AddressProviderIpip(AddressProviderHttpGetAbs):
     name = "ipip"
-    ipv4_url: str | None = "http://myip.ipip.net/"
-    ipv6_url: str | None = None
+    url_ipv4 = "http://myip.ipip.net/"
 
 
-class AddressProviderCip(AddressProviderHttpGetAbs):
-    name = "cip"
-    ipv4_url: str | None = "http://www.cip.cc/"
-    ipv6_url: str | None = None
+class AddressProviderCipCc(AddressProviderHttpGetAbs):
+    name = "cip.cc"
+    url_ipv4 = "http://www.cip.cc/"
+    user_agent = "curl/7.88.1"
+
+
+class AddressProviderNetCn(AddressProviderHttpGetAbs):
+    name = "net.cn"
+    url_ipv4 = "http://www.net.cn/static/customercare/yourip.asp"

@@ -5,9 +5,10 @@ from ddns_clienter_core.runtimes.address_providers.host_name import (
     AddressProviderHostName,
 )
 from ddns_clienter_core.runtimes.address_providers.http_get import (
-    AddressProviderCip,
+    AddressProviderCipCc,
     AddressProviderIpify,
     AddressProviderIpip,
+    AddressProviderNetCn,
     AddressProviderNoip,
 )
 
@@ -20,7 +21,8 @@ _address_provider_class_mapper = {
         AddressProviderIpify,
         AddressProviderNoip,
         AddressProviderIpip,
-        AddressProviderCip,
+        AddressProviderCipCc,
+        AddressProviderNetCn,
     ]
 }
 
