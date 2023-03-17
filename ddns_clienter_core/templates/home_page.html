@@ -21,7 +21,7 @@
       </thead>
       <tbody class="table-group-divider">
       {% for item in addresses %}
-        <tr>
+        <tr {% if not item.enable %}class="bg-secondary"{% endif %}>
           <th scope="row">{{ item.name }}</th>
           <td>{{ item.provider_name }}</td>
           <td>{{ item.ipv4_last_address }}</td>

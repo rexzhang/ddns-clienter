@@ -19,7 +19,11 @@ class Common:
 class AddressProviderConfig:
     name: str
 
-    provider_name: str = field(default=None)
+    provider_name: str
+
+    # have default value ---
+    enable: bool = True
+
     provider_parameter: str = ""
 
     ipv4: bool = False
@@ -46,7 +50,7 @@ class TaskConfig:
 
     domain: str
 
-    # have default value
+    # have default value ---
     enable: bool = True
 
     ipv4: bool = False

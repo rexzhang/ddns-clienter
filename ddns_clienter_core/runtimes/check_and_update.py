@@ -69,6 +69,9 @@ class AddressHub:
         self._data = dict()
 
         for address_provider in self._address_provider_config_mapper.values():
+            if not address_provider.enable:
+                continue
+
             config_changed = await sync_to_async(
                 compare_and_update_config_info_from_dict_to_db
             )(
