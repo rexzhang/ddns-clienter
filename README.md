@@ -59,6 +59,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.7.4 - 20220322
+
+- AddressProviderNetCn(net.cn)
+- Fix AddressProviderCipCc(cip.cc)
+
 ## 0.7.3 - 20220316
 
 - Add new address provider: ipip(ipip.net), cip(cip.cc)
