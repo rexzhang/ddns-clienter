@@ -1,4 +1,4 @@
-<!doctype html>{% load static %}{% load django_bootstrap5 %}
+<!doctype html>{% load static %}{% load django_bootstrap5 %}{% load l10n %}{% load tz %}
 {% load i18n %}{% load l10n %}
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -23,10 +23,18 @@
           {% if status_debug_mode %}
             <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Debug Mode</span>
             </li>{% endif %}
-          <li class="nav-item my-auto"><a class="nav-link" href="/api/docs">{OpenAPI}</a></li>
-          <li class="nav-item my-auto"><a class="nav-link" href="{{ app_url }}">
-            <i class="bi-github" style="font-size: 1.2rem"></i>
-          </a></li>
+          <li class="nav-item my-auto">
+            <a class="nav-link" href="{% url 'trouble_shooting' %}" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               data-bs-title="Help"><i class="bi-life-preserver" style="font-size: 1.2rem"></i>
+            </a></li>
+          <li class="nav-item my-auto">
+            <a class="nav-link" target="_blank" href="/api/docs" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               data-bs-title="Open API"><i class="bi-code-slash" style="font-size: 1.2rem"></i>
+            </a></li>
+          <li class="nav-item my-auto">
+            <a class="nav-link" target="_blank" href="{{ app_url }}" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               data-bs-title="GitHub"><i class="bi-github" style="font-size: 1.2rem"></i>
+            </a></li>
         </ul>
       </div>
     </div>
@@ -37,12 +45,16 @@
 </main>
 <footer>
   <hr class="mb-1">
-  <div class="container font-monospace pb-2"><small>
-    {% for k,v in web_ui_footer.items %}
-      {{ k }}: {{ v }}
-    {% endfor %}
+  <div class="container font-monospace pb-2 terms"><small>
+    {% localtime on %}{% for k,v in web_ui_footer.items %}
+      {{ k }}:{{ v }}
+    {% endfor %}{% endlocaltime %}
   </small></div>
 </footer>
 {% bootstrap_javascript %}
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 </body>
 </html>

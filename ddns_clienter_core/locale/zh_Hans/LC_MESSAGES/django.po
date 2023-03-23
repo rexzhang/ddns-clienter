@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-23 12:36+0800\n"
+"POT-Creation-Date: 2023-03-23 21:30+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,7 +54,7 @@ msgstr "下一次"
 msgid "Name"
 msgstr "名称"
 
-#: templates/home_page.html:13 templates/home_page.html:49
+#: templates/home_page.html:13 templates/home_page.html:51
 msgid "Provider"
 msgstr "提供者"
 
@@ -75,37 +75,43 @@ msgid "IPv6 Change Time"
 msgstr "IPv6 变动时间"
 
 #: templates/home_page.html:27 templates/home_page.html:30
-#: templates/home_page.html:69 templates/home_page.html:71
+#: templates/home_page.html:70
 msgid "ago"
 msgstr "之前"
 
-#: templates/home_page.html:40
-msgid "Tasks"
-msgstr "任务"
+#: templates/home_page.html:40 templates/home_page.html:52
+msgid "Domain"
+msgstr "域名"
 
 #: templates/home_page.html:41
 msgid "Force Update Intervals"
 msgstr "强制更新间隔"
 
-#: templates/home_page.html:50
-msgid "Domain"
-msgstr "域名"
+#: templates/home_page.html:49
+#, fuzzy
+#| msgid "Addresses"
+msgid "Address"
+msgstr "地址"
 
-#: templates/home_page.html:51
+#: templates/home_page.html:50
 msgid "IP Addresses"
 msgstr "IP 地址"
 
-#: templates/home_page.html:52
+#: templates/home_page.html:53
 msgid "Status"
 msgstr ""
 
-#: templates/home_page.html:53
-msgid "Last Success Time"
-msgstr "最近一次更新成功时间"
-
 #: templates/home_page.html:54
-msgid "Last Update Time"
+#, fuzzy
+#| msgid "Last Success Time"
+msgid "Last Success Update Time"
 msgstr "最近一次更新时间"
+
+#~ msgid "Tasks"
+#~ msgstr "任务"
+
+#~ msgid "Last Update Time"
+#~ msgstr "最近一次更新时间"
 
 #~ msgid "IPv4 Previous Address"
 #~ msgstr "原 IPv4 地址"

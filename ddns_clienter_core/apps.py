@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.conf import settings
+from django.utils import timezone
 
 import ddns_clienter
 from ddns_clienter_core.runtimes.helpers import get_dns_servers
@@ -10,7 +11,11 @@ running_contents: dict | None = None
 def _init_running_contents():
     global running_contents
 
-    web_ui_footer = {"DNS": f"{','.join(get_dns_servers())}"}
+    web_ui_footer = {
+        "T": timezone.now(),
+        "TZ": timezone.get_current_timezone_name(),
+        "DNS": f"{','.join(get_dns_servers())}",
+    }
     running_contents = {
         "app_name": ddns_clienter.__name__,
         "app_version": ddns_clienter.__version__,
