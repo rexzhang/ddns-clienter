@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-16 15:34+0800\n"
+"POT-Creation-Date: 2023-03-23 12:36+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,78 +42,76 @@ msgstr "地址"
 msgid "Check Intervals"
 msgstr "检查间隔"
 
-#: templates/home_page.html:5 templates/home_page.html:45
+#: templates/home_page.html:5 templates/home_page.html:41
 msgid "minutes"
 msgstr "分钟"
 
-#: templates/home_page.html:6 templates/home_page.html:46
+#: templates/home_page.html:6 templates/home_page.html:42
 msgid "Next Time"
 msgstr "下一次"
 
-#: templates/home_page.html:12 templates/home_page.html:52
+#: templates/home_page.html:12 templates/home_page.html:48
 msgid "Name"
 msgstr "名称"
 
-#: templates/home_page.html:13 templates/home_page.html:53
+#: templates/home_page.html:13 templates/home_page.html:49
 msgid "Provider"
 msgstr "提供者"
 
 #: templates/home_page.html:14
 msgid "IPv4 Address"
-msgstr "现 IPv4 地址"
+msgstr "IPv4 地址"
 
 #: templates/home_page.html:15
-msgid "IPv4 Previous Address"
-msgstr "原 IPv4 地址"
+msgid "IPv4 Change Time"
+msgstr "IPv4 变动时间"
 
 #: templates/home_page.html:16
-msgid "IPv4 Change Time"
-msgstr "IPv4 更改时间"
+msgid "IPv6 Address"
+msgstr "IPv6 地址"
 
 #: templates/home_page.html:17
-msgid "IPv6 Address"
-msgstr "现 IPv6 地址"
-
-#: templates/home_page.html:18
-msgid "IPv6 Previous Address"
-msgstr "原 IPv6 地址"
-
-#: templates/home_page.html:19
 msgid "IPv6 Change Time"
-msgstr "IPv6 更改时间"
+msgstr "IPv6 变动时间"
 
-#: templates/home_page.html:30 templates/home_page.html:34
-#: templates/home_page.html:73 templates/home_page.html:75
+#: templates/home_page.html:27 templates/home_page.html:30
+#: templates/home_page.html:69 templates/home_page.html:71
 msgid "ago"
 msgstr "之前"
 
-#: templates/home_page.html:44
+#: templates/home_page.html:40
 msgid "Tasks"
 msgstr "任务"
 
-#: templates/home_page.html:45
+#: templates/home_page.html:41
 msgid "Force Update Intervals"
 msgstr "强制更新间隔"
 
-#: templates/home_page.html:54
+#: templates/home_page.html:50
 msgid "Domain"
 msgstr "域名"
 
-#: templates/home_page.html:55
+#: templates/home_page.html:51
 msgid "IP Addresses"
 msgstr "IP 地址"
 
-#: templates/home_page.html:56
+#: templates/home_page.html:52
 msgid "Status"
 msgstr ""
 
-#: templates/home_page.html:57
+#: templates/home_page.html:53
 msgid "Last Success Time"
-msgstr "最后一次更新成功时间"
+msgstr "最近一次更新成功时间"
 
-#: templates/home_page.html:58
+#: templates/home_page.html:54
 msgid "Last Update Time"
-msgstr "最后一次更新时间"
+msgstr "最近一次更新时间"
+
+#~ msgid "IPv4 Previous Address"
+#~ msgstr "原 IPv4 地址"
+
+#~ msgid "IPv6 Previous Address"
+#~ msgstr "原 IPv6 地址"
 
 #~ msgid "Update Success"
 #~ msgstr "更新成功"

@@ -12,10 +12,8 @@
         <th scope="col">{% translate "Name" %}</th>
         <th scope="col">{% translate "Provider" %}</th>
         <th scope="col">{% translate "IPv4 Address" %}</th>
-        <th scope="col">{% translate "IPv4 Previous Address" %}</th>
         <th scope="col">{% translate "IPv4 Change Time" %}</th>
         <th scope="col">{% translate "IPv6 Address" %}</th>
-        <th scope="col">{% translate "IPv6 Previous Address" %}</th>
         <th scope="col">{% translate "IPv6 Change Time" %}</th>
       </tr>
       </thead>
@@ -25,11 +23,9 @@
           <th scope="row">{{ item.name }}</th>
           <td>{{ item.provider_name }}</td>
           <td>{{ item.ipv4_last_address }}</td>
-          <td>{{ item.ipv4_previous_address }}</td>
           <td>{% if item.ipv4_last_change_time == None %}-{% else %}
             {{ item.ipv4_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
-          <td>{{ item.ipv6_last_address }}</td>
-          <td>{{ item.ipv6_previous_address }}</td>
+          <td>{{ item.ipv6_last_address }}/{{ item.ipv6_prefix_length }}</td>
           <td>{% if item.ipv6_last_change_time == None %}-{% else %}
             {{ item.ipv6_last_change_time|timesince }} {% translate "ago" %}{% endif %}</td>
         </tr>
@@ -50,29 +46,28 @@
       <thead>
       <tr>
         <th scope="col">{% translate "Name" %}</th>
+        <th scope="col">{% translate "Address" %}</th>
+        <th scope="col">{% translate "IP Addresses" %}</th>
         <th scope="col">{% translate "Provider" %}</th>
         <th scope="col">{% translate "Domain" %}</th>
-        <th scope="col">{% translate "IP Addresses" %}</th>
         <th scope="col">{% translate "Status" %}</th>
-        <th scope="col">{% translate "Last Success Time" %}</th>
-        <th scope="col">{% translate "Last Update Time" %}</th>
+        <th scope="col">{% translate "Last Success Update Time" %}</th>
       </tr>
       </thead>
       <tbody class="table-group-divider">
       {% for item in tasks %}
         <tr {% if not item.enable %}class="bg-secondary"{% endif %}>
           <th scope="row">{{ item.name }}</th>
+          <td>{{ item.address_name }}</td>
+          <td>{{ item.last_ip_addresses }}</td>
           <td>{{ item.provider_name }}</td>
           <td>{{ item.domain }}</td>
-          <td>{{ item.last_ip_addresses }}</td>
           <td>{% if item.last_update_time is None %}<i class="bi bi-plus-circle-dotted"></i>
             {% else %}{% if item.last_update_success %}<i class="bi bi-check-lg"></i>
             {% else %}<i class="bi bi-x-lg"></i>{% endif %}{% endif %}
           </td>
           <td>{% if item.last_update_success_time == None %}-{% else %}
             {{ item.last_update_success_time|timesince }} {% translate "ago" %}{% endif %}</td>
-          <td>{% if item.last_update_time == None %}-{% else %}
-            {{ item.last_update_time|timesince }} {% translate "ago" %}{% endif %}</td>
         </tr>
       {% empty %}
         <th>Sorry, no data in this list.</th>
