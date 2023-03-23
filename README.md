@@ -59,6 +59,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.7.5 - 20220323
+
+- Update, rewrite update task logic
+- Update WebUI
+
 ## 0.7.4 - 20220322
 
 - AddressProviderNetCn(net.cn)
@@ -174,9 +179,16 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 
 # TODO
 
+- 基于群晖DSM的安装手册
+- 可以手动触发地址
+    - 一次触发所以事物
 - 更友好的用户提示
+    - 当前系统时间(使用环境变量)
     - 问题处理页面
         - 各种 ping 的结果来展示问题
+        - 当前 dns/时区
+    - websock 提示各种状态
+        - 正在执行事务
 - 日志
     - 全面整理日志信息输出
     - 任务失败后的详细日志信息
