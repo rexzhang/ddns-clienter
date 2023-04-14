@@ -59,6 +59,10 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.7.6 - 20220414
+
+- Add, catch more crash
+
 ## 0.7.5 - 20220323
 
 - Update, rewrite update task logic
