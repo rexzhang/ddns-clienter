@@ -12,7 +12,6 @@ def _init_running_contents():
     global running_contents
 
     web_ui_footer = {
-        "T": timezone.now(),
         "TZ": timezone.get_current_timezone_name(),
         "DNS": f"{','.join(get_dns_servers())}",
     }
