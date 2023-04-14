@@ -8,7 +8,10 @@ from django.utils import timezone
 
 from ddns_clienter_core import models
 from ddns_clienter_core.constants import AddressInfo
-from ddns_clienter_core.runtimes.address_providers import get_ip_address_from_provider
+from ddns_clienter_core.runtimes.address_providers import (
+    AddressProviderException,
+    get_ip_address_from_provider,
+)
 from ddns_clienter_core.runtimes.config import (
     AddressProviderConfig,
     ConfigException,
@@ -63,7 +66,13 @@ class AddressProcessor:
             address_db = await models.Address.objects.filter(name=name).afirst()
 
             # get IP address
-            newest_address = await get_ip_address_from_provider(address_config)
+            try:
+                newest_address = await get_ip_address_from_provider(address_config)
+            except AddressProviderException as e:
+                logger.error(e)
+                await event.error(e)
+                continue
+
             now = timezone.now()
 
             # update IP address to db
