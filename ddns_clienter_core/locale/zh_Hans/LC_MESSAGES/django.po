@@ -88,8 +88,6 @@ msgid "Force Update Intervals"
 msgstr "强制更新间隔"
 
 #: templates/home_page.html:49
-#, fuzzy
-#| msgid "Addresses"
 msgid "Address"
 msgstr "地址"
 
@@ -99,11 +97,9 @@ msgstr "IP 地址"
 
 #: templates/home_page.html:53
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: templates/home_page.html:54
-#, fuzzy
-#| msgid "Last Success Time"
 msgid "Last Success Update Time"
 msgstr "最近一次更新时间"
 
