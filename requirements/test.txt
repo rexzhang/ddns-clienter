@@ -9,4 +9,3 @@ mypy
 
 # lint
 flake8
-black

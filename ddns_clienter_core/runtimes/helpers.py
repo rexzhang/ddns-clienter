@@ -1,6 +1,6 @@
 def get_dns_servers() -> list[str]:
     dns_servers = list()
-    with open("/etc/resolv.conf", "r") as f:
+    with open("/etc/resolv.conf") as f:
         for line in f:
             if line.startswith("nameserver"):
                 parts = line.split()

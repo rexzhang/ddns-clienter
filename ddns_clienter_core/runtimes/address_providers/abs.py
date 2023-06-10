@@ -120,4 +120,4 @@ class AddressProviderAbs:
         return obj
 
     def __repr__(self):
-        return "AddressProvider:{}".format(self.name)
+        return f"AddressProvider:{self.name}"
