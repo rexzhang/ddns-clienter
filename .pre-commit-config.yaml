@@ -3,9 +3,9 @@ repos:
     rev: v3.4.0
     hooks:
       - id: pyupgrade
-        args: [ --py310-plus ]
+        args: [ --py311-plus ]
   - repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
       - id: black
-        args: [ "--target-version", "py310" ]
+        args: [ "--target-version", "py311" ]
