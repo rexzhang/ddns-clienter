@@ -2,7 +2,6 @@ import asyncio
 from datetime import timedelta
 from logging import getLogger
 
-from asgiref.sync import sync_to_async
 from django.utils import timezone
 
 from ddns_clienter_core import models
@@ -86,7 +85,7 @@ class AddressProcessor:
                 address_db.ipv4_previous_address = address_db.ipv4_last_address
                 address_db.ipv4_last_address = newest_address.ipv4_address_str
                 address_db.ipv4_last_change_time = now
-                await sync_to_async(address_db.save)()
+                await address_db.asave()
 
                 # send message
                 message = "[{}]'s ipv4 changed:{}->{}".format(
@@ -107,7 +106,7 @@ class AddressProcessor:
                 address_db.ipv6_last_address = newest_address.ipv6_address_str
                 address_db.ipv6_prefix_length = address_config.ipv6_prefix_length
                 address_db.ipv6_last_change_time = now
-                await sync_to_async(address_db.save)()
+                await address_db.asave()
 
                 # send message
                 message = "[{}]'s ipv6 changed:{}->{}/{}".format(
@@ -219,7 +218,7 @@ class UpdateTaskProcessor:
                 task_db.last_update_success = False
 
             # update to db
-            await sync_to_async(task_db.save)()
+            await task_db.asave()
 
     async def get_newest_ip_address(self, address_name: str) -> AddressInfo:
         address_info = self._address_info_cache.get(address_name, None)

@@ -1,7 +1,7 @@
 # base 3rd package
 
 asgiref
-django
+django>=4.2
 django-ninja
 django-bootstrap5
 

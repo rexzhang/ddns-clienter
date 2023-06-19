@@ -1,6 +1,5 @@
 from logging import getLogger
 
-from asgiref.sync import sync_to_async
 
 from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.models import Event as EventModel
@@ -14,7 +13,7 @@ class AsyncEvent:
     @staticmethod
     async def _save_event(message: str, level: EventLevel):
         event_db = EventModel(level=level, message=message)
-        await sync_to_async(event_db.save)()
+        await event_db.asave()
 
     async def debug(self, message: str):
         await self._save_event(message, EventLevel.INFO)
@@ -34,4 +33,4 @@ event = AsyncEvent()
 
 async def send_event(message: str, level: EventLevel = EventLevel.INFO):
     event_db = EventModel(level=level, message=message)
-    await sync_to_async(event_db.save)()
+    await event_db.asave()

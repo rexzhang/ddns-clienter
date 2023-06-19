@@ -2,7 +2,7 @@ import dataclasses
 from datetime import timedelta
 from logging import getLogger
 
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import async_to_sync
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils import timezone
@@ -28,7 +28,7 @@ async def compare_and_update_from_dataclass_to_db(dc_obj, db_obj) -> bool:
             db_obj.__setattr__(k, v)
 
     if changed:
-        await sync_to_async(db_obj.save)()
+        await db_obj.asave()
 
     return changed
 
@@ -48,7 +48,7 @@ async def compare_and_update_config_info_from_dict_to_db(
     config_item_db = await model.objects.filter(name=config_item_name).afirst()
     if config_item_db is None:
         config_item_db = model(**config_item_dict)
-        await sync_to_async(config_item_db.save)()
+        await config_item_db.asave()
 
         message = f"Cannot found config item:{model.__name__}:{config_item_name} from db, create it in db."
         logger.info(message)
@@ -63,7 +63,7 @@ async def compare_and_update_config_info_from_dict_to_db(
             changed = True
 
     if changed:
-        await sync_to_async(config_item_db.save)()
+        await config_item_db.asave()
 
         message = f"The {model.__name__}:{config_item_name}'s config has changed, update to db."
         logger.info(message)
