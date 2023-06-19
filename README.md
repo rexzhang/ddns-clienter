@@ -42,8 +42,9 @@ docker pull ray1ex/ddns-clienter
 
 ```shell
 docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
-  --dns 192.168.1.1 \
-  -v /your/config.toml:/etc/ddns-clienter.toml:ro \
+  -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
+  -v $(pwd)/data:/data \  
+  -e TZ=Aisa/Shanghai \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
 

@@ -1,6 +1,5 @@
 #!/bin/zsh
 
-docker image rm cr.h.rexzhang.com/ray1ex/ddns-clienter
 docker build -t cr.h.rexzhang.com/ray1ex/ddns-clienter . --build-arg ENV=rex --file Dockerfile.dev
 
 read -r -s -k '?Press any key to continue, push docker image...'

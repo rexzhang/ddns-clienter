@@ -15,10 +15,10 @@
     <h4>Start Docker Container:</h4>
     <div class="border px-4">
   <pre><code>
-docker run -dit -p 0.0.0.0:8000:8000 \
+docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
+  -v $(pwd)/data:/data \  
   -e TZ=Aisa/Shanghai \
-  --dns 192.168.1.1 \
   --name ddns-clienter ray1ex/ddns-clienter</code></pre>
     </div>
   </div>
