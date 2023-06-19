@@ -1,24 +1,31 @@
 {% extends "base.html" %}{% load django_bootstrap5 %}
 {% block content %}
+
   <div class="container pt-2">
     {% bootstrap_messages %}
   </div>
 
-    <div class="container pt-2">
-        <h4>Start Docker Container:</h4>
-        <div class="border px-4">
+  <div class="container pt-2">
+    <h4>Status:</h4>
+    <span
+      class="badge rounded-pill text-bg-{% if check_config_file %}success{% else %}danger{% endif %}">Config File</span>
+  </div>
+
+  <div class="container pt-2">
+    <h4>Start Docker Container:</h4>
+    <div class="border px-4">
   <pre><code>
 docker run -dit -p 0.0.0.0:8000:8000 \
   -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
   -e TZ=Aisa/Shanghai \
   --dns 192.168.1.1 \
   --name ddns-clienter ray1ex/ddns-clienter</code></pre>
-        </div>
     </div>
+  </div>
 
-    <div class="container pt-2">
-        <h4>Config File: /etc/ddns-clienter.toml</h4>
-        <div class="border px-4">
+  <div class="container pt-2">
+    <h4>Config File: /etc/ddns-clienter.toml</h4>
+    <div class="border px-4">
   <pre><code>
 [[address]]
 name = "from_ipify"

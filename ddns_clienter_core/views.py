@@ -86,7 +86,10 @@ class TroubleShootingView(DCTemplateView):
 
     def get_context_data(self, **kwargs):
         try:
-            _ = get_config()
+            app_config = get_config()
         except ConfigException as e:
             messages.add_message(self.request, messages.ERROR, str(e))
-            return None
+            app_config = None
+
+        kwargs.update({"check_config_file": False if app_config is None else True})
+        return kwargs
