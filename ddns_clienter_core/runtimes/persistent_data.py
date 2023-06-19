@@ -7,8 +7,13 @@ from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
+
 from ddns_clienter_core.models import Address, Event, Task
-from ddns_clienter_core.runtimes.config import get_config
+from ddns_clienter_core.runtimes.config import (
+    get_config,
+    AddressProviderConfig,
+    TaskConfig,
+)
 from ddns_clienter_core.runtimes.event import event
 
 logger = getLogger(__name__)
@@ -70,34 +75,29 @@ async def compare_and_update_config_info_from_dict_to_db(
 
 def get_addresses_values(debug: bool = False) -> QuerySet:
     config = get_config()
-
-    for _, address_config_item in config.addresses.items():
-        async_to_sync(compare_and_update_config_info_from_dict_to_db)(
-            dataclasses.asdict(address_config_item), Address
-        )
-
-    if debug:
-        queryset = Address.objects.filter(
-            time__gt=(timezone.now() - timedelta(weeks=1))
-        )
-    else:
-        queryset = Address.objects.filter(name__in=config.addresses.keys())
-
-    return queryset.order_by("name")
+    return _get_addresses_or_tasks_queryset(config.address_dict, Address, debug)
 
 
 def get_tasks_queryset(debug: bool = False) -> QuerySet:
     config = get_config()
 
-    for _, task_config_item in config.tasks.items():
+    return _get_addresses_or_tasks_queryset(config.task_dict, Task, debug)
+
+
+def _get_addresses_or_tasks_queryset(
+    addresses_or_tasks: dict[str, AddressProviderConfig | TaskConfig],
+    model: type[Address] | type[Task],
+    debug: bool = False,
+) -> QuerySet:
+    for config_obj in addresses_or_tasks.values():
         async_to_sync(compare_and_update_config_info_from_dict_to_db)(
-            dataclasses.asdict(task_config_item), Task
+            config_obj.dict(), model
         )
 
     if debug:
-        queryset = Task.objects.filter(time__gt=(timezone.now() - timedelta(weeks=1)))
+        queryset = model.objects.filter(time__gt=(timezone.now() - timedelta(weeks=1)))
     else:
-        queryset = Task.objects.filter(name__in=config.tasks.keys())
+        queryset = model.objects.filter(name__in=addresses_or_tasks.keys())
 
     return queryset.order_by("name")
 

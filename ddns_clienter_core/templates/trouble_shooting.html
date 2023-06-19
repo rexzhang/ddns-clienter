@@ -4,40 +4,52 @@
     {% bootstrap_messages %}
   </div>
 
-  <div class="container pt-2">
-    <h4>Quick Example: config.toml</h4>
-    <div class="border px-4">
-      <pre><code>
-[addresses]
+    <div class="container pt-2">
+        <h4>Start Docker Container:</h4>
+        <div class="border px-4">
+  <pre><code>
+docker run -dit -p 0.0.0.0:8000:8000 \
+  -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
+  -e TZ=Aisa/Shanghai \
+  --dns 192.168.1.1 \
+  --name ddns-clienter ray1ex/ddns-clienter</code></pre>
+        </div>
+    </div>
 
-[addresses.from_ipify]
+    <div class="container pt-2">
+        <h4>Config File: /etc/ddns-clienter.toml</h4>
+        <div class="border px-4">
+  <pre><code>
+[[address]]
+name = "from_ipify"
 provider_name = "ipify"
 ipv4 = true
 
-[addresses.from_hostname]
+[[address]]
+name = "from_hostname"
 provider_name = "hostname"
 provider_parameter = "localhost"
 ipv6 = true
 ipv6_match_rule = "^240e:"
 
-[tasks]
-
-[tasks.ipv4_to_lexicon_cloudflare]
+[[task]]
+name = "ipv4_to_lexicon_cloudflare"
 provider_name = "lexicon.cloudflare"
 provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
 address_name = "from_ipify"
 ipv4 = true
 domain = "www4.example.com"
 
-[tasks.ipv6_to_dynv6]
+[[task]]
+name = "ipv6_to_dynv6"
 provider_name = "dynv6"
 provider_auth = "this_is_token_for_this_zone"
 address_name = "from_hostname"
 ipv6 = true
 domain = "www6.example.com"
     </code></pre>
-    </div>
+        </div>
 
-    <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
-  </div>
+        <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
+    </div>
 {% endblock %}

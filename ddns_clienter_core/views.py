@@ -83,3 +83,10 @@ class HomePageView(DCTemplateView):
 
 class TroubleShootingView(DCTemplateView):
     template_name = "trouble_shooting.html"
+
+    def get_context_data(self, **kwargs):
+        try:
+            _ = get_config()
+        except ConfigException as e:
+            messages.add_message(self.request, messages.ERROR, str(e))
+            return None

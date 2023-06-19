@@ -1,5 +1,4 @@
 import asyncio
-import dataclasses
 from datetime import timedelta
 from logging import getLogger
 
@@ -36,9 +35,7 @@ def check_and_update_is_running() -> bool:
     return _check_and_update_running_lock.locked()
 
 
-async def check_and_update(
-    config_file_name: str | None = None, real_update: bool = True
-) -> str | None:
+async def check_and_update(config_file_name: str | None = None) -> str | None:
     if _check_and_update_running_lock.locked():
         return "There are already tasks in progress, please try later"
 
@@ -51,19 +48,23 @@ async def check_and_update(
 
 class AddressProcessor:
     # TODO 并行处理
+    def __init__(self, address_provider_configs: list[AddressProviderConfig]):
+        self.address_provider_configs = address_provider_configs
 
-    async def __call__(self, address_config_mapper: dict[str, AddressProviderConfig]):
-        for name, address_config in address_config_mapper.items():
+    async def __call__(self):
+        for address_config in self.address_provider_configs:
             # migrate config and db
             await compare_and_update_config_info_from_dict_to_db(
-                config_item_dict=dataclasses.asdict(address_config),
+                config_item_dict=address_config.dict(),
                 model=models.Address,
             )
 
             if not address_config.enable:
                 continue
 
-            address_db = await models.Address.objects.filter(name=name).afirst()
+            address_db = await models.Address.objects.filter(
+                name=address_config.name
+            ).afirst()
 
             # get IP address
             try:
@@ -89,7 +90,7 @@ class AddressProcessor:
 
                 # send message
                 message = "[{}]'s ipv4 changed:{}->{}".format(
-                    name,
+                    address_db.name,
                     address_db.ipv4_previous_address,
                     address_db.ipv4_last_address,
                 )
@@ -110,7 +111,7 @@ class AddressProcessor:
 
                 # send message
                 message = "[{}]'s ipv6 changed:{}->{}/{}".format(
-                    name,
+                    address_db.name,
                     address_db.ipv6_previous_address,
                     address_db.ipv6_last_address,
                     address_db.ipv6_prefix_length,
@@ -126,16 +127,17 @@ class UpdateTaskProcessor:
 
     _address_info_cache: dict
 
-    def __init__(self):
+    def __init__(self, task_configs: list[TaskConfig]):
         self._address_info_cache = dict()
+        self.task_configs = task_configs
 
-    async def __call__(self, update_task_config_mapper: dict[str, TaskConfig]):
+    async def __call__(self):
         config = get_config()
 
-        for name, task_config in update_task_config_mapper.items():
+        for task_config in self.task_configs:
             # migrate config and db
             await compare_and_update_config_info_from_dict_to_db(
-                config_item_dict=dataclasses.asdict(task_config),
+                config_item_dict=task_config.dict(),
                 model=models.Task,
             )
 
@@ -245,5 +247,5 @@ async def _check_an_update_v2(config_file_name: str):
         logger.critical(e)
         return
 
-    await AddressProcessor()(config.addresses)
-    await UpdateTaskProcessor()(config.tasks)
+    await AddressProcessor(config.address)()
+    await UpdateTaskProcessor(config.task)()

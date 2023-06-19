@@ -193,6 +193,7 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
         - 当前 dns/时区
     - websock 提示各种状态
         - 正在执行事务
+    - 问题处理界面,主动检测配置文件格式
 - 日志
     - 全面整理日志信息输出
     - 任务失败后的详细日志信息

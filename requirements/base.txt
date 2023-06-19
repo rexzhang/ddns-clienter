@@ -9,6 +9,7 @@ httpx
 dns-lexicon[full]
 
 ## Config
+pydantic
 python-dotenv
 
 ## crontab
