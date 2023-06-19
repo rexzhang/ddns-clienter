@@ -59,38 +59,43 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
-## 0.7.6 - 20220414
+## 0.8.0 - 20230619
+
+- Broken Change
+    - New config file format
+
+## 0.7.6 - 20230414
 
 - Add, catch more crash
 
-## 0.7.5 - 20220323
+## 0.7.5 - 20230323
 
 - Update, rewrite update task logic
 - Update WebUI
 
-## 0.7.4 - 20220322
+## 0.7.4 - 20230322
 
 - AddressProviderNetCn(net.cn)
 - Fix AddressProviderCipCc(cip.cc)
 
-## 0.7.3 - 20220316
+## 0.7.3 - 20230316
 
 - Add new address provider: ipip(ipip.net), cip(cip.cc)
 
-## 0.7.2 - 20220316
+## 0.7.2 - 20230316
 
 - Refactor, Splitting DDNS provider dynv6 to dynv6,dynv6.rest
 - Update, `task.host` is deprecated
 - Update, WebUI support auto timezone
 - Add, show next time in WebUI
 
-## 0.7.1 - 20220315
+## 0.7.1 - 20230315
 
 - Add more debug info
 - Add, display config file load error in WebUI(WIP)
 - Add, display DNS info on WebUI
 
-## 0.7.0 - 20220304
+## 0.7.0 - 20230304
 
 - Broken change
     - config about [addresses.XYZ], [tasks.XYZ]
