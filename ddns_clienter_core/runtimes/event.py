@@ -29,8 +29,3 @@ class AsyncEvent:
 
 
 event = AsyncEvent()
-
-
-async def send_event(message: str, level: EventLevel = EventLevel.INFO):
-    event_db = EventModel(level=level, message=message)
-    await event_db.asave()

@@ -18,7 +18,7 @@ class AddressProviderHostName(AddressProviderAbs):
         try:
             data = socket.getaddrinfo(parameter, 80)
         except socket.gaierror as e:
-            message = f"Detect IP Address failed, provider:{self.name}, parameter:{parameter}, message:{e}"
+            message = f"Detect IP Address failed, provider:[{self.name}], parameter:{parameter}, message:{e}"
             logger.error(message)
             raise AddressProviderException(message)
 

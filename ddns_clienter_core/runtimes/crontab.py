@@ -6,7 +6,7 @@ from django.conf import settings
 
 from ddns_clienter_core.constants import CHECK_INTERVALS
 from ddns_clienter_core.runtimes.config import ConfigException, get_config
-from ddns_clienter_core.runtimes.event import send_event
+from ddns_clienter_core.runtimes.event import event
 
 logger = getLogger(__name__)
 
@@ -47,6 +47,6 @@ def update_crontab_file():
 
     cron.write(filename)
 
-    message = f"crontab file:{filename} created/updated."
+    message = f"Init: crontab file:{filename} created/updated."
     logger.info(message)
-    async_to_sync(send_event)(message)
+    async_to_sync(event.info)(message)

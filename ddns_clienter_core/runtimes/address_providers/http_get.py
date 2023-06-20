@@ -51,20 +51,20 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
                 r = await client.get(url, headers=headers)
         except httpx.HTTPError as e:
             await self._logging_error_message(
-                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, message:{e}"
+                f"Detect IP Address failed; provider:[{self.name}], IPv{ipv}, message:{e}"
             )
             return None
 
         if r.status_code != 200:
             await self._logging_error_message(
-                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, status_code:{r.status_code}!=200"
+                f"Detect IP Address failed; provider:[{self.name}], IPv{ipv}, status_code:{r.status_code}!=200"
             )
             return None
 
         ip_address = pick_out_ip_address(ipv, r.text)
         if len(ip_address) == 0:
             await self._logging_error_message(
-                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, bad ip address:{ip_address}"
+                f"Detect IP Address failed; provider:[{self.name}], IPv{ipv}, bad ip address:{ip_address}"
             )
             return None
 
@@ -73,7 +73,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
         except ValueError as e:
             await self._logging_error_message(
-                f"Detect IP Address failed; provider:{self.name}, IPv{ipv}, message:{e}"
+                f"Detect IP Address failed; provider:[{self.name}], IPv{ipv}, message:{e}"
             )
             return None
 

@@ -69,8 +69,9 @@ class AddressProcessor:
             try:
                 newest_address = await get_ip_address_from_provider(address_config)
             except AddressProviderException as e:
-                logger.error(e)
-                await event.error(e)
+                message = f"Address: {e}"
+                logger.error(message)
+                await event.error(message)
                 continue
 
             now = timezone.now()
@@ -88,7 +89,7 @@ class AddressProcessor:
                 await address_db.asave()
 
                 # send message
-                message = "[{}]'s ipv4 changed:{}->{}".format(
+                message = "Address: [{}]'s ipv4 changed:{}->{}".format(
                     address_db.name,
                     address_db.ipv4_previous_address,
                     address_db.ipv4_last_address,
@@ -109,7 +110,7 @@ class AddressProcessor:
                 await address_db.asave()
 
                 # send message
-                message = "[{}]'s ipv6 changed:{}->{}/{}".format(
+                message = "Address: [{}]'s ipv6 changed:{}->{}/{}".format(
                     address_db.name,
                     address_db.ipv6_previous_address,
                     address_db.ipv6_last_address,
@@ -188,7 +189,7 @@ class UpdateTaskProcessor:
                 message = str(e)
 
             if success:
-                message = f"Update task:[{task_config.name}] finished, {message}"
+                message = f"Task: Update task:[{task_config.name}] finished, {message}"
                 logger.info(message)
                 await event.info(message)
 
@@ -210,7 +211,7 @@ class UpdateTaskProcessor:
                 task_db.last_update_success_time = now
 
             else:
-                message = f"Update task:[{task_config.name}] failed, {message}"
+                message = f"Task: Update task:[{task_config.name}] failed, {message}"
                 logger.error(message)
                 await event.error(message)
 

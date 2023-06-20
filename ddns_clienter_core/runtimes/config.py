@@ -15,16 +15,16 @@ class Common(pydantic.BaseModel):
 
 
 class AddressProviderConfig(pydantic.BaseModel):
-    enable: bool = True
     name: str
+    enable: bool = True
 
     provider_name: str
     provider_parameter: str = ""
 
     ipv4: bool = False
+    ipv4_match_rule: str = ""
     ipv6: bool = False
     ipv6_prefix_length: int | None = None
-    ipv4_match_rule: str = ""
     ipv6_match_rule: str = ""
     allow_private: bool = False
     allow_loopback: bool = False
@@ -35,8 +35,8 @@ class AddressProviderConfig(pydantic.BaseModel):
 
 
 class TaskConfig(pydantic.BaseModel):
-    enable: bool = True
     name: str
+    enable: bool = True
 
     address_name: str
     ipv4: bool = False
@@ -80,24 +80,24 @@ def get_config(config_toml: str = None) -> Config:
     if config_toml is None:
         config_toml = settings.CONFIG_FILE
 
-    logger.info(config_toml)
+    logger.info(f"Config: Open file {config_toml}...")
     try:
         with open(config_toml, "rb") as f:
             config_obj = tomllib.load(f)
 
     except FileNotFoundError as e:
-        message = f"Open file {config_toml} failed, {e}"
+        message = f"Config: Open file {config_toml} failed, {e}"
         logger.critical(message)
         raise ConfigException(message)
     except tomllib.TOMLDecodeError as e:
-        message = f"Parse file {config_toml} failed, {e}"
+        message = f"Config: Parse file {config_toml} failed, {e}"
         logger.critical(message)
         raise ConfigException(message)
 
     try:
         config = pydantic.parse_obj_as(Config, config_obj)
     except pydantic.error_wrappers.ValidationError as e:
-        message = f"Parse file {config_toml} failed, {e}"
+        message = f"Config: Parse file {config_toml} failed, {e}"
         logger.critical(message)
         raise ConfigException(message)
 

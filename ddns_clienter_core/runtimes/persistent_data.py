@@ -1,4 +1,5 @@
 import dataclasses
+import logging
 from datetime import timedelta
 from logging import getLogger
 
@@ -50,23 +51,26 @@ async def compare_and_update_config_info_from_dict_to_db(
         config_item_db = model(**config_item_dict)
         await config_item_db.asave()
 
-        message = f"Cannot found config item:{model.__name__}:{config_item_name} from db, create it in db."
+        message = f"Cannot found config item:{model.__name__}:[{config_item_name}] from db, create it in db."
         logger.info(message)
         await event.info(message)
         return True
 
     changed = False
+    changed_info = f"name:[{config_item_name}], "
     config_item_db_to_dict = model_to_dict(config_item_db)
     for k, v in config_item_dict.items():
         if config_item_db_to_dict.get(k) != v:
-            config_item_db.__setattr__(k, v)
             changed = True
+            changed_info += f"k:[{k}], V:[{config_item_db_to_dict.get(k)}] -> [{v}]. "
+            config_item_db.__setattr__(k, v)
 
     if changed:
         await config_item_db.asave()
 
-        message = f"The {model.__name__}:{config_item_name}'s config has changed, update to db."
+        message = f"The {model.__name__}:[{config_item_name}]'s config has changed, update to db."
         logger.info(message)
+        logging.info(changed_info)
         await event.info(message)
         return True
 

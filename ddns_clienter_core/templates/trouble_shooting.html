@@ -1,6 +1,5 @@
 {% extends "base.html" %}{% load django_bootstrap5 %}
 {% block content %}
-
   <div class="container pt-2">
     {% bootstrap_messages %}
   </div>
@@ -13,20 +12,18 @@
 
   <div class="container pt-2">
     <h4>Start Docker Container:</h4>
-    <div class="border px-4">
-  <pre><code>
+    <div class="border px-4"><pre><code>
 docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
-  -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
-  -v $(pwd)/data:/data \  
-  -e TZ=Aisa/Shanghai \
-  --name ddns-clienter ray1ex/ddns-clienter</code></pre>
+-v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
+-v $(pwd)/data:/data \
+-e TZ=Aisa/Shanghai \
+--name ddns-clienter ray1ex/ddns-clienter</code></pre>
     </div>
   </div>
 
   <div class="container pt-2">
     <h4>Config File: /etc/ddns-clienter.toml</h4>
-    <div class="border px-4">
-  <pre><code>
+    <div class="border px-4"><pre><code>
 [[address]]
 name = "from_ipify"
 provider_name = "ipify"
@@ -41,22 +38,21 @@ ipv6_match_rule = "^240e:"
 
 [[task]]
 name = "ipv4_to_lexicon_cloudflare"
-provider_name = "lexicon.cloudflare"
-provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
 address_name = "from_ipify"
 ipv4 = true
 domain = "www4.example.com"
+provider_name = "lexicon.cloudflare"
+provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
 
 [[task]]
 name = "ipv6_to_dynv6"
-provider_name = "dynv6"
-provider_auth = "this_is_token_for_this_zone"
 address_name = "from_hostname"
 ipv6 = true
 domain = "www6.example.com"
-    </code></pre>
-        </div>
-
-        <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
+provider_name = "dynv6"
+provider_auth = "this_is_token_for_this_zone"</code></pre>
     </div>
+
+    <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
+  </div>
 {% endblock %}
