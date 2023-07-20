@@ -13,8 +13,11 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
 - Support multiple address provider
     - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
-    - [ipify](https://www.ipify.org)
-    - noip
+    - [ipify](https://www.ipify.org), IPv4/6
+    - [noip](https://www.noip.com/), IPv4/6
+    - [ipip](https://myip.ipip.net), IPv4
+    - [cip.cc](https://www.cip.cc), IPv4
+    - [net.cn](www.net.cn), IPv4
 - Support multiple DNS provider
     - [dynv6](https://dynv6.com/docs/apis)
     - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
