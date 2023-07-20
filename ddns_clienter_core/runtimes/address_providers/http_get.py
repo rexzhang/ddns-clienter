@@ -112,12 +112,12 @@ class AddressProviderNoip(AddressProviderHttpGetAbs):
 
 class AddressProviderIpip(AddressProviderHttpGetAbs):
     name = "ipip"
-    url_ipv4 = "http://myip.ipip.net/"
+    url_ipv4 = "https://myip.ipip.net/"
 
 
 class AddressProviderCipCc(AddressProviderHttpGetAbs):
     name = "cip.cc"
-    url_ipv4 = "http://www.cip.cc/"
+    url_ipv4 = "https://www.cip.cc/"
     user_agent = "curl/7.88.1"
 
 
