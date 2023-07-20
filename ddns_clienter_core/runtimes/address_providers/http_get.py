@@ -44,7 +44,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
         if self.user_agent is None:
             headers = None
         else:
-            headers = {"user-agent": self.user_agent}
+            headers = {"User-Agent": self.user_agent, "Cache-Control": "no-cache"}
 
         try:
             async with httpx.AsyncClient() as client:
