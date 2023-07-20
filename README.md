@@ -60,6 +60,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 # History
 
+## 0.8.1
+
+- Add HTTP header "Cache-Control" in request
+- Update "ipip" and "cip.cc"'s URL to HTTPS
+
 ## 0.8.0 - 20230619
 
 - Broken Change
