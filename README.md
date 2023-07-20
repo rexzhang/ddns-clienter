@@ -7,7 +7,7 @@
 
 Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
-[Github](https://github.com/rexzhang/ddns-clienter)
+[中文文档](https://github.com/rexzhang/ddns-clienter/tree/main/docs/zh)
 
 # Feature
 
@@ -194,18 +194,23 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
     - 一次触发所以事物
 - 更友好的用户提示
     - 当前系统时间(使用环境变量)
+    - 配置文件检查
+        - provider 是否存在
+        - provider name 重复
+    - 主页面
+        - hostname 的 hostname
     - 问题处理页面
         - 各种 ping 的结果来展示问题
         - 当前 dns/时区
     - websock 提示各种状态
         - 正在执行事务
-    - 问题处理界面,主动检测配置文件格式
 - 日志
     - 全面整理日志信息输出
     - 任务失败后的详细日志信息
         - Update task xxx failed
     - 所有 INFO 以及以上级别的logging自动进日志
     - 消息推送 webhook
+    - sentry 可以在配置文件中设置
 - 安全的任务调用
     - docker中可以call api
     - 可以通过 token 认证
