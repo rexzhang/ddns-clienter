@@ -9,39 +9,39 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
 [中文文档](https://github.com/rexzhang/ddns-clienter/tree/main/docs/zh)
 
-# Feature
+## Feature
 
 - Support multiple address provider
-    - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
-    - [ipify](https://www.ipify.org), IPv4/6
-    - [noip](https://www.noip.com/), IPv4/6
-    - [ipip](https://myip.ipip.net), IPv4
-    - [cip.cc](https://www.cip.cc), IPv4
-    - [net.cn](www.net.cn), IPv4
+  - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
+  - [ipify](https://www.ipify.org), IPv4/6
+  - [noip](https://www.noip.com/), IPv4/6
+  - [ipip](https://myip.ipip.net), IPv4
+  - [cip.cc](https://www.cip.cc), IPv4
+  - [net.cn](http://www.net.cn), IPv4
 - Support multiple DNS provider
-    - [dynv6](https://dynv6.com/docs/apis)
-    - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
-        - Aliyun.com
-        - AWS Route53
-        - Cloudflare
-        - DNSPod
-        - GoDaddy
-        - Namecheap
-        - MORE, please check lexicon's document
+  - [dynv6](https://dynv6.com/docs/apis)
+  - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
+    - Aliyun.com
+    - AWS Route53
+    - Cloudflare
+    - DNSPod
+    - GoDaddy
+    - Namecheap
+    - MORE, please check lexicon's document
 
-# Quick Start
+## Quick Start
 
-## Install
+### Install
 
 ```shell
 docker pull ray1ex/ddns-clienter
 ```
 
-## Config
+### Config
 
 [Example](https://github.com/rexzhang/ddns-clienter/blob/main/docs/config.toml)
 
-## Start
+### Start
 
 ```shell
 docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
@@ -51,71 +51,71 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
 
-# Screenshot
+## Screenshot
 
-## WebUI
+### WebUI
 
 ![WebUI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-42-35.420Z.png)
 
-## OpenAPI
+### OpenAPI
 
 ![OpenAPI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-43-14.434Z.png)
 
-# History
+## History
 
 ## 0.8.1 - 20230720
 
 - Add HTTP header "Cache-Control" in request
 - Update "ipip" and "cip.cc"'s URL to HTTPS
 
-## 0.8.0 - 20230619
+### 0.8.0 - 20230619
 
 - Broken Change
-    - New config file format
+  - New config file format
 
-## 0.7.6 - 20230414
+### 0.7.6 - 20230414
 
 - Add, catch more crash
 
-## 0.7.5 - 20230323
+### 0.7.5 - 20230323
 
 - Update, rewrite update task logic
 - Update WebUI
 
-## 0.7.4 - 20230322
+### 0.7.4 - 20230322
 
 - AddressProviderNetCn(net.cn)
 - Fix AddressProviderCipCc(cip.cc)
 
-## 0.7.3 - 20230316
+### 0.7.3 - 20230316
 
 - Add new address provider: ipip(ipip.net), cip(cip.cc)
 
-## 0.7.2 - 20230316
+### 0.7.2 - 20230316
 
 - Refactor, Splitting DDNS provider dynv6 to dynv6,dynv6.rest
 - Update, `task.host` is deprecated
 - Update, WebUI support auto timezone
 - Add, show next time in WebUI
 
-## 0.7.1 - 20230315
+### 0.7.1 - 20230315
 
 - Add more debug info
 - Add, display config file load error in WebUI(WIP)
 - Add, display DNS info on WebUI
 
-## 0.7.0 - 20230304
+### 0.7.0 - 20230304
 
 - Broken change
-    - config about [addresses.XYZ], [tasks.XYZ]
+  - config about [addresses.XYZ], [tasks.XYZ]
 - Refactor AddressProvider:XYZ
 - Refactor DDNSProvider:XYZ
 - Task support enable/disable;
 
-## 0.6.0 - 20230227
+### 0.6.0 - 20230227
 
 - Broken change
-    - config about lexicon
+  - config about lexicon
 - Update python to 3.11
 - Optimizing Dockerfile
 - Fix lexicon's environment variable
@@ -124,40 +124,40 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 - Update, usage httpx async mode Instead of request
 - Fix noip's ip detection API
 
-## 0.5.4 - 20220716
+### 0.5.4 - 20220716
 
 - Fix lexicon.cloudflare
 
-## 0.5.3 - 20220420
+### 0.5.3 - 20220420
 
 - Fix IPv6 prefix update
 
-## 0.5.2
+### 0.5.2
 
 - Fix bug
 
-## 0.5.0
+### 0.5.0
 
 - Rewrite
 - Add many dns provider support on the lexicon
 
-## 0.4
+### 0.4
 
 - Add i18n support and Chinese translate
 
-## 0.3
+### 0.3
 
 - New web UI
 
-## 0.2
+### 0.2
 
 - Add dynv6 REST API support
 
-## 0.1
+### 0.1
 
 - First release
 
-# Trouble Shooting
+## Trouble Shooting
 
 ## Can't detect ipv4/6 both on provider `ipify` and `noip`
 
@@ -176,8 +176,8 @@ wget api6.ipify.org
 
 ref:
 
-- https://docs.docker.com/config/daemon/ipv6/
-- https://gdevillele.github.io/engine/userguide/networking/default_network/ipv6/
+- <https://docs.docker.com/config/daemon/ipv6/>
+- <https://gdevillele.github.io/engine/userguide/networking/default_network/ipv6/>
 
 ## Can't detect any ip address from provider `hostname`
 
@@ -189,37 +189,37 @@ ping6 your-host-name
 ping -6 your-host-name
 ```
 
-## Can't detect ipv6 from provider `hostname`
+### Can't detect ipv6 from provider `hostname`
 
 check your docker host network config
 
 in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 
-# TODO
+## TODO
 
 - 基于群晖DSM的安装手册
 - 可以手动触发地址
-    - 一次触发所以事物
+  - 一次触发所以事物
 - 更友好的用户提示
-    - 当前系统时间(使用环境变量)
-    - 配置文件检查
-        - provider 是否存在
-        - provider name 重复
-    - 主页面
-        - hostname 的 hostname
-    - 问题处理页面
-        - 各种 ping 的结果来展示问题
-        - 当前 dns/时区
-    - websock 提示各种状态
-        - 正在执行事务
+  - 当前系统时间(使用环境变量)
+  - 配置文件检查
+    - provider 是否存在
+    - provider name 重复
+  - 主页面
+    - hostname 的 hostname
+  - 问题处理页面
+    - 各种 ping 的结果来展示问题
+    - 当前 dns/时区
+  - websock 提示各种状态
+    - 正在执行事务
 - 日志
-    - 全面整理日志信息输出
-    - 任务失败后的详细日志信息
-        - Update task xxx failed
-    - 所有 INFO 以及以上级别的logging自动进日志
-    - 消息推送 webhook
-    - sentry 可以在配置文件中设置
+  - 全面整理日志信息输出
+  - 任务失败后的详细日志信息
+    - Update task xxx failed
+  - 所有 INFO 以及以上级别的logging自动进日志
+  - 消息推送 webhook
+  - sentry 可以在配置文件中设置
 - 安全的任务调用
-    - docker中可以call api
-    - 可以通过 token 认证
+  - docker中可以call api
+  - 可以通过 token 认证
 - 进程超时处理
