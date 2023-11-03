@@ -117,7 +117,7 @@ class AddressProviderIpip(AddressProviderHttpGetAbs):
 
 class AddressProviderCipCc(AddressProviderHttpGetAbs):
     name = "cip.cc"
-    url_ipv4 = "https://www.cip.cc/"
+    url_ipv4 = "https://cip.cc/"
     user_agent = "curl/7.88.1"
 
 
