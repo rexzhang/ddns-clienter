@@ -1,4 +1,5 @@
 import tomllib
+from functools import cached_property
 from logging import getLogger
 
 import pydantic
@@ -57,23 +58,21 @@ class Config(pydantic.BaseModel):
     address: list[AddressProviderConfig]
     task: list[TaskConfig]
 
-    _address_dict: dict[str, AddressProviderConfig] = dict()
-    _task_dict: dict[str, TaskConfig] = dict()
-
-    @property
+    @cached_property
     def address_dict(self) -> dict[str, AddressProviderConfig]:
-        return self._address_dict
-
-    @property
-    def task_dict(self) -> dict[str, TaskConfig]:
-        return self._task_dict
-
-    def model_post_init(self, _):
+        address_dict = dict()
         for address_config in self.address:
-            self._address_dict[address_config.name] = address_config
+            address_dict[address_config.name] = address_config
 
+        return address_dict
+
+    @cached_property
+    def task_dict(self) -> dict[str, TaskConfig]:
+        task_dict = dict()
         for task_config in self.task:
-            self._task_dict[task_config.name] = task_config
+            task_dict[task_config.name] = task_config
+
+        return task_dict
 
 
 def get_config(config_toml: str = None) -> Config:
