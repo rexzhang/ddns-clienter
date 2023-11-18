@@ -1,5 +1,5 @@
-from os import getenv
 from logging import getLogger
+from os import getenv
 
 import click
 import uvicorn

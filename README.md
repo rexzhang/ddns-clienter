@@ -63,6 +63,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
+### 0.x
+
+- Update python to v3.12
+- Add isort into `pyproject.toml`
+
 ## 0.8.1 - 20230720
 
 - Add HTTP header "Cache-Control" in request

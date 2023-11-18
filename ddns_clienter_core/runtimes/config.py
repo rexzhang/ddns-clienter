@@ -1,7 +1,7 @@
 import tomllib
 from logging import getLogger
-import pydantic
 
+import pydantic
 from django.conf import settings
 
 from ddns_clienter_core.constants import CHECK_INTERVALS

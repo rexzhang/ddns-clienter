@@ -1,6 +1,5 @@
 from logging import getLogger
 
-
 from ddns_clienter_core.constants import EventLevel
 from ddns_clienter_core.models import Event as EventModel
 

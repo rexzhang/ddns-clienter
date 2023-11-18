@@ -8,12 +8,11 @@ from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
-
 from ddns_clienter_core.models import Address, Event, Task
 from ddns_clienter_core.runtimes.config import (
-    get_config,
     AddressProviderConfig,
     TaskConfig,
+    get_config,
 )
 from ddns_clienter_core.runtimes.event import event
 
