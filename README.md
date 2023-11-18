@@ -67,6 +67,7 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 - Update python to v3.12
 - Add isort into `pyproject.toml`
+- Downgrade [cip.cc]'s URL to HTTP
 
 ## 0.8.1 - 20230720
 
