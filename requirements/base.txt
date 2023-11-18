@@ -2,14 +2,14 @@
 
 asgiref
 django>=4.2
-django-ninja
+django-ninja>=1.0.1
 django-bootstrap5
 
 httpx
 dns-lexicon[full]
 
 ## Config
-pydantic<2.0.0
+pydantic>=2.5.1
 python-dotenv
 
 ## crontab

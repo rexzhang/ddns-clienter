@@ -29,7 +29,7 @@ class AddressProviderConfig(pydantic.BaseModel):
     allow_private: bool = False
     allow_loopback: bool = False
 
-    def __post_init_post_parse__(self):  # TODO
+    def model_post_init(self, _):
         if self.allow_loopback:
             self.allow_private = True
 
@@ -68,7 +68,7 @@ class Config(pydantic.BaseModel):
     def task_dict(self) -> dict[str, TaskConfig]:
         return self._task_dict
 
-    def __post_init_post_parse__(self):
+    def model_post_init(self, _):
         for address_config in self.address:
             self._address_dict[address_config.name] = address_config
 
@@ -89,17 +89,18 @@ def get_config(config_toml: str = None) -> Config:
         message = f"Config: Open file {config_toml} failed, {e}"
         logger.critical(message)
         raise ConfigException(message)
+
     except tomllib.TOMLDecodeError as e:
         message = f"Config: Parse file {config_toml} failed, {e}"
         logger.critical(message)
         raise ConfigException(message)
 
     try:
-        config = pydantic.parse_obj_as(Config, config_obj)
-    except pydantic.error_wrappers.ValidationError as e:
-        message = f"Config: Parse file {config_toml} failed, {e}"
+        config = Config.model_validate(config_obj)
+
+    except pydantic.ValidationError as e:
+        message = f"Config: Parse file {config_toml} failed, {e.errors()}"
         logger.critical(message)
         raise ConfigException(message)
 
-    config.__post_init_post_parse__()  # TODO https://github.com/pydantic/pydantic/issues/3330
     return config
