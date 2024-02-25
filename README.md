@@ -69,7 +69,7 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 - Add isort into `pyproject.toml`
 - Downgrade [cip.cc]'s URL to HTTP
 
-## 0.8.1 - 20230720
+### 0.8.1 - 20230720
 
 - Add HTTP header "Cache-Control" in request
 - Update "ipip" and "cip.cc"'s URL to HTTPS

@@ -111,8 +111,15 @@ class AddressProviderNoip(AddressProviderHttpGetAbs):
 
 
 class AddressProviderIpip(AddressProviderHttpGetAbs):
+    # https://www.ipip.net/myip.html
     name = "ipip"
-    url_ipv4 = "https://myip.ipip.net/"
+    url_ipv4 = "http://myip.ipip.net"
+
+
+class AddressProviderMyipLa(AddressProviderHttpGetAbs):
+    # https://www.ipip.net/myip.html
+    name = "myip.la"
+    url_ipv4 = "https://myip.la"
 
 
 class AddressProviderCipCc(AddressProviderHttpGetAbs):

@@ -75,7 +75,7 @@ class Config(pydantic.BaseModel):
         return task_dict
 
 
-def get_config(config_toml: str = None) -> Config:
+def get_config(config_toml: str | None = None) -> Config:
     if config_toml is None:
         config_toml = settings.CONFIG_FILE
 

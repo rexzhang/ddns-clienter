@@ -8,6 +8,7 @@ from ddns_clienter_core.runtimes.address_providers.http_get import (
     AddressProviderCipCc,
     AddressProviderIpify,
     AddressProviderIpip,
+    AddressProviderMyipLa,
     AddressProviderNetCn,
     AddressProviderNoip,
 )
@@ -21,6 +22,7 @@ _address_provider_class_mapper = {
         AddressProviderIpify,
         AddressProviderNoip,
         AddressProviderIpip,
+        AddressProviderMyipLa,
         AddressProviderCipCc,
         AddressProviderNetCn,
     ]
