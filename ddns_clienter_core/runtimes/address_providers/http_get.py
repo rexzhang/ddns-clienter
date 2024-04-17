@@ -81,7 +81,7 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
 
     async def _get_address(
         self, ipv4: bool, ipv6: bool, parameter: str
-    ) -> (list[str], list[str]):
+    ) -> tuple[list[str], list[str]]:
         ipv4_addresses = list()
         ipv6_addresses = list()
 

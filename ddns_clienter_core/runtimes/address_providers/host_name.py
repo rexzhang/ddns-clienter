@@ -14,7 +14,7 @@ class AddressProviderHostName(AddressProviderAbs):
 
     async def _get_address(
         self, ipv4: bool, ipv6: bool, parameter: str
-    ) -> (list[str], list[str]):
+    ) -> tuple[list[str], list[str]]:
         try:
             data = socket.getaddrinfo(parameter, 80)
         except socket.gaierror as e:

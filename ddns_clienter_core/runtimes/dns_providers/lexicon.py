@@ -12,7 +12,7 @@ logger = getLogger(__name__)
 class DDNSProviderLexicon(DDNSProviderAbs):
     name = "lexicon"
 
-    def _do_update(self, action: dict) -> (bool, str):
+    def _do_update(self, action: dict) -> tuple[bool, str]:
         host, domain = self.task_config.domain.split(".", maxsplit=1)
         action.update(
             {

@@ -82,8 +82,8 @@ class AddressProviderAbs:
 
     async def _get_address(
         self, ipv4: bool, ipv6: bool, parameter: str
-    ) -> (list[str], list[str]):
-        raise NotImplemented
+    ) -> tuple[list[str], list[str]]:
+        raise NotImplementedError
 
     @staticmethod
     def _match_address(

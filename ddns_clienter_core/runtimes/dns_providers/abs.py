@@ -53,10 +53,10 @@ class DDNSProviderAbs:
         self.real_update = real_update
         self.address_info = address_info
 
-    async def __call__(self, *args, **kwargs) -> (bool, str):
+    async def __call__(self, *args, **kwargs) -> tuple[bool, str]:
         await self._update_to_provider()
 
         return self.update_success, self.update_message
 
     async def _update_to_provider(self) -> None:
-        raise NotImplemented
+        raise NotImplementedError

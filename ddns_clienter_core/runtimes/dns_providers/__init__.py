@@ -24,7 +24,7 @@ async def update_address_to_dns_provider(
     task_config: config.TaskConfig,
     address_info: AddressInfo | None,
     real_update: bool = True,
-) -> (bool, str):
+) -> tuple[bool, str]:
     provider_name = task_config.provider_name.split(".", maxsplit=1)
     provider_name_main = provider_name[0]
     try:

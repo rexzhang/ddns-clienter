@@ -18,7 +18,7 @@ async def _call_update_api(
     ipv4_address: str | None,
     ipv6_address: str | None,
     real_update: bool,
-) -> (bool, str):
+) -> tuple[bool, str]:
     # https://dynv6.com/docs/apis
     params = {
         "zone": domain,
@@ -111,7 +111,7 @@ class CallRestApi:
 
         return r
 
-    async def process(self) -> (bool, str):
+    async def process(self) -> tuple[bool, str]:
         # https://dynv6.github.io/api-spec
 
         # get zone id
@@ -207,4 +207,4 @@ class DDNSProviderDynv6REST(DDNSProviderAbs):
             real_update=self.real_update,
         )
 
-        self.update_success, self.update_message = call_rest_api.process()
+        self.update_success, self.update_message = await call_rest_api.process()
