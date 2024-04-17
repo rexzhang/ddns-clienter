@@ -43,7 +43,7 @@ async def _call_update_api(
     if r.status_code == 200:
         return True, r.text
     else:
-        return False, r.text
+        return False, f"code:{r.status_code}, text:{r.text}"
 
 
 class CallRestApi:
