@@ -8,42 +8,8 @@ from .abs import DDNSProviderAbs, DDNSProviderException
 
 logger = getLogger(__name__)
 
-_update_api_url = "https://dynv6.com/api/update"
-_rest_api_url = "https://dynv6.com/api/v2"
-
-
-async def _call_update_api(
-    domain: str,
-    token: str,
-    ipv4_address: str | None,
-    ipv6_address: str | None,
-    real_update: bool,
-) -> tuple[bool, str]:
-    # https://dynv6.com/docs/apis
-    params = {
-        "zone": domain,
-        "token": token,
-    }
-    if ipv4_address:
-        params.update({"ipv4": ipv4_address})
-    if ipv6_address:
-        params.update({"ipv6": ipv6_address})
-
-    logger.debug(params)
-    if not real_update:
-        return True, ""
-
-    try:
-        async with httpx.AsyncClient() as client:
-            r = await client.get(_update_api_url, params=params)
-        logger.debug(f"{r.status_code} {r.content}")
-    except (httpx.HTTPError, httpx.StreamError) as e:
-        return False, str(e)
-
-    if r.status_code == 200:
-        return True, r.text
-    else:
-        return False, f"code:{r.status_code}, text:{r.text}"
+_UPDATE_API_URL = "https://dynv6.com/api/update"
+_REST_API_URL = "https://dynv6.com/api/v2"
 
 
 class CallRestApi:
@@ -82,7 +48,7 @@ class CallRestApi:
         j = {"name": host, "type": record_type, "data": ip_address}
         async with httpx.AsyncClient() as client:
             r = await client.post(
-                f"{_rest_api_url}/zones/{self.zone_id}/records",
+                f"{_REST_API_URL}/zones/{self.zone_id}/records",
                 headers=self.headers,
                 json=j,
             )
@@ -99,7 +65,7 @@ class CallRestApi:
         j = {"type": record_type, "data": ip_address}
         async with httpx.AsyncClient() as client:
             r = await client.patch(
-                f"{_rest_api_url}/zones/{self.zone_id}/records/{record_id}",
+                f"{_REST_API_URL}/zones/{self.zone_id}/records/{record_id}",
                 headers=self.headers,
                 json=j,
             )
@@ -115,7 +81,7 @@ class CallRestApi:
         # https://dynv6.github.io/api-spec
 
         # get zone id
-        r = await self._call_rest_api_get(f"{_rest_api_url}/zones")
+        r = await self._call_rest_api_get(f"{_REST_API_URL}/zones")
 
         for item in r.json():
             if item.get("name") == self.config_domain:
@@ -127,7 +93,7 @@ class CallRestApi:
 
         # get record id
         r = await self._call_rest_api_get(
-            f"{_rest_api_url}/zones/{self.zone_id}/records"
+            f"{_REST_API_URL}/zones/{self.zone_id}/records"
         )
 
         ipv4_record_id = None
@@ -186,13 +152,48 @@ class DDNSProviderDynv6(DDNSProviderAbs):
 
     async def _update_to_provider(self) -> None:
         logger.debug("update in Dynv6 UPDATE API")
-        self.update_success, self.update_message = await _call_update_api(
+        self.update_success, self.update_message = await self._call_update_api(
             domain=self.task_config.domain,
             token=self.task_config.provider_auth,
             ipv4_address=self.address_info.ipv4_address_str,
             ipv6_address=self.address_info.ipv6_address_str_with_prefix,
             real_update=self.real_update,
         )
+
+    @staticmethod
+    async def _call_update_api(
+        domain: str,
+        token: str,
+        ipv4_address: str | None,
+        ipv6_address: str | None,
+        real_update: bool,
+    ) -> tuple[bool, str]:
+        # https://dynv6.com/docs/apis
+        params = {
+            "zone": domain,
+            "token": token,
+        }
+        if ipv4_address:
+            params.update({"ipv4": ipv4_address})
+        if ipv6_address:
+            params.update({"ipv6": ipv6_address})
+
+        logger.debug(params)
+        if not real_update:
+            return True, ""
+
+        try:
+            async with httpx.AsyncClient() as client:
+                r = await client.get(_UPDATE_API_URL, params=params)
+
+        except (httpx.HTTPError, httpx.StreamError) as e:
+            return False, f"httpx request failed, {str(e)}"
+
+        message = f"code:{r.status_code}, text:{r.text}"
+        if 300 > r.status_code >= 200:
+            return True, message
+        else:
+            return False, message
 
 
 class DDNSProviderDynv6REST(DDNSProviderAbs):
