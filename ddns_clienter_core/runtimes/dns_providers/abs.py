@@ -32,8 +32,8 @@ class DDNSProviderConnectException(DDNSProviderException):
 
 
 class DDNSProviderAbs:
-    name: str = None
-    provider_name: str = None
+    name: str | None = None
+    provider_name: str
     address_info: AddressInfo
     update_success: bool
     update_message: str

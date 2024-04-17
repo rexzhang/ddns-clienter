@@ -10,7 +10,7 @@ read -r -s -k '?Press any key to continue. startup container...'
 docker container stop ddns-clienter
 docker container rm ddns-clienter
 docker run -dit -p 0.0.0.0:8000:8000 \
-  -v /Users/rex/p/ddns-clienter/config.toml:/etc/ddns-clienter.toml:ro \
+  -v $(pwd)/examples/dev/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
   --env-file .env \
   --name ddns-clienter cr.h.rexzhang.com/ray1ex/ddns-clienter
 docker image prune -f
