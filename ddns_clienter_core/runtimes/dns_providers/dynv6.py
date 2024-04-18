@@ -186,8 +186,10 @@ class DDNSProviderDynv6(DDNSProviderAbs):
             async with httpx.AsyncClient() as client:
                 r = await client.get(_UPDATE_API_URL, params=params)
 
-        except (httpx.HTTPError, httpx.StreamError) as e:
-            return False, f"httpx request failed, {str(e)}"
+        except httpx.RequestError as e:
+            return False, f"httpx.RequestError, {e}"
+        except httpx.StreamError as e:
+            return False, f"httpx.StreamError, {e}"
 
         message = f"code:{r.status_code}, text:{r.text}"
         if 300 > r.status_code >= 200:
