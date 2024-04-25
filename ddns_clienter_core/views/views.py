@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.generic import TemplateView
 
-from ddns_clienter_core.apps import running_contents
-from ddns_clienter_core.runtimes.check_and_update import check_and_update_is_running
+from ddns_clienter_core.apps import get_g
 from ddns_clienter_core.runtimes.config import ConfigException, get_config
 from ddns_clienter_core.runtimes.crontab import get_crontab_next_time
+from ddns_clienter_core.runtimes.helpers import get_dns_servers, get_g_data
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
     get_events_queryset,
@@ -31,7 +32,7 @@ class DCTemplateView(TemplateView):
         if context is None:
             return redirect("trouble_shooting")
 
-        context.update(running_contents)
+        context.update({"g": get_g_data()})
         return self.render_to_response(context)
 
 
@@ -70,7 +71,6 @@ class HomePageView(DCTemplateView):
         kwargs.update(
             {
                 "app_config": app_config,
-                "status_check_and_update_is_running": check_and_update_is_running(),
                 "next_addresses_check_time": next_addresses_check_time,
                 "next_task_force_update_time": next_task_force_update_time,
                 "addresses": addresses,
@@ -85,11 +85,14 @@ class TroubleShootingView(DCTemplateView):
     template_name = "trouble_shooting.html"
 
     def get_context_data(self, **kwargs):
-        try:
-            app_config = get_config()
-        except ConfigException as e:
-            messages.add_message(self.request, messages.ERROR, str(e))
-            app_config = None
+        kwargs.update(
+            {
+                "status": {
+                    "time_zone": timezone.get_current_timezone_name(),
+                    "dns": f"{', '.join(get_dns_servers())}",
+                },
+                "env": get_g().get("env"),
+            }
+        )
 
-        kwargs.update({"check_config_file": False if app_config is None else True})
         return kwargs

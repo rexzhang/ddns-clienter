@@ -6,7 +6,10 @@ provider_parameter = "localhost"
 
 ipv4 = true
 ipv6 = true
-ipv6_match_rule = "^240e:"
+# ipv6_match_rule = "^240e:"
+
+allow_private = true
+allow_loopback = true
 
 [[address]]
 name = "from_ipify"

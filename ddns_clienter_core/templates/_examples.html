@@ -1,0 +1,75 @@
+<div class="accordion accordion-flush" id="accordionFlushExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseOne"
+                    aria-expanded="false"
+                    aria-controls="flush-collapseOne">Start Docker Container</button>
+        </h2>
+        <div id="flush-collapseOne"
+             class="accordion-collapse collapse"
+             data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body ">
+                <div class="border px-3">
+                    <pre><code>
+docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
+ -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
+ -v $(pwd)/data:/data \
+ -e TZ=Aisa/Shanghai \
+ --name ddns-clienter ray1ex/ddns-clienter</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="flush-collapseTwo">Config File(/etc/ddns-clienter.toml)</button>
+        </h2>
+        <div id="flush-collapseTwo"
+             class="accordion-collapse collapse"
+             data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                <div class="border px-3">
+                    <pre><code>
+[[address]]
+name = "from_ipify"
+provider_name = "ipify"
+ipv4 = true
+
+[[address]]
+name = "from_hostname"
+provider_name = "hostname"
+provider_parameter = "localhost"
+ipv6 = true
+ipv6_match_rule = "^240e:"
+
+[[task]]
+name = "ipv4_to_lexicon_cloudflare"
+address_name = "from_ipify"
+ipv4 = true
+domain = "www4.example.com"
+provider_name = "lexicon.cloudflare"
+provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
+
+[[task]]
+name = "ipv6_to_dynv6"
+address_name = "from_hostname"
+ipv6 = true
+domain = "www6.example.com"
+provider_name = "dynv6"
+provider_auth = "this_is_token_for_this_zone"</code></pre>
+                </div>
+                <p>
+                    Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

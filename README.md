@@ -46,7 +46,7 @@ docker pull ray1ex/ddns-clienter
 ```shell
 docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
-  -v $(pwd)/data:/data \  
+  -v $(pwd)/data:/data \
   -e TZ=Aisa/Shanghai \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
@@ -60,6 +60,14 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 ### OpenAPI
 
 ![OpenAPI](https://github.com/rexzhang/ddns-clienter/blob/main/docs/image/Firefox_Screenshot_2023-02-28T07-43-14.434Z.png)
+
+## Environment Variable
+
+| Name                | Default Value in Docker   | Default Value in CLI |
+| ------------------- | ------------------------- | -------------------- |
+| `DATA_PATH`         | `/data`                   | `.`                  |
+| `CONFIG_TOML`       | `/etc/ddns-clienter.toml` | `ddns-clienter.toml` |
+| `PBULIC_INSIDE_API` | `True`                    |                      |
 
 ## History
 
@@ -203,7 +211,7 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 
 ## TODO
 
-- 基于群晖DSM的安装手册
+- 基于群晖 DSM 的安装手册
 - 可以手动触发地址
   - 一次触发所以事物
 - 更友好的用户提示
@@ -222,10 +230,10 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
   - 全面整理日志信息输出
   - 任务失败后的详细日志信息
     - Update task xxx failed
-  - 所有 INFO 以及以上级别的logging自动进日志
+  - 所有 INFO 以及以上级别的 logging 自动进日志
   - 消息推送 webhook
   - sentry 可以在配置文件中设置
 - 安全的任务调用
-  - docker中可以call api
+  - docker 中可以 call api
   - 可以通过 token 认证
 - 进程超时处理

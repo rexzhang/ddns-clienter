@@ -14,13 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+import django_eventstream
+from django.urls import include, path
 
-from ddns_clienter_core.api import api
-from ddns_clienter_core.views import HomePageView, TroubleShootingView
+from ddns_clienter_core.views import views
+from ddns_clienter_core.views.api import api
 
 urlpatterns = [
-    path("", HomePageView.as_view()),
     path("api/", api.urls),
-    path("trouble_shooting/", TroubleShootingView.as_view(), name="trouble_shooting"),
+    path("sse/status", include(django_eventstream.urls), {"channels": ["status"]}),
+    path("", views.HomePageView.as_view(), name="home_page"),
+    path(
+        "trouble_shooting",
+        views.TroubleShootingView.as_view(),
+        name="trouble_shooting",
+    ),
+    # path("sse/status", views.status_sse),
 ]

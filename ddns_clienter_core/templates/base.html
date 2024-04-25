@@ -1,64 +1,35 @@
-<!doctype html>{% load static %}{% load django_bootstrap5 %}{% load i18n %}{% load l10n %}{% load tz %}
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
-<head>
+  {% load static %}
+  {% load django_bootstrap5 %}
+  {% load i18n %}
+  {% load l10n %}
+  {% load tz %}
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% bootstrap_css %}
-    <link rel="stylesheet" href="{% static '/css/bootstrap-icons.1.10.3.css' %}">
+    <link rel="stylesheet"
+          href="{% static '/css/bootstrap-icons.1.10.3.css' %}">
     <script src="{% static '/js/bootstrap-color-modes.js' %} "></script>
-    <title>{{ app_name }}</title>
-</head>
-<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-dm-shortcut-enabled="true"
-      data-sidebar-shortcut-enabled="true">
-<header>
-  <nav class="navbar navbar-expand-lg bg-primary bg-gradient">
-    <div class="container">
-      <a class="navbar-brand" href="/">{{ app_name }} <small>v{{ app_version }}</small>{{ LANGUAGE_CODE }} </a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto">
-          {% if status_check_and_update_is_running %}
-            <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Check/Update is running</span>
-            </li>{% endif %}
-          {% if status_debug_mode %}
-            <li class="nav-item my-auto"><span class="nav-link badge text-bg-warning">Debug Mode</span>
-            </li>{% endif %}
-          <li class="nav-item my-auto">
-            <a class="nav-link" href="{% url 'trouble_shooting' %}" data-bs-toggle="tooltip" data-bs-placement="bottom"
-               data-bs-title="Help"><i class="bi-life-preserver" style="font-size: 1.2rem"></i>
-            </a></li>
-          <li class="nav-item my-auto">
-            <a class="nav-link" target="_blank" href="/api/docs" data-bs-toggle="tooltip" data-bs-placement="bottom"
-               data-bs-title="Open API"><i class="bi-code-slash" style="font-size: 1.2rem"></i>
-            </a></li>
-          <li class="nav-item my-auto">
-            <a class="nav-link" target="_blank" href="{{ app_docker_url }}" data-bs-toggle="tooltip"
-               data-bs-placement="bottom" data-bs-title="Docker"><i class="bi-layers-half"
-                                                                    style="font-size: 1.2rem"></i>
-            </a></li>
-          <li class="nav-item my-auto">
-            <a class="nav-link" target="_blank" href="{{ app_github_url }}" data-bs-toggle="tooltip"
-               data-bs-placement="bottom" data-bs-title="GitHub"><i class="bi-github" style="font-size: 1.2rem"></i>
-            </a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-</header>
-<main class="pt-4 pb-4">
-  {% block content %}{% endblock %}
-</main>
-<footer>
-  <hr class="mb-1">
-  <div class="container font-monospace pb-2 terms"><small>
-    {% localtime on %}{% for k,v in web_ui_footer.items %}
-      {{ k }}:{{ v }}
-    {% endfor %}{% endlocaltime %}
-  </small></div>
-</footer>
-{% bootstrap_javascript %}
-<script>
+    <script src="{% static '/js/htmx.1.9.11/htmx.min.js' %} "></script>
+    <script src="{% static '/js/htmx.1.9.11/ext/sse.js' %} "></script>
+    <title>{{ g.app.name }}</title>
+  </head>
+  <body class="with-custom-webkit-scrollbars with-custom-css-scrollbars"
+        data-dm-shortcut-enabled="true"
+        data-sidebar-shortcut-enabled="true">
+    <header>
+      {% include "_header.html" %}
+    </header>
+    <main class="pt-4 pb-4">
+      {% block content %}
+      {% endblock content %}
+    </main>
+    {% bootstrap_javascript %}
+    <script>
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-</script>
-</body>
+    </script>
+  </body>
 </html>

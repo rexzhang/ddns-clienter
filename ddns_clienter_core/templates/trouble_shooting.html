@@ -1,58 +1,54 @@
-{% extends "base.html" %}{% load django_bootstrap5 %}
+{% extends "base.html" %}
+{% load i18n %}
+{% load l10n %}
+{% load tz %}
+{% load django_bootstrap5 %}
 {% block content %}
-  <div class="container pt-2">
-    {% bootstrap_messages %}
+  {% if bootstrap_messages %}
+    <div class="container pt-3">{% bootstrap_messages %}</div>
+  {% endif %}
+  <div class="container pt-3">
+    <h4>Status</h4>
+    <table class="table table-striped align-middle">
+      <tbody class="table-group-divider">
+        <tr>
+          <td>Config</td>
+          <td>
+            {% if g.status.config_check %}
+              <span class="badge rounded-pill text-bg-success">Config Check Pass</span>
+            {% else %}
+              <span class="badge rounded-pill text-bg-danger">Config Check Fail</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Time Zone</td>
+          <td>{{ status.time_zone }}</td>
+        </tr>
+        <tr>
+          <td>DNS</td>
+          <td>{{ status.dns }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <div class="container pt-2">
-    <h4>Status:</h4>
-    <span
-      class="badge rounded-pill text-bg-{% if check_config_file %}success{% else %}danger{% endif %}">Config File</span>
+  <div class="container pt-3">
+    <h4>{% translate "Environment Variable" %}</h4>
+    <table class="table table-striped align-middle">
+      <tbody class="table-group-divider">
+        {% for k,v in env.items %}
+          <tr>
+            <td>{{ k }}</td>
+            <td>{{ v }}</td>
+          </tr>
+        {% empty %}
+          <th>Sorry, no data in this list.</th>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-
-  <div class="container pt-2">
-    <h4>Start Docker Container:</h4>
-    <div class="border px-4"><pre><code>
-docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
--v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
--v $(pwd)/data:/data \
--e TZ=Aisa/Shanghai \
---name ddns-clienter ray1ex/ddns-clienter</code></pre>
-    </div>
+  <div class="container pt-3">
+    <h4>Examples</h4>
+    {% include "_examples.html" %}
   </div>
-
-  <div class="container pt-2">
-    <h4>Config File: /etc/ddns-clienter.toml</h4>
-    <div class="border px-4"><pre><code>
-[[address]]
-name = "from_ipify"
-provider_name = "ipify"
-ipv4 = true
-
-[[address]]
-name = "from_hostname"
-provider_name = "hostname"
-provider_parameter = "localhost"
-ipv6 = true
-ipv6_match_rule = "^240e:"
-
-[[task]]
-name = "ipv4_to_lexicon_cloudflare"
-address_name = "from_ipify"
-ipv4 = true
-domain = "www4.example.com"
-provider_name = "lexicon.cloudflare"
-provider_auth = "auth_username:name@example.com,auth_token:this_is_token_for_this_zone"
-
-[[task]]
-name = "ipv6_to_dynv6"
-address_name = "from_hostname"
-ipv6 = true
-domain = "www6.example.com"
-provider_name = "dynv6"
-provider_auth = "this_is_token_for_this_zone"</code></pre>
-    </div>
-
-    <p>Full example please visit <a href="https://github.com/rexzhang/ddns-clienter/tree/main/docs">here</a></p>
-  </div>
-{% endblock %}
+{% endblock content %}

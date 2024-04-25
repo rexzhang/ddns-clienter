@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-23 21:30+0800\n"
+"POT-Creation-Date: 2024-04-20 22:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,90 +18,94 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: templates/events.html:4
+#: templates/events.html:5
 msgid "Events"
 msgstr "事件"
 
-#: templates/events.html:8
+#: templates/events.html:9
 msgid "Timestamp"
 msgstr "时间戳"
 
-#: templates/events.html:9
+#: templates/events.html:10
 msgid "Level"
 msgstr "级别"
 
-#: templates/events.html:10
+#: templates/events.html:11
 msgid "Message"
 msgstr "信息"
 
-#: templates/home_page.html:4
+#: templates/home_page.html:9
 msgid "Addresses"
 msgstr "地址"
 
-#: templates/home_page.html:5
+#: templates/home_page.html:10
 msgid "Check Intervals"
 msgstr "检查间隔"
 
-#: templates/home_page.html:5 templates/home_page.html:41
+#: templates/home_page.html:10 templates/home_page.html:56
 msgid "minutes"
 msgstr "分钟"
 
-#: templates/home_page.html:6 templates/home_page.html:42
+#: templates/home_page.html:11 templates/home_page.html:57
 msgid "Next Time"
 msgstr "下一次"
 
-#: templates/home_page.html:12 templates/home_page.html:48
+#: templates/home_page.html:17 templates/home_page.html:63
 msgid "Name"
 msgstr "名称"
 
-#: templates/home_page.html:13 templates/home_page.html:51
+#: templates/home_page.html:18 templates/home_page.html:66
 msgid "Provider"
 msgstr "提供者"
 
-#: templates/home_page.html:14
+#: templates/home_page.html:19
 msgid "IPv4 Address"
 msgstr "IPv4 地址"
 
-#: templates/home_page.html:15
+#: templates/home_page.html:20
 msgid "IPv4 Change Time"
 msgstr "IPv4 变动时间"
 
-#: templates/home_page.html:16
+#: templates/home_page.html:21
 msgid "IPv6 Address"
 msgstr "IPv6 地址"
 
-#: templates/home_page.html:17
+#: templates/home_page.html:22
 msgid "IPv6 Change Time"
 msgstr "IPv6 变动时间"
 
-#: templates/home_page.html:27 templates/home_page.html:30
-#: templates/home_page.html:70
+#: templates/home_page.html:35 templates/home_page.html:43
+#: templates/home_page.html:95
 msgid "ago"
 msgstr "之前"
 
-#: templates/home_page.html:40 templates/home_page.html:52
+#: templates/home_page.html:55 templates/home_page.html:67
 msgid "Domain"
 msgstr "域名"
 
-#: templates/home_page.html:41
+#: templates/home_page.html:56
 msgid "Force Update Intervals"
 msgstr "强制更新间隔"
 
-#: templates/home_page.html:49
+#: templates/home_page.html:64
 msgid "Address"
 msgstr "地址"
 
-#: templates/home_page.html:50
+#: templates/home_page.html:65
 msgid "IP Addresses"
 msgstr "IP 地址"
 
-#: templates/home_page.html:53
+#: templates/home_page.html:68
 msgid "Status"
 msgstr "状态"
 
-#: templates/home_page.html:54
+#: templates/home_page.html:69
 msgid "Last Success Update Time"
 msgstr "最近一次更新时间"
+
+#: templates/trouble_shooting.html:36
+msgid "Environment Variable"
+msgstr ""
 
 #~ msgid "Tasks"
 #~ msgstr "任务"

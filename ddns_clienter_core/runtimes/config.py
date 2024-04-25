@@ -77,7 +77,7 @@ class Config(pydantic.BaseModel):
 
 def get_config(config_toml: str | None = None) -> Config:
     if config_toml is None:
-        config_toml = settings.CONFIG_FILE
+        config_toml = settings.CONFIG_TOML
 
     logger.info(f"Config: Open file {config_toml}...")
     try:

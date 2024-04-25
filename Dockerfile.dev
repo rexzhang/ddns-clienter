@@ -11,11 +11,15 @@ WORKDIR /app
 EXPOSE 8000
 
 ENV PYTHONPATH=/app
-ENV DATA_DIR=/data
-ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
-ENV SENTRY_DSN=""
-ENV WORK_IN_CONTAINER="true"
 ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
+ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
+
+ENV DATA_PATH="/data"
+ENV CONFIG_TOML="/etc/ddns-clienter.toml"
+ENV PBULIC_INSIDE_API="true"
+ENV WORK_IN_CONTAINER="true"
+
+ENV SENTRY_DSN=""
 
 # i18n
 RUN ./manage.py compilemessages --ignore venv \

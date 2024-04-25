@@ -25,9 +25,14 @@ class EventSchema(ModelSchema):
         model_fields = ["id", "level", "message", "time"]
 
 
-def auth_local_host(request):
+def auth_inside_api(request):
     if request.META["REMOTE_ADDR"] == "127.0.0.1":
         return True
+
+    if settings.PBULIC_INSIDE_API:
+        return True
+
+    return False
 
 
 api_public = Router(tags=["Public"])
@@ -61,8 +66,8 @@ def list_status(request):
     return status
 
 
-def _get_pagination_range(page: int) -> [int, int]:
-    return [(page - 1) * 50, page * 50]
+def _get_pagination_range(page: int) -> tuple[int, int]:
+    return ((page - 1) * 50, page * 50)
 
 
 @api_public.get("/events", response=list[EventSchema])
@@ -75,7 +80,7 @@ def get_events(request, **kwargs):
 if settings.DEBUG:
     api_inside = Router(tags=["Inside"])
 else:
-    api_inside = Router(auth=auth_local_host, tags=["Inside"])
+    api_inside = Router(auth=auth_inside_api, tags=["Inside"])
 
 
 @api_inside.get("/check_and_update")

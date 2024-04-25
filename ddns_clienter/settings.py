@@ -17,48 +17,35 @@ from uuid import uuid4
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
+# Load .env, for dev
+load_dotenv(override=True)
 
-def str2bool(value: str | None, default: bool) -> bool:
+
+def str2bool(value: str | None) -> bool:
     if not isinstance(value, str):
-        return default
+        return False
 
     if value.lower() == "true":
-        value = True
-    else:
-        value = False
+        return True
 
-    return value
-
-
-def str2int(value: str | None, default: int) -> int:
-    if not isinstance(value, str):
-        return default
-
-    try:
-        value = int(value)
-    except ValueError:
-        return default
-
-    return value
+    return False
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env, for dev
-load_dotenv(BASE_DIR.joinpath(".env"), override=True)
 
+#
 # DDNS Clienter
-WORK_IN_CONTAINER = str2bool(getenv("WORK_IN_CONTAINER"), False)
-if WORK_IN_CONTAINER:
-    DATA_PATH = Path("/data")
-    CONFIG_FILE = "/etc/ddns-clienter.toml"
-else:
-    DATA_PATH = BASE_DIR
-    CONFIG_FILE = getenv("CONFIG_FILE", "config.toml")
+#
+WORK_IN_CONTAINER = str2bool(getenv("WORK_IN_CONTAINER", "false"))
 
+DATA_PATH = getenv("DATA_PATH", ".")
+CONFIG_TOML = getenv("CONFIG_TOML", "ddns-clienter.toml")
+PBULIC_INSIDE_API = str2bool(getenv("PBULIC_INSIDE_API", "true"))
 
-DISABLE_CRON = str2bool(getenv("DISABLE_CRON"), False)  # for dev
+DISABLE_CRON = str2bool(getenv("DISABLE_CRON", "false"))  # for dev
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -70,7 +57,7 @@ SECRET_KEY = f"django-insecure-{uuid4().hex}"
 if getenv("DJANGO_DEPLOY_LEVEL", "release") == "development":
     DEBUG = True
 else:
-    DEBUG = str2bool(getenv("DEBUG"), False)
+    DEBUG = str2bool(getenv("DEBUG", "false"))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,6 +71,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_bootstrap5",
+    "django_eventstream",
     "ninja",
     "ddns_clienter_core",
 ]
@@ -125,7 +113,7 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DATA_PATH.joinpath("db.sqlite3"),
+        "NAME": Path(DATA_PATH).joinpath("db.sqlite3"),
         # "NAME": ":memory:",
     }
 }

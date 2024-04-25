@@ -4,6 +4,7 @@ asgiref
 django>=4.2
 django-ninja>=1.0.1
 django-bootstrap5
+django-eventstream
 
 httpx
 dns-lexicon[full]

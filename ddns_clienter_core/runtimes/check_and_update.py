@@ -3,6 +3,7 @@ from datetime import timedelta
 from logging import getLogger
 
 from django.utils import timezone
+from django_eventstream import send_event
 
 from ddns_clienter_core import models
 from ddns_clienter_core.constants import AddressInfo
@@ -30,18 +31,17 @@ logger = getLogger(__name__)
 _check_and_update_running_lock = asyncio.Lock()
 
 
-def check_and_update_is_running() -> bool:
-    return _check_and_update_running_lock.locked()
-
-
-async def check_and_update(config_file_name: str | None = None) -> str | None:
+async def check_and_update() -> str | None:
     if _check_and_update_running_lock.locked():
         return "There are already tasks in progress, please try later"
 
+    send_event("status", "message", "Check/Update is running", json_encode=False)
     async with _check_and_update_running_lock:
         # await _check_an_update(config_file_name, real_update)
-        await _check_an_update_v2(config_file_name)
+        await asyncio.sleep(3)
+        await _check_an_update_v2()
 
+    send_event("status", "message", "", json_encode=False)
     return None
 
 
@@ -240,9 +240,9 @@ class UpdateTaskProcessor:
         return address_info
 
 
-async def _check_an_update_v2(config_file_name: str):
+async def _check_an_update_v2():
     try:
-        config = get_config(config_file_name)
+        config = get_config()
     except ConfigException as e:
         logger.critical(e)
         return
