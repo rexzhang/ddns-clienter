@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.core.paginator import Paginator
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.generic import TemplateView
 
@@ -36,8 +37,14 @@ class DCTemplateView(TemplateView):
         return self.render_to_response(context)
 
 
-class HomePageView(DCTemplateView):
-    template_name = "home_page.html"
+def _get_events_page(page_number: int):
+    paginator = Paginator(get_events_queryset(settings.DEBUG).all(), 10)
+    page_obj = paginator.get_page(page_number)
+    return page_obj
+
+
+class HomeView(DCTemplateView):
+    template_name = "home_main.html"
 
     def get_context_data(self, **kwargs):
         try:
@@ -58,9 +65,7 @@ class HomePageView(DCTemplateView):
             data = convert_none_to_symbol(data)
             tasks.append(data)
 
-        events = list()
-        for data in get_events_queryset(settings.DEBUG).values():
-            events.append(data)
+        events_page = _get_events_page(1)
 
         next_addresses_check_time = get_crontab_next_time(
             app_config.common.check_intervals
@@ -75,7 +80,7 @@ class HomePageView(DCTemplateView):
                 "next_task_force_update_time": next_task_force_update_time,
                 "addresses": addresses,
                 "tasks": tasks,
-                "events": events,
+                "events_page": events_page,
             }
         )
         return kwargs
@@ -96,3 +101,23 @@ class TroubleShootingView(DCTemplateView):
         )
 
         return kwargs
+
+
+async def add_more_event(request):
+    from django.shortcuts import HttpResponse
+    from django.utils.timezone import now
+
+    from ddns_clienter_core.runtimes.event import event
+
+    await event.info(str(now()))
+
+    return HttpResponse()
+
+
+def home_events_page(request):
+    """
+    Fetch paginated events and render them.
+    """
+    page_number = request.GET.get("page", 1)
+    events_page = _get_events_page(page_number)
+    return render(request, "home_event_page.html", {"events_page": events_page})

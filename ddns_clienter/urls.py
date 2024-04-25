@@ -15,6 +15,7 @@ Including another URLconf
 """
 
 import django_eventstream
+from django.conf import settings
 from django.urls import include, path
 
 from ddns_clienter_core.views import views
@@ -23,11 +24,16 @@ from ddns_clienter_core.views.api import api
 urlpatterns = [
     path("api/", api.urls),
     path("sse/status", include(django_eventstream.urls), {"channels": ["status"]}),
-    path("", views.HomePageView.as_view(), name="home_page"),
+    path("events/page", views.home_events_page, name="events_page"),
+    path("", views.HomeView.as_view(), name="home"),
     path(
         "trouble_shooting",
         views.TroubleShootingView.as_view(),
         name="trouble_shooting",
     ),
-    # path("sse/status", views.status_sse),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("add_more_event", views.add_more_event),
+    ]

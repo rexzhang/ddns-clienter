@@ -13,8 +13,8 @@ logger = getLogger(__name__)
 @click.option(
     "-H",
     "--host",
-    default="127.0.0.1",
-    help="Bind socket to this host.  [default: 127.0.0.1]",
+    default="0.0.0.0",
+    help="Bind socket to this host.  [default: 0.0.0.0]",
 )
 @click.option(
     "-P", "--port", default=8000, help="Bind socket to this port.  [default: 8000]"

@@ -103,5 +103,19 @@
 </table>
 </div>
 {% endlocaltime %}
-<div class="container pt-3">{% include "events.html" %}</div>
-{% endblock %}
+<div class="container pt-3">
+  <h4>{% translate "Events" %}</h4>
+  <table class="table table-striped align-middle" id="events">
+    <thead>
+      <tr>
+        <th scope="col">{% translate "Timestamp" %}</th>
+        <th scope="col">{% translate "Level" %}</th>
+        <th scope="col">{% translate "Message" %}</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      {% include "home_event_page.html" %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

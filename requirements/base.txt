@@ -1,7 +1,7 @@
 # base 3rd package
 
 asgiref
-django>=4.2
+django>=5.0
 django-ninja>=1.0.1
 django-bootstrap5
 django-eventstream

@@ -1,0 +1,19 @@
+{% load i18n %}
+{% for item in events_page %}
+    <tr class="{% if item.level == "WARNING" %}bg-warning-subtle{% elif item.level == "ERROR" %}bg-danger-subtle{% elif item.level == "CRITICAL" %}bg-danger-subtle{% endif %}">
+        <td style="white-space: nowrap;">{{ item.time|date:"DATETIME_FORMAT" }}</td>
+        <td>{{ item.level }}</td>
+        <td class="font-monospace">{{ item.message }}</td>
+    </tr>
+{% endfor %}
+{% if events_page.has_next %}
+    <tr hx-get="{% url 'events_page' %}?page={{ events_page.next_page_number }}"
+        hx-swap="afterend"
+        hx-trigger="revealed"></tr>
+{% else %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td>{% translate "no more" %}</td>
+    </tr>
+{% endif %}
