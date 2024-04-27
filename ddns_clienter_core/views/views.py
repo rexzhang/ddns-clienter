@@ -114,6 +114,15 @@ async def add_more_event(request):
     return HttpResponse()
 
 
+async def send_reload_event(request):
+    from django.shortcuts import HttpResponse
+
+    from ddns_clienter_core.runtimes.helpers import send_sse_event_reload
+
+    send_sse_event_reload()
+    return HttpResponse()
+
+
 def home_events_page(request):
     """
     Fetch paginated events and render them.

@@ -23,7 +23,7 @@ from ddns_clienter_core.views.api import api
 
 urlpatterns = [
     path("api/", api.urls),
-    path("sse/status", include(django_eventstream.urls), {"channels": ["status"]}),
+    path("sse", include(django_eventstream.urls), {"channels": ["root"]}),
     path("events/page", views.home_events_page, name="events_page"),
     path("", views.HomeView.as_view(), name="home"),
     path(
@@ -36,4 +36,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += [
         path("add_more_event", views.add_more_event),
+        path("send_reload_event", views.send_reload_event),
     ]

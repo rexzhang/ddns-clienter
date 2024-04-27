@@ -3,7 +3,6 @@ from datetime import timedelta
 from logging import getLogger
 
 from django.utils import timezone
-from django_eventstream import send_event
 
 from ddns_clienter_core import models
 from ddns_clienter_core.constants import AddressInfo
@@ -22,6 +21,7 @@ from ddns_clienter_core.runtimes.dns_providers import (
     update_address_to_dns_provider,
 )
 from ddns_clienter_core.runtimes.event import event
+from ddns_clienter_core.runtimes.helpers import send_sse_event, send_sse_event_reload
 from ddns_clienter_core.runtimes.persistent_data import (
     compare_and_update_config_info_from_dict_to_db,
 )
@@ -35,13 +35,13 @@ async def check_and_update() -> str | None:
     if _check_and_update_running_lock.locked():
         return "There are already tasks in progress, please try later"
 
-    send_event("status", "message", "Check/Update is running", json_encode=False)
+    send_sse_event("status:check_update", "Check/Update is running")
     async with _check_and_update_running_lock:
-        # await _check_an_update(config_file_name, real_update)
         await asyncio.sleep(3)
         await _check_an_update_v2()
 
-    send_event("status", "message", "", json_encode=False)
+    send_sse_event("status:check_update", "")
+    send_sse_event_reload()
     return None
 
 

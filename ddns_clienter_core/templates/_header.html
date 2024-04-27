@@ -8,10 +8,7 @@
                     hx-swap="none">
                 <i class="bi-play-fill"></i>Update Now
             </button>
-            <span hx-ext="sse"
-                  hx-swap="innerHTML"
-                  sse-connect="/sse/status"
-                  sse-swap="message"
+            <span sse-swap="status:check_update"
                   class="badge rounded-pill text-bg-warning mx-1"></span>
             {% if g.status.debug_mode %}<span class="badge rounded-pill text-bg-warning mx-1">Debug Mode</span>{% endif %}
             {% if not g.status.config_check %}<span class="badge rounded-pill text-bg-danger mx-1">Config Check</span>{% endif %}

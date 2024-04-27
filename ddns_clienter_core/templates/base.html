@@ -18,7 +18,9 @@
   </head>
   <body class="with-custom-webkit-scrollbars with-custom-css-scrollbars"
         data-dm-shortcut-enabled="true"
-        data-sidebar-shortcut-enabled="true">
+        data-sidebar-shortcut-enabled="true"
+        hx-ext="sse"
+        sse-connect="/sse">
     <header>
       {% include "_header.html" %}
     </header>
@@ -31,5 +33,6 @@
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
+    <script sse-swap="reload"></script>
   </body>
 </html>
