@@ -18,6 +18,7 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
   - [ipip](https://myip.ipip.net), IPv4
   - [cip.cc](https://www.cip.cc), IPv4
   - [net.cn](http://www.net.cn), IPv4
+  - [myip.la](https://myip.la)
 - Support multiple DNS provider
   - [dynv6](https://dynv6.com/docs/apis)
   - [lexicon](https://dns-lexicon.readthedocs.io/en/latest/configuration_reference.html)
@@ -71,11 +72,13 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
-### 0.x
+### 0.9.0 - 20240427
 
 - Update python to v3.12
 - Add isort into `pyproject.toml`
 - Downgrade [cip.cc]'s URL to HTTP
+- Add new address provider: `myip.la`
+- tiger Check/Update on the web page
 
 ### 0.8.1 - 20230720
 
