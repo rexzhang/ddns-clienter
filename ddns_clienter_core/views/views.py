@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import messages
-from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.generic import TemplateView
@@ -11,7 +10,7 @@ from ddns_clienter_core.runtimes.crontab import get_crontab_next_time
 from ddns_clienter_core.runtimes.helpers import get_dns_servers, get_g_data
 from ddns_clienter_core.runtimes.persistent_data import (
     get_addresses_values,
-    get_events_queryset,
+    get_events_page,
     get_tasks_queryset,
 )
 
@@ -37,12 +36,6 @@ class DCTemplateView(TemplateView):
         return self.render_to_response(context)
 
 
-def _get_events_page(page_number: int):
-    paginator = Paginator(get_events_queryset(settings.DEBUG).all(), 10)
-    page_obj = paginator.get_page(page_number)
-    return page_obj
-
-
 class HomeView(DCTemplateView):
     template_name = "home_main.html"
 
@@ -65,7 +58,7 @@ class HomeView(DCTemplateView):
             data = convert_none_to_symbol(data)
             tasks.append(data)
 
-        events_page = _get_events_page(1)
+        events_page = get_events_page(1)
 
         next_addresses_check_time = get_crontab_next_time(
             app_config.common.check_intervals
@@ -128,5 +121,6 @@ def home_events_page(request):
     Fetch paginated events and render them.
     """
     page_number = request.GET.get("page", 1)
-    events_page = _get_events_page(page_number)
+    events_page = get_events_page(page_number)
+
     return render(request, "home_event_page.html", {"events_page": events_page})

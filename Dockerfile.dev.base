@@ -3,8 +3,8 @@ FROM python:3.12-alpine
 ARG ENV
 
 RUN if [ "$ENV" = "rex" ]; then echo "Change depends" \
-    && pip config set global.index-url https://devpi.h.rexzhang.com/root/pypi/+simple \
-    && pip config set install.trusted-host devpi.h.rexzhang.com \
+    && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    && pip config set install.trusted-host pypi.tuna.tsinghua.edu.cn \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     ; fi
 

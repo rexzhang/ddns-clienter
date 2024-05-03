@@ -4,6 +4,7 @@ from datetime import timedelta
 from logging import getLogger
 
 from asgiref.sync import async_to_sync
+from django.core.paginator import Paginator
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.utils import timezone
@@ -94,7 +95,7 @@ def _get_addresses_or_tasks_queryset(
 ) -> QuerySet:
     for config_obj in addresses_or_tasks.values():
         async_to_sync(compare_and_update_config_info_from_dict_to_db)(
-            config_obj.dict(), model
+            config_obj.model_dump(), model
         )
 
     if debug:
@@ -105,14 +106,7 @@ def _get_addresses_or_tasks_queryset(
     return queryset.order_by("name")
 
 
-def get_events_queryset(debug: bool = False) -> QuerySet:
-    queryset_init = Event.objects.order_by("-id")
-
-    if debug:
-        return queryset_init
-
-    queryset = queryset_init.filter(time__gt=(timezone.now() - timedelta(days=2)))
-    if len(queryset) < 10:
-        return queryset_init.order_by("-id")[:10]
-    else:
-        return queryset
+def get_events_page(page_number: int):
+    paginator = Paginator(Event.objects.order_by("-id").all(), 10)
+    events_page = paginator.get_page(page_number)
+    return events_page

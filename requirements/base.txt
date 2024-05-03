@@ -10,7 +10,7 @@ httpx
 dns-lexicon[full]
 
 ## Config
-pydantic>=2.5.1
+pydantic>=2.7.0
 python-dotenv
 
 ## crontab
