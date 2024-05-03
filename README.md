@@ -72,6 +72,10 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
+### 0.9.1 - 20240503
+
+- Fix bug(infinite load events)
+
 ### 0.9.0 - 20240427
 
 - Update python to v3.12
