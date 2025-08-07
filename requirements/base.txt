@@ -19,5 +19,3 @@ croniter # python-crontab optional
 
 ## CLI
 click
-
-openwrt-luci-rpc
