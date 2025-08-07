@@ -19,6 +19,15 @@ provider_name = "ipify"
 ipv4 = true
 ipv6 = true
 
+[[address]]
+name = "from_openwrt"
+
+provider_name = "openwrt-ubus-rpc"
+provider_parameter = "http://root:password@192.168.1.1/ubus"
+
+ipv4 = true
+ipv6 = true
+
 [[task]]
 enable = false
 name = "ipv4_to_dynv6"
@@ -29,7 +38,6 @@ domain = "www4.example.com"
 
 provider_name = "dynv6"
 provider_auth = "this_is_token_for_this_zone"
-
 
 [[task]]
 enable = false
