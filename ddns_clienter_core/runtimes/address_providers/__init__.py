@@ -12,6 +12,9 @@ from ddns_clienter_core.runtimes.address_providers.http_get import (
     AddressProviderNetCn,
     AddressProviderNoip,
 )
+from ddns_clienter_core.runtimes.address_providers.openwrt_ubus import (
+    AddressProviderOpenwrtUbusRpc,
+)
 
 __all__ = ["AddressProviderException", "get_ip_address_from_provider"]
 
@@ -19,6 +22,8 @@ _address_provider_class_mapper = {
     provider_class.name: provider_class
     for provider_class in [
         AddressProviderHostName,
+        AddressProviderOpenwrtUbusRpc,
+        # http_get
         AddressProviderIpify,
         AddressProviderNoip,
         AddressProviderIpip,

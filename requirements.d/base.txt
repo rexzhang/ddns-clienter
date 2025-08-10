@@ -14,8 +14,8 @@ pydantic>=2.7.0
 python-dotenv
 
 ## crontab
-python-crontab
-croniter # python-crontab optional
+python-crontab==3.0.0 # 新版本不支持大于 60 的秒数值
+croniter==2.0.5 # python-crontab optional
 
 ## CLI
 click

@@ -1,19 +1,14 @@
-FROM python:3.13-alpine
+FROM crp.rexzhang.com/library/python:3.13-alpine
 
-ARG ENV
-
-RUN if [ "$ENV" = "rex" ]; then echo "Change depends" \
-    && pip config set global.index-url http://192.168.200.26:13141/root/pypi/+simple \
-    && pip config set install.trusted-host 192.168.200.26 \
+ARG BUILD_DEV
+RUN if [ "$BUILD_DEV" = "rex" ]; then echo "Change depends" \
+    && pip config set global.index-url https://proxpi.h.rexzhang.com/index/ \
+    && pip config set install.trusted-host proxpi.h.rexzhang.com \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+    # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
     ; fi
 
-COPY ddns_clienter /app/ddns_clienter
-COPY ddns_clienter_core /app/ddns_clienter_core
-COPY requirements /app/requirements
-COPY manage.py /app
-COPY runserver.py /app
-COPY entrypoint.sh /app
+COPY ./requirements.d /app/requirements.d
 
 # depends
 RUN \
@@ -22,7 +17,7 @@ RUN \
     # -- for i18n
     && apk add --no-cache gettext \
     # -- for py
-    && pip install --no-cache-dir -r /app/requirements/docker.txt \
+    && pip install --no-cache-dir -r /app/requirements.d/docker.txt \
     # cleanup --- \
     && apk del .build-deps \
     && rm -rf /root/.cache \
@@ -32,6 +27,12 @@ RUN \
     && mkdir /data \
     && mkdir /data/lexicon_tld_set \
     && chown nobody:nobody -R /data
+
+COPY ddns_clienter /app/ddns_clienter
+COPY ddns_clienter_core /app/ddns_clienter_core
+COPY manage.py /app
+COPY runserver.py /app
+COPY entrypoint.sh /app
 
 WORKDIR /app
 EXPOSE 8000

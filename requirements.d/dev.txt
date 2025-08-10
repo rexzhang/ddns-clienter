@@ -7,4 +7,6 @@
 pre-commit
 djlint
 
+fabric
+
 icecream
