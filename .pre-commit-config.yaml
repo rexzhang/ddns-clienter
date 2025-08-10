@@ -3,12 +3,12 @@ repos:
     rev: v3.20.0
     hooks:
       - id: pyupgrade
-        args: [--py312-plus]
+        args: [--py313-plus]
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
-        args: ["--target-version", "py312"]
+        args: ["--target-version", "py313"]
   - repo: https://github.com/pycqa/isort
     rev: 6.0.1
     hooks:
