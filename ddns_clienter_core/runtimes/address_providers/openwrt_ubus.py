@@ -1,12 +1,12 @@
+from logging import getLogger
+from urllib.parse import urlparse
+
+import httpx
+
 from ddns_clienter_core.runtimes.address_providers.abs import (
     AddressProviderAbs,
     AddressProviderException,
 )
-from logging import getLogger
-import httpx
-
-from urllib.parse import urlparse
-
 
 logger = getLogger(__name__)
 

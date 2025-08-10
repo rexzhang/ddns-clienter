@@ -1,36 +1,36 @@
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">{{ g.app.name }} <small><small>v{{ g.app.version }}</small></small>{{ LANGUAGE_CODE }}</a>
-        <div>
-            <button class="btn btn-outline-info btn-sm mx-1 py-0"
-                    type="submit"
-                    hx-get="/api/check_and_update"
-                    hx-swap="none">
-                <i class="bi-play-fill"></i>Update Now
-            </button>
-            <span sse-swap="status:check_update"
-                  class="badge rounded-pill text-bg-warning mx-1"></span>
-            {% if g.status.debug_mode %}<span class="badge rounded-pill text-bg-warning mx-1">Debug Mode</span>{% endif %}
-            {% if not g.status.config_check %}<span class="badge rounded-pill text-bg-danger mx-1">Config Check</span>{% endif %}
-        </div>
-        <div class="collapse navbar-collapse " id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item my-auto">
-                <a class="nav-link"
-                   href="{% url 'trouble_shooting' %}"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="bottom"
-                   data-bs-title="Help"><i class="bi-life-preserver" style="font-size: 1.2rem"></i>
-            </a>
-        </li>
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">{{ g.app.name }} <small><small>v{{ g.app.version }}</small></small>{{ LANGUAGE_CODE }}</a>
+    <div>
+      <button class="btn btn-outline-info btn-sm mx-1 py-0"
+              type="submit"
+              hx-get="/api/check_and_update"
+              hx-swap="none">
+        <i class="bi-play-fill"></i>Update Now
+      </button>
+      <span sse-swap="status:check_update"
+            class="badge rounded-pill text-bg-warning mx-1"></span>
+      {% if g.status.debug_mode %}<span class="badge rounded-pill text-bg-warning mx-1">Debug Mode</span>{% endif %}
+      {% if not g.status.config_check %}<span class="badge rounded-pill text-bg-danger mx-1">Config Check</span>{% endif %}
+    </div>
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item my-auto">
         <a class="nav-link"
-           target="_blank"
-           href="/api/docs"
+           href="{% url 'trouble_shooting' %}"
            data-bs-toggle="tooltip"
            data-bs-placement="bottom"
-           data-bs-title="Open API"><i class="bi-code-slash" style="font-size: 1.2rem"></i>
-    </a>
+           data-bs-title="Help"><i class="bi-life-preserver" style="font-size: 1.2rem"></i>
+      </a>
+    </li>
+    <li class="nav-item my-auto">
+    <a class="nav-link"
+       target="_blank"
+       href="/api/docs"
+       data-bs-toggle="tooltip"
+       data-bs-placement="bottom"
+       data-bs-title="Open API"><i class="bi-code-slash" style="font-size: 1.2rem"></i>
+  </a>
 </li>
 <li class="nav-item my-auto">
 <a class="nav-link"
