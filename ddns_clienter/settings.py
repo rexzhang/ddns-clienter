@@ -10,42 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from os import getenv
 from pathlib import Path
 from uuid import uuid4
 
 from django.utils.translation import gettext_lazy as _
-from dotenv import load_dotenv
 
-# Load .env, for dev
-load_dotenv(override=True)
-
-
-def str2bool(value: str | None) -> bool:
-    if not isinstance(value, str):
-        return False
-
-    if value.lower() == "true":
-        return True
-
-    return False
-
+from ddns_clienter_core.runtimes.config import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-#
-# DDNS Clienter
-#
-WORK_IN_CONTAINER = str2bool(getenv("WORK_IN_CONTAINER", "false"))
-
-DATA_PATH = getenv("DATA_PATH", ".")
-CONFIG_TOML = getenv("CONFIG_TOML", "ddns-clienter.toml")
-PBULIC_INSIDE_API = str2bool(getenv("PBULIC_INSIDE_API", "true"))
-
-DISABLE_CRON = str2bool(getenv("DISABLE_CRON", "false"))  # for dev
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -54,10 +27,7 @@ DISABLE_CRON = str2bool(getenv("DISABLE_CRON", "false"))  # for dev
 SECRET_KEY = f"django-insecure-{uuid4().hex}"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if getenv("DJANGO_DEPLOY_LEVEL", "release") == "development":
-    DEBUG = True
-else:
-    DEBUG = str2bool(getenv("DEBUG", "false"))
+DEBUG = env.DEBUG
 
 ALLOWED_HOSTS = ["*"]
 
@@ -113,7 +83,7 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path(DATA_PATH).joinpath("db.sqlite3"),
+        "NAME": Path(env.DATA_PATH).joinpath("db.sqlite3"),
         # "NAME": ":memory:",
     }
 }
@@ -127,18 +97,15 @@ LANGUAGES = [
     ("zh-hans", _("Chinese")),
 ]
 
-TIME_ZONE = getenv("TZ", "UTC")
-
+TIME_ZONE = env.TZ
 USE_I18N = True
-
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR.joinpath("ddns_clienter", "staticfiles")
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -199,8 +166,7 @@ BOOTSTRAP5 = {
 #
 # Sentry
 #
-SENTRY_DSN = getenv("SENTRY_DSN", "")
-if SENTRY_DSN:
+if env.SENTRY_DSN:
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.integrations.logging import LoggingIntegration
 
@@ -210,7 +176,7 @@ if SENTRY_DSN:
     from ddns_clienter_core.runtimes.sentry import init_sentry
 
     init_sentry(
-        dsn=SENTRY_DSN,
+        dsn=env.SENTRY_DSN,
         integrations=[DjangoIntegration(), LoggingIntegration()],
         app_name=app_name,
         app_version=app_version,

@@ -66,8 +66,8 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 | Name                | Default Value in Docker   | Default Value in CLI |
 | ------------------- | ------------------------- | -------------------- |
-| `DATA_PATH`         | `/data`                   | `.`                  |
 | `CONFIG_TOML`       | `/etc/ddns-clienter.toml` | `ddns-clienter.toml` |
+| `DATA_PATH`         | `/data`                   | `.`                  |
 | `PBULIC_INSIDE_API` | `True`                    |                      |
 
 ## History

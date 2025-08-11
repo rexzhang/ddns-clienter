@@ -2,6 +2,7 @@ from django.apps import AppConfig
 from django.conf import settings
 
 import ddns_clienter
+from ddns_clienter_core.runtimes.config import env
 
 _app_g = None
 
@@ -20,9 +21,9 @@ def get_g() -> dict:
                 "debug_mode": settings.DEBUG,
             },
             "env": {
-                "DATA_PATH": settings.DATA_PATH,
-                "CONFIG_TOML": settings.CONFIG_TOML,
-                "PBULIC_INSIDE_API": settings.PBULIC_INSIDE_API,
+                "DATA_PATH": env.DATA_PATH,
+                "CONFIG_TOML": env.CONFIG_TOML,
+                "PBULIC_INSIDE_API": env.PBULIC_INSIDE_API,
             },
         }
 

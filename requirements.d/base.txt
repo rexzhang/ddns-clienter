@@ -10,8 +10,8 @@ httpx
 dns-lexicon[full]
 
 ## Config
-pydantic>=2.7.0
-python-dotenv
+dataclass-wizard[dotenv]
+cachetools
 
 ## crontab
 python-crontab==3.0.0 # 新版本不支持大于 60 的秒数值
