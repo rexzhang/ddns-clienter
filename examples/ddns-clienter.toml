@@ -14,11 +14,11 @@ ipv6 = true # 是否获取 IPv6 地址, 默认不获取
 name = "from_hostname"
 
 provider_name = "hostname" # hostname 表示通过主机名获取 IP 地址
-provider_parameter = "localhost" # 设备主机名, 常见的主机名类似: ds216, windows7 ...
+provider_parameter = "localhost" # 设备主机名, 常见的主机名类似: ds216, win123 ...
 
 ipv4 = true
 ipv6 = true
-ipv6_match_rule = "^240e:" # 一个主机通常同时会有多个 IPv6 地址, 大概率会包含没有什么用处的私有地址, 可以使用正则表达式进行筛选
+ipv6_match_rule = "^240e:" # 一个主机通常同时会有多个 IPv6 地址; 大概率会包含没有什么用处的私有地址,而列在首位的不一定是需要的; 可以使用正则表达式进行筛选
 
 [[address]]
 name = "from_ipify"

@@ -39,6 +39,15 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
         <div class="border px-3">
           <pre><code>
 [[address]]
+name = "from_openwrt"
+
+provider_name = "openwrt-ubus-rpc"
+provider_parameter = "http://root:password@192.168.1.1/ubus"
+
+ipv4 = true
+ipv6 = true
+
+[[address]]
 name = "from_ipify"
 provider_name = "ipify"
 ipv4 = true
