@@ -39,7 +39,6 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
 
         try:
             ubus_url = f"http://{self.hostname}/ubus"
-            client = httpx.Client()
 
             # 获取会话token
             login_payload = {
@@ -54,7 +53,7 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
                 ],
             }
 
-            login_response = client.post(ubus_url, json=login_payload)
+            login_response = httpx.post(ubus_url, json=login_payload, verify=False)
             if login_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed.")
 
@@ -74,7 +73,7 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
                 "params": [ubus_rpc_session, "network.interface", "dump", {}],
             }
 
-            ubus_response = client.post(ubus_url, json=ubus_payload)
+            ubus_response = httpx.post(ubus_url, json=ubus_payload, verify=False)
             if ubus_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed(2).")
 
