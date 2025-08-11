@@ -31,7 +31,7 @@ def _parser_parameter(parameter: str):
 
 
 class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
-    name = "openwrt-ubus-rpc"
+    name = "openwrt_ubus_rpc"
 
     async def _get_address_from_openwrt(self) -> tuple[str | None, str | None]:
         login_response = None
