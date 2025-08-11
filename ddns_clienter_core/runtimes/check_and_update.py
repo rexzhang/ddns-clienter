@@ -156,7 +156,7 @@ class UpdateTaskProcessor:
                 task_config.ipv4
                 and address_info.ipv4_address
                 and (
-                    address_info.ipv4_address_str != task_db.last_ip_addresses
+                    address_info.ipv4_address_str not in task_db.last_ip_addresses
                     or task_db.last_update_success_time
                     + timedelta(minutes=config.common.force_update_intervals)
                     < now
@@ -168,7 +168,7 @@ class UpdateTaskProcessor:
                 task_config.ipv6
                 and address_info.ipv6_address
                 and (
-                    address_info.ipv6_address_str != task_db.last_ip_addresses
+                    address_info.ipv6_address_str not in task_db.last_ip_addresses
                     or task_db.last_update_success_time
                     + timedelta(minutes=config.common.force_update_intervals)
                     < now
