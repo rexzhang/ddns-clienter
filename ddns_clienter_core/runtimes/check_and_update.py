@@ -1,4 +1,5 @@
 import asyncio
+from dataclasses import asdict
 from datetime import timedelta
 from logging import getLogger
 
@@ -54,7 +55,7 @@ class AddressProcessor:
         for address_config in self.address_provider_configs:
             # migrate config and db
             await compare_and_update_config_info_from_dict_to_db(
-                config_item_dict=address_config.dict(),
+                config_item_dict=asdict(address_config),
                 model=models.Address,
             )
 
@@ -137,7 +138,7 @@ class UpdateTaskProcessor:
         for task_config in self.task_configs:
             # migrate config and db
             await compare_and_update_config_info_from_dict_to_db(
-                config_item_dict=task_config.dict(),
+                config_item_dict=asdict(task_config),
                 model=models.Task,
             )
 

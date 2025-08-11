@@ -167,17 +167,17 @@ BOOTSTRAP5 = {
 # Sentry
 #
 if env.SENTRY_DSN:
+    from sentry_sdk.integrations.asyncio import AsyncioIntegration
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.integrations.logging import LoggingIntegration
 
-    # from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
     from ddns_clienter import __name__ as app_name
     from ddns_clienter import __version__ as app_version
     from ddns_clienter_core.runtimes.sentry import init_sentry
 
     init_sentry(
         dsn=env.SENTRY_DSN,
-        integrations=[DjangoIntegration(), LoggingIntegration()],
+        integrations=[AsyncioIntegration(), DjangoIntegration(), LoggingIntegration()],
         app_name=app_name,
         app_version=app_version,
         user_id_is_mac_address=True,

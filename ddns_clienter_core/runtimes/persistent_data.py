@@ -1,6 +1,7 @@
 import dataclasses
 import logging
 from datetime import timedelta
+from dataclasses import asdict
 from logging import getLogger
 
 from asgiref.sync import async_to_sync
@@ -95,7 +96,7 @@ def _get_addresses_or_tasks_queryset(
 ) -> QuerySet:
     for config_obj in addresses_or_tasks.values():
         async_to_sync(compare_and_update_config_info_from_dict_to_db)(
-            config_obj.model_dump(), model
+            asdict(config_obj), model
         )
 
     if debug:
