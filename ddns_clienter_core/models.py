@@ -45,7 +45,6 @@ class Task(models.Model):
     provider_auth = models.TextField()
 
     domain = models.CharField(max_length=255)
-    host = models.CharField(max_length=255)
 
     # from Dynamic DNS provider's response
     previous_ip_addresses = models.TextField(max_length=62, null=True)
