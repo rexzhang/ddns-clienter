@@ -12,7 +12,8 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 ## Feature
 
 - Support multiple address provider
-  - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), recommended for use in LAN
+  - [openwrt_ubus_rpc](https://openwrt.org/docs/techref/ubus#access_to_ubus_over_http), IPv4/6, recommended for use with OpenWRT
+  - [hostname](https://docs.python.org/3/library/socket.html#socket.getaddrinfo), IPv4/6, recommended for use in LAN
   - [ipify](https://www.ipify.org), IPv4/6
   - [noip](https://www.noip.com/), IPv4/6
   - [ipip](https://myip.ipip.net), IPv4
@@ -71,6 +72,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 | `PBULIC_INSIDE_API` | `True`                    |                      |
 
 ## History
+
+### 1.0.0 - ?
+
+- Update python to v3.13
+- feat: new address provider: `openwrt_ubus_rpc`
 
 ### 0.9.1 - 20240503
 
@@ -219,8 +225,6 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 ## TODO
 
 - 基于群晖 DSM 的安装手册
-- 可以手动触发地址
-  - 一次触发所以事物
 - 更友好的用户提示
   - 当前系统时间(使用环境变量)
   - 配置文件检查
@@ -239,7 +243,6 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
     - Update task xxx failed
   - 所有 INFO 以及以上级别的 logging 自动进日志
   - 消息推送 webhook
-  - sentry 可以在配置文件中设置
 - 安全的任务调用
   - docker 中可以 call api
   - 可以通过 token 认证

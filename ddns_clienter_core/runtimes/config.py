@@ -75,13 +75,13 @@ class TaskConfig:
     name: str
     enable: bool = True
 
-    address_name: str = UNDEFINED
-    ipv4: bool = False
-    ipv6: bool = False
-
     domain: str = UNDEFINED
     provider_name: str = UNDEFINED
     provider_auth: str = UNDEFINED
+
+    address_name: str = UNDEFINED
+    ipv4: bool = False
+    ipv6: bool = False
 
 
 @dataclass
