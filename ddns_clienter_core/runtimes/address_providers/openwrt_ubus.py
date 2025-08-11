@@ -34,9 +34,15 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
     name = "openwrt-ubus-rpc"
 
     async def _get_address_from_openwrt(self) -> tuple[str | None, str | None]:
+        login_response = None
+        ubus_response = None
+
         try:
             ubus_url = f"http://{self.hostname}/ubus"
-            session_payload = {
+            client = httpx.Client()
+
+            # 获取会话token
+            login_payload = {
                 "jsonrpc": "2.0",
                 "id": 1,
                 "method": "call",
@@ -47,48 +53,54 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
                     {"username": self.username, "password": self.password},
                 ],
             }
-            client = httpx.Client()
 
-            # 获取会话token
-            session_response = client.post(ubus_url, json=session_payload)
-            if session_response.status_code != 200:
+            login_response = client.post(ubus_url, json=login_payload)
+            if login_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed.")
 
-            if "access denied" in session_response.text:
+            if "access denied" in login_response.text:
                 raise AddressProviderException(
                     "Access openwrt ubus failed. please check username/password."
                 )
 
-            session_data = session_response.json()
-            ubus_rpc_session = session_data["result"][1]["ubus_rpc_session"]
+            login_data = login_response.json()
+            ubus_rpc_session = login_data["result"][1]["ubus_rpc_session"]
 
             # 获取网络信息
-            network_payload = {
+            ubus_payload = {
                 "jsonrpc": "2.0",
                 "id": 2,
                 "method": "call",
-                "params": [ubus_rpc_session, "network.interface.wan", "dump", {}],
+                "params": [ubus_rpc_session, "network.interface", "dump", {}],
             }
 
-            network_response = client.post(ubus_url, json=network_payload)
-            if network_response.status_code != 200:
+            ubus_response = client.post(ubus_url, json=ubus_payload)
+            if ubus_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed(2).")
 
-            network_data = network_response.json()
-            interfaces = network_data["result"][1]["interface"]
+            ubus_data = ubus_response.json()
+            interfaces = ubus_data["result"][1]["interface"]
             ipv4, ipv6 = None, None
             for interface in interfaces:
                 if interface["interface"] == "wan":
                     ipv4 = interface["ipv4-address"][0].get("address")
+
+                elif interface["interface"] == "wan_6":
                     ipv6 = interface["ipv6-address"][0].get("address")
+                    # TODO: 返回 mask 值
+                    # ipv6_mask = interface["ipv6-address"][0].get("mask")
 
-                    break
+        except (KeyError, AddressProviderException) as e:
+            if login_response is not None:
+                logger.info(f"openwrt ubus response: {login_response.text}")
+            if ubus_response is not None:
+                logger.info(f"openwrt ubus response: {ubus_response.text}")
 
-        except Exception as e:
             raise AddressProviderException(
-                f"Detect IP Address failed, provider:[{self.name}], parameter:{self.parameter}; message:{e}"
+                f"Detect IP Address failed, provider:[{self.name}]; message:{e}; detail info please check logging"
             )
 
+        logger.info(f"openwrt ubus response: {ubus_response.text}")
         return ipv4, ipv6
 
     async def _get_address(
