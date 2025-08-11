@@ -46,6 +46,8 @@ class Common:
     check_intervals: int = CHECK_INTERVALS  # minutes
     force_update_intervals: int = 1440  # minutes, 1day
 
+    sentry_dsn: str = ""
+
 
 @dataclass
 class AddressProviderConfig:
@@ -105,6 +107,9 @@ class Config(JSONWizard):
 
         return task_dict
 
+    def update_from_env(self):
+        self.common.sentry_dsn = env.SENTRY_DSN
+
 
 _config: Config = Config()
 
@@ -114,6 +119,7 @@ def reinit_config_from_dict(data: dict):
 
     logger.debug("Load config value from python object(dict)")
     _config = Config.from_dict(data)
+    _config.update_from_env()
 
 
 def reinit_config_from_file(file_name: str):
