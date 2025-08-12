@@ -70,11 +70,18 @@ class EnvValue:
     APP_NAME = "ddns-clienter"
 
     # 目标机器信息
-    DEPLOY_ENV = "prd"
+    DEPLOY_STAGE = "prd"
     DEPLOY_SSH_HOST = "192.168.200.66"
     DEPLOY_SSH_PORT = 22
     DEPLOY_SSH_USER = "root"
-    DEPLOY_WORK_PATH = f"/mnt/main/docker/{APP_NAME}"
+
+    @property
+    def DEPLOY_WORK_PATH(self) -> str:
+        data = f"/mnt/main/docker/{self.APP_NAME}"
+        if self.DEPLOY_STAGE != "prd":
+            data += f"-{self.DEPLOY_STAGE}"
+
+        return data
 
     # Container Register 信息
     CR_HOST_NAME = "cr.h.rexzhang.com"
@@ -86,8 +93,8 @@ class EnvValue:
     @property
     def DOCKER_IMAGE_FULL_NAME(self) -> str:
         name = f"{self.CR_HOST_NAME}/{self.CR_NAME_SPACE}/{self.APP_NAME}"
-        if self.DEPLOY_ENV != "prd":
-            name += f"-{self.DEPLOY_ENV}"
+        if self.DEPLOY_STAGE != "prd":
+            name += f"-{self.DEPLOY_STAGE}"
 
         return name
 
@@ -97,7 +104,7 @@ class EnvValue:
     CONTAINER_WEB_BIND_PORT = 8000
 
     def get_container_name(self, module: str) -> str:
-        return f"{self.APP_NAME}-{module}"
+        return f"{self.APP_NAME}-{self.DEPLOY_STAGE}-{module}"
 
     def switch_to_prd(self):
         pass
