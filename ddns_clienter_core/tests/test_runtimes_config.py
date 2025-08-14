@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 class MyTestCase(unittest.TestCase):
     def test_something(self):
         config = get_config(
-            BASE_DIR.joinpath("docs").joinpath("config.toml").as_posix()
+            BASE_DIR.joinpath("examples").joinpath("ddns-clienter.toml").as_posix()
         )
         print(config.address_dict)
         self.assertEqual(config.address_dict.get("from_hostname").name, "from_hostname")
