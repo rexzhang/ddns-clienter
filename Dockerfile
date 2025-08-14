@@ -1,4 +1,4 @@
-FROM crp.rexzhang.com/library/python:3.13-alpine
+FROM python:3.13-alpine
 
 ARG BUILD_DEV
 RUN if [ "$BUILD_DEV" = "rex" ]; then echo "Change depends" \
