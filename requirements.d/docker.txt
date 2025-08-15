@@ -5,4 +5,4 @@ ASGIMiddlewareStaticFile
 uvicorn[standard]
 
 # debug
-sentry_sdk
+sentry_sdk>=2.0.0

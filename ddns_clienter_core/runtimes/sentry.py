@@ -104,8 +104,8 @@ def init_sentry(
 
     mac_address = get_mac_address()
     if user_id_is_mac_address:
-        with configure_scope() as scope:
-            scope.set_user({"id": mac_address})
+        scope = sentry_sdk.get_current_scope()
+        scope.set_user({"id": mac_address})
 
     if announce_at_startup:
         sentry_sdk.capture_exception(
