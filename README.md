@@ -41,7 +41,7 @@ docker pull ray1ex/ddns-clienter
 
 ### Config
 
-[Example](https://github.com/rexzhang/ddns-clienter/blob/main/docs/config.toml)
+[Example](https://github.com/rexzhang/ddns-clienter/blob/main/examples/ddns-clienter.toml)
 
 ### Start
 
