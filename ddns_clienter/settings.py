@@ -15,7 +15,7 @@ from uuid import uuid4
 
 from django.utils.translation import gettext_lazy as _
 
-from ddns_clienter_core.runtimes.config import env
+from ddns_clienter.core.runtimes.config import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "django_bootstrap5",
     "django_eventstream",
     "ninja",
-    "ddns_clienter_core",
+    "ddns_clienter.core",
 ]
 
 MIDDLEWARE = [
@@ -142,7 +142,7 @@ LOGGING = {
             "level": "INFO",
             "propagate": True,
         },
-        "ddns_clienter_core": {
+        "ddns_clienter.core": {
             "handlers": ["console"],
             "level": logging_level,
             "propagate": True,
@@ -173,7 +173,7 @@ if env.SENTRY_DSN:
 
     from ddns_clienter import __name__ as app_name
     from ddns_clienter import __version__ as app_version
-    from ddns_clienter_core.runtimes.sentry import init_sentry
+    from ddns_clienter.core.runtimes.sentry import init_sentry
 
     init_sentry(
         dsn=env.SENTRY_DSN,

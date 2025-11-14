@@ -5,7 +5,7 @@ requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-addopts = "--cov=ddns_clienter_core --cov-report html"
+addopts = "--cov=ddns_clienter --cov-report html"
 asyncio_mode = "auto"
 DJANGO_SETTINGS_MODULE = "ddns_clienter.settings"
 

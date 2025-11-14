@@ -18,8 +18,8 @@ import django_eventstream
 from django.conf import settings
 from django.urls import include, path
 
-from ddns_clienter_core.views import views
-from ddns_clienter_core.views.api import api
+from ddns_clienter.core.views import views
+from ddns_clienter.core.views.api import api
 
 urlpatterns = [
     path("api/", api.urls),

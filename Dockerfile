@@ -29,7 +29,6 @@ RUN \
     && chown nobody:nobody -R /data
 
 COPY ddns_clienter /app/ddns_clienter
-COPY ddns_clienter_core /app/ddns_clienter_core
 COPY manage.py /app
 COPY runserver.py /app
 COPY entrypoint.sh /app

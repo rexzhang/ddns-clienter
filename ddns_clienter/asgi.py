@@ -13,7 +13,7 @@ from asgi_middleware_static_file import ASGIMiddlewareStaticFile
 from django.conf import settings
 from django.core.asgi import get_asgi_application
 
-from ddns_clienter_core.runtimes.config import env
+from ddns_clienter.core.runtimes.config import env
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ddns_clienter.settings")
 

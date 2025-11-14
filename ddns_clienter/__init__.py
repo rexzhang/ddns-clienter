@@ -5,7 +5,6 @@
 Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 """
 
-from .core import PyPIPackageProject  # noqa: F401
 
 __name__ = "DDNS Clienter"
 __version__ = "1.0.0"

@@ -224,6 +224,7 @@ in `/etc/network/interface`, like `iface enp4s0 inet6 dhcp`
 
 ## TODO
 
+- 移除 crontab 需求?因为这会导致需要 root 权限部署 docker
 - 基于群晖 DSM 的安装手册
 - 更友好的用户提示
   - 当前系统时间(使用环境变量)
