@@ -1,3 +1,4 @@
+import asyncio
 import socket
 from logging import getLogger
 
@@ -16,7 +17,8 @@ class AddressProviderHostName(AddressProviderAbs):
         self, ipv4: bool, ipv6: bool, parameter: str
     ) -> tuple[list[str], list[str]]:
         try:
-            data = socket.getaddrinfo(parameter, 80)
+            loop = asyncio.get_running_loop()
+            data = await loop.getaddrinfo(parameter, 80)
         except socket.gaierror as e:
             message = f"Detect IP Address failed, provider:[{self.name}], parameter:{parameter}, message:{e}"
             logger.error(message)
