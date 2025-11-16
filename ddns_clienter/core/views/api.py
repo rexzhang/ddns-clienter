@@ -7,7 +7,6 @@ from ninja.pagination import PageNumberPagination, paginate
 from ddns_clienter.core.constants import EventLevel
 from ddns_clienter.core.models import Address, Event, Status, Task
 from ddns_clienter.core.runtimes.check_and_update import check_and_update
-from ddns_clienter.core.runtimes.config import env
 from ddns_clienter.core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_queryset,
@@ -30,7 +29,7 @@ def auth_inside_api(request):
     if request.META["REMOTE_ADDR"] == "127.0.0.1":
         return True
 
-    if env.PBULIC_INSIDE_API:
+    if settings.EV.PBULIC_INSIDE_API:
         return True
 
     return False

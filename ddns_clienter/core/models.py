@@ -1,9 +1,10 @@
 from django.db import models
 
 from ddns_clienter.core.constants import EventLevel
+from django_vises.db.model.base import KeyValueAbc, RecordAbc, RecordAbcWithoutIdAbc
 
 
-class Address(models.Model):
+class Address(RecordAbcWithoutIdAbc):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
     enable = models.BooleanField(default=True)
@@ -32,7 +33,7 @@ class Address(models.Model):
     time = models.DateTimeField(auto_now=True)
 
 
-class Task(models.Model):
+class Task(RecordAbcWithoutIdAbc):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
     enable = models.BooleanField(default=True)
@@ -59,12 +60,11 @@ class Task(models.Model):
     time = models.DateTimeField(auto_now=True)
 
 
-class Status(models.Model):
-    key = models.CharField(max_length=255, primary_key=True)
-    value = models.TextField()
+class Status(KeyValueAbc):
+    pass
 
 
-class Event(models.Model):
+class Event(RecordAbc):
     level = models.TextField(choices=EventLevel.choices)
     message = models.TextField()
 

@@ -1,9 +1,9 @@
 from logging import getLogger
 
 from asgiref.sync import async_to_sync
-from core.runtimes.config import env
 from core.runtimes.crontab import update_crontab_file
 from core.runtimes.event import event
+from django.conf import settings
 from django.core import management
 from django.core.management.base import BaseCommand
 
@@ -13,7 +13,7 @@ _CRON_COMMENT_TAG = "DDNS Clienter"
 
 
 def init_crontab():
-    if env.DISABLE_CRON:
+    if settings.EV.DISABLE_CRON:
         logger.info("Init: crontab update skipped!")
         return
 

@@ -5,7 +5,7 @@ from crontab import CronTab
 from django.conf import settings
 
 from ddns_clienter.core.constants import CHECK_INTERVALS
-from ddns_clienter.core.runtimes.config import ConfigException, env, get_config
+from ddns_clienter.core.runtimes.config import ConfigException, get_config
 from ddns_clienter.core.runtimes.event import event
 
 logger = getLogger(__name__)
@@ -22,13 +22,15 @@ def get_crontab_next_time(intervals: int):
 
 
 def update_crontab_file():
-    if env.WORK_IN_CONTAINER:
+    if settings.EV.WORK_IN_CONTAINER:
         filename = "/etc/crontabs/root"
     else:
         filename = "/tmp/dc-crontab"
 
     if settings.DEBUG:
-        command = f"/usr/bin/wget {_INSIDE_API_URL} -o /{env.DATA_PATH}/dc-cron.log"
+        command = (
+            f"/usr/bin/wget {_INSIDE_API_URL} -o /{settings.EV.DATA_PATH}/dc-cron.log"
+        )
     else:
         command = f"/usr/bin/wget {_INSIDE_API_URL} -o /dev/null"
 

@@ -4,7 +4,8 @@ from functools import cached_property
 from logging import getLogger
 
 from cachetools.func import ttl_cache
-from dataclass_wizard import EnvWizard, JSONWizard
+from dataclass_wizard import JSONWizard
+from django.conf import settings
 
 from ddns_clienter.core.constants import CHECK_INTERVALS
 
@@ -15,30 +16,6 @@ UNDEFINED = "undefined"
 
 class ConfigException(Exception):
     pass
-
-
-class Env(EnvWizard):
-    class _(EnvWizard.Meta):
-        env_file = True
-
-    # django
-    DEBUG: bool = False
-    TZ: str = "UTC"
-
-    # dev
-    SENTRY_DSN: str = ""
-
-    # project base
-    CONFIG_TOML: str = "ddns-clienter.toml"
-    DATA_PATH: str = "."
-
-    # project extra
-    PBULIC_INSIDE_API: bool = True
-    WORK_IN_CONTAINER: bool = False
-    DISABLE_CRON: bool = False
-
-
-env = Env()
 
 
 @dataclass
@@ -108,7 +85,7 @@ class Config(JSONWizard):
         return task_dict
 
     def update_from_env(self):
-        self.common.sentry_dsn = env.SENTRY_DSN
+        self.common.sentry_dsn = settings.EV.SENTRY_DSN
 
 
 _config: Config = Config()
@@ -144,7 +121,7 @@ def reinit_config_from_file(file_name: str):
 @ttl_cache(ttl=60)
 def get_config(config_toml: str | None = None) -> Config:
     if config_toml is None:
-        config_toml = env.CONFIG_TOML
+        config_toml = settings.EV.CONFIG_TOML
 
     reinit_config_from_file(config_toml)
 

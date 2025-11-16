@@ -10,26 +10,54 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from dataclasses import dataclass
 from pathlib import Path
-from uuid import uuid4
 
+from dataclass_wizard import EnvWizard
 from django.utils.translation import gettext_lazy as _
-
-from ddns_clienter.core.runtimes.config import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# # Import local python module django_vises, only for example
+# import sys
+
+# sys.path.append(str(BASE_DIR.parent.parent))
+from django_vises.django_settings.env_var import EnvVarAbc  # noqa: E402
+from django_vises.django_settings.helpers import parser_database_uri  # noqa: E402
+
+
+@dataclass
+class EnvVar(EnvVarAbc, EnvWizard):
+    class _(EnvWizard.Meta):
+        env_file = True
+
+    DATABASE_URI: str = "sqlite://db_v2.sqlite3"
+
+    # project base
+    CONFIG_TOML: str = "examples/ddns-clienter.toml"
+    DATA_PATH: str = "."
+
+    # project extra
+    PBULIC_INSIDE_API: bool = True
+    WORK_IN_CONTAINER: bool = False
+    DISABLE_CRON: bool = False
+
+
+EV = EnvVar()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = f"django-insecure-{uuid4().hex}"
+SECRET_KEY = EV.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.DEBUG
+DEBUG = EV.DEBUG
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = EV.ALLOWED_HOSTS
+
 
 # Application definition
 
@@ -79,14 +107,8 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+DATABASES = {"default": parser_database_uri(EV.DATABASE_URI, base_dir=BASE_DIR)}
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path(env.DATA_PATH).joinpath("db.sqlite3"),
-        # "NAME": ":memory:",
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -97,7 +119,7 @@ LANGUAGES = [
     ("zh-hans", _("Chinese")),
 ]
 
-TIME_ZONE = env.TZ
+TIME_ZONE = EV.TZ
 USE_I18N = True
 USE_TZ = True
 
@@ -166,7 +188,7 @@ BOOTSTRAP5 = {
 #
 # Sentry
 #
-if env.SENTRY_DSN:
+if EV.SENTRY_DSN:
     from sentry_sdk.integrations.asyncio import AsyncioIntegration
     from sentry_sdk.integrations.django import DjangoIntegration
     from sentry_sdk.integrations.logging import LoggingIntegration
@@ -176,7 +198,7 @@ if env.SENTRY_DSN:
     from ddns_clienter.core.runtimes.sentry import init_sentry
 
     init_sentry(
-        dsn=env.SENTRY_DSN,
+        dsn=EV.SENTRY_DSN,
         integrations=[AsyncioIntegration(), DjangoIntegration(), LoggingIntegration()],
         app_name=app_name,
         app_version=app_version,
