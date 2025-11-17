@@ -1,7 +1,7 @@
 from django.db import models
+from django_vises.db.model.base import KeyValueAbc, RecordAbc, RecordAbcWithoutIdAbc
 
 from ddns_clienter.core.constants import EventLevel
-from django_vises.db.model.base import KeyValueAbc, RecordAbc, RecordAbcWithoutIdAbc
 
 
 class Address(RecordAbcWithoutIdAbc):

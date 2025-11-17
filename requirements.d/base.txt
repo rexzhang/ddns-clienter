@@ -2,6 +2,7 @@
 
 asgiref
 django>=5.0
+django-vises==1.0.3
 django-ninja>=1.0.1
 django-bootstrap5
 django-eventstream
