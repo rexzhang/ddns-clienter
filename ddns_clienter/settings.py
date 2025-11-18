@@ -15,16 +15,11 @@ from pathlib import Path
 
 from dataclass_wizard import EnvWizard
 from django.utils.translation import gettext_lazy as _
+from django_vises.django_settings.env_var import EnvVarAbc
+from django_vises.django_settings.helpers import parser_database_uri
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# # Import local python module django_vises, only for example
-# import sys
-
-# sys.path.append(str(BASE_DIR.parent.parent))
-from django_vises.django_settings.env_var import EnvVarAbc  # noqa: E402
-from django_vises.django_settings.helpers import parser_database_uri  # noqa: E402
 
 
 @dataclass
