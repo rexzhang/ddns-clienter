@@ -196,3 +196,9 @@ match EV.DEPLOY_STAGE:
             "django_browser_reload.middleware.BrowserReloadMiddleware",
             "debug_toolbar.middleware.DebugToolbarMiddleware",
         ]
+
+    case DeployStage.PRD:
+        DATABASES["default"] = {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": Path(EV.DATA_PATH).joinpath("db_v2.sqlite3"),
+        }

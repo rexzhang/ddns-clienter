@@ -73,6 +73,11 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
+### 1.1.0
+
+- refactor: integrate django-vises
+- refactor: migrate check_and_update to django tasks system
+
 ### 1.0.0 - 20250817
 
 - Update python to v3.13

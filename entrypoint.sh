@@ -1,6 +1,9 @@
 #!/bin/sh
 
-./manage.py init \
-&& crond \
-&& chown nobody:nobody -R /data \
-&& su nobody -s /app/runserver.py
+chown nobody:nobody -R /data
+./manage.py migrate
+./manage.py init
+
+crond
+exec su-exec nobody:nobody \
+    /app/runserver.py

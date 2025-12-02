@@ -9,8 +9,6 @@ class EnvVar(EnvVarAbc, EnvWizard):
     class _(EnvWizard.Meta):
         env_file = True
 
-    DATABASE_URI: str = "sqlite://db2.sqlite3"
-
     # project base
     CONFIG_TOML: str = "examples/ddns-clienter.toml"
     DATA_PATH: str = "."

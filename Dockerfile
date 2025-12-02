@@ -25,10 +25,11 @@ RUN \
     && rm -rf /root/.cache \
     && find /usr/local/lib/python*/ -type f -name '*.py[cod]' -delete \
     && find /usr/local/lib/python*/ -type d -name "__pycache__" -delete \
+    # create non-root user ---
+    && apk add --no-cache su-exec \
     # prepare data path --- \
     && mkdir /data \
-    && mkdir /data/lexicon_tld_set \
-    && chown nobody:nobody -R /data
+    && mkdir /data/lexicon_tld_set
 
 COPY ddns_clienter /app/ddns_clienter
 COPY manage.py /app

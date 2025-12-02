@@ -7,7 +7,7 @@ Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
 
 __name__ = "DDNS Clienter"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 __author__ = "Rex Zhang"
 __author_email__ = "rex.zhang@gmail.com"
