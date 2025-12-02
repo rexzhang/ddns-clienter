@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+{% load tz %}
+{% load django_bootstrap5 %}
 <html lang="en" data-bs-theme="auto">
-  {% load static %}
-  {% load django_bootstrap5 %}
-  {% load i18n %}
-  {% load l10n %}
-  {% load tz %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +12,12 @@
     <link rel="stylesheet"
           href="{% static '/css/bootstrap-icons.1.10.3.css' %}">
     <script src="{% static '/js/bootstrap-color-modes.js' %} "></script>
-    <script src="{% static '/js/htmx.1.9.11/htmx.min.js' %} "></script>
-    <script src="{% static '/js/htmx.1.9.11/ext/sse.js' %} "></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+            integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.4"
+            integrity="sha384-A986SAtodyH8eg8x8irJnYUk7i9inVQqYigD6qZ9evobksGNIXfeFvDwLSHcp31N"
+            crossorigin="anonymous"></script>
     <title>{{ g.app.name }}</title>
   </head>
   <body class="with-custom-webkit-scrollbars with-custom-css-scrollbars"

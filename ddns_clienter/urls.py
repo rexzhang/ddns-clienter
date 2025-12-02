@@ -17,6 +17,7 @@ Including another URLconf
 import django_eventstream
 from django.conf import settings
 from django.urls import include, path
+from django_vises.deploy.deploy_stage import DeployStage
 
 from ddns_clienter.core.views import views
 from ddns_clienter.core.views.api import api
@@ -33,8 +34,16 @@ urlpatterns = [
     ),
 ]
 
-if settings.DEBUG:
-    urlpatterns += [
-        path("add_more_event", views.add_more_event),
-        path("send_reload_event", views.send_reload_event),
-    ]
+
+match settings.EV.DEPLOY_STAGE:
+    case DeployStage.LOCAL:
+        urlpatterns += [
+            path("add_more_event", views.add_more_event),
+            path("send_reload_event", views.send_reload_event),
+        ]
+
+        from debug_toolbar.toolbar import debug_toolbar_urls
+
+        urlpatterns += [
+            path("__reload__/", include("django_browser_reload.urls")),
+        ] + debug_toolbar_urls()

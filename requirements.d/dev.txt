@@ -4,9 +4,10 @@
 -r docker.txt
 
 # extend 3rd package
-pre-commit
 djlint
 
 fabric
 
+django-debug-toolbar
+django-browser-reload
 icecream

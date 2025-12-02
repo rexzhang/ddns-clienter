@@ -13,9 +13,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
-from django_vises.django_settings.helpers import parser_database_uri
+from django_vises.deploy.deploy_stage import DeployStage
 
 from ddns_clienter.ev import EV
+
+# from django_vises.django_settings.helpers import parser_database_uri
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +33,7 @@ SECRET_KEY = EV.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = EV.DEBUG
 
-ALLOWED_HOSTS = EV.ALLOWED_HOSTS
+ALLOWED_HOSTS = ["*"]  # EV.ALLOWED_HOSTS
 
 
 # Application definition
@@ -81,7 +84,13 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {"default": parser_database_uri(EV.DATABASE_URI, base_dir=BASE_DIR)}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": Path(EV.DATA_PATH).joinpath("db2.sqlite3"),
+        # "NAME": ":memory:",
+    }
+}
 
 
 # Internationalization
@@ -178,3 +187,15 @@ if EV.SENTRY_DSN:
         app_version=app_version,
         user_id_is_mac_address=True,
     )
+
+match EV.DEPLOY_STAGE:
+    case DeployStage.LOCAL:
+        # debug 工具
+        INSTALLED_APPS += [
+            "django_browser_reload",
+            "debug_toolbar",
+        ]
+        MIDDLEWARE += [
+            "django_browser_reload.middleware.BrowserReloadMiddleware",
+            "debug_toolbar.middleware.DebugToolbarMiddleware",
+        ]

@@ -4,18 +4,19 @@ from fabric import Connection, task
 from invoke.context import Context
 
 _DOCKER_PULL = "docker pull --platform=linux/amd64"
-_DOCKER_BUILD = "docker buildx build --platform=linux/amd64 --build-arg BUILD_DEV=rex"
+_DOCKER_BUILD = "docker buildx build --platform=linux/amd64 --build-arg BUILD_ENV=rex"  # TODO: t-string
+_DOCKER_RUN = "docker run --platform=linux/amd64"
 _c = Context()
+
+
+def say_it(message: str):
+    print(message)
+    _c.run(f"say {message}")
 
 
 @task
 def env_prd(c):
     ev.switch_to_prd()
-
-
-def _say_it(message: str):
-    print(message)
-    _c.run(f"say {message}")
 
 
 @task
@@ -24,45 +25,35 @@ def docker_pull_base_image(c):
     print("pull docker base image finished.")
 
 
-def docker_build(c):
-    print("build docker image...")
-    c.run(f"{_DOCKER_BUILD} -t {ev.DOCKER_IMAGE_FULL_NAME} .")
-    c.run("docker image prune -f")
-
-    _say_it("build finished")
-
-
 @task
 def docker_push_image(c):
     print("push docker image to register...")
 
     c.run(f"docker push {ev.DOCKER_IMAGE_FULL_NAME}")
-    print("push finished.")
+    say_it("push finished.")
 
 
 @task
 def docker_pull_image(c):
     c.run(f"{_DOCKER_PULL} {ev.DOCKER_IMAGE_FULL_NAME}")
-    print("pull image finished.")
+    say_it("pull image finished.")
 
 
 @task
 def docker_send_image(c):
     print("send docker image to deploy server...")
     c.run(
-        f'docker save {ev.DOCKER_IMAGE_FULL_NAME} | gzip | ssh {ev.DEPLOY_SSH_USER}@{ev.DEPLOY_SSH_HOST} -p {ev.DEPLOY_SSH_PORT} "gunzip | docker load"'
+        f'docker save {ev.DOCKER_IMAGE_FULL_NAME} | zstd -19 -c | ssh {ev.DEPLOY_SSH_USER}@{ev.DEPLOY_SSH_HOST} -p {ev.DEPLOY_SSH_PORT} "zstd -d -c | docker load"'
     )
-    _say_it("send image finished")
+    say_it("send image finished")
 
 
-@task
-def build(c):
-    docker_pull_base_image(c)
-    docker_build(c)
+def _recreate_container(c, container_name: str, docker_run_cmd: str):
+    c.run(f"docker container stop {container_name}", warn=True)
+    c.run(f"docker container rm {container_name}", warn=True)
+    c.run(f"cd {ev.DEPLOY_WORK_PATH} && {docker_run_cmd}")
 
-
-def run_restart_script(c):
-    c.run(f"cd {ev.DEPLOY_WORK_PATH} && ./RestartContainer.sh")
+    say_it(f"deploy {container_name} finished")
 
 
 @dataclass
@@ -74,14 +65,7 @@ class EnvValue:
     DEPLOY_SSH_HOST = "192.168.200.66"
     DEPLOY_SSH_PORT = 22
     DEPLOY_SSH_USER = "root"
-
-    @property
-    def DEPLOY_WORK_PATH(self) -> str:
-        data = f"/mnt/main/docker/{self.APP_NAME}"
-        if self.DEPLOY_STAGE != "prd":
-            data += f"-{self.DEPLOY_STAGE}"
-
-        return data
+    DEPLOY_WORK_PATH = f"/root/apps/{APP_NAME}"
 
     # Container Register 信息
     CR_HOST_NAME = "cr.h.rexzhang.com"
@@ -94,7 +78,7 @@ class EnvValue:
     def DOCKER_IMAGE_FULL_NAME(self) -> str:
         name = f"{self.CR_HOST_NAME}/{self.CR_NAME_SPACE}/{self.APP_NAME}"
         if self.DEPLOY_STAGE != "prd":
-            name += f"-{self.DEPLOY_STAGE}"
+            name += f":{self.DEPLOY_STAGE}"
 
         return name
 
@@ -116,6 +100,24 @@ class EnvValue:
 ev = EnvValue()
 
 
+def docker_build(c):
+    print("build docker image...")
+    c.run(f"{_DOCKER_BUILD} -t {ev.DOCKER_IMAGE_FULL_NAME} .")
+    c.run("docker image prune -f")
+
+    say_it("build finished")
+
+
+@task
+def build(c):
+    docker_pull_base_image(c)
+    docker_build(c)
+
+
+def run_restart_script(c):
+    c.run(f"cd {ev.DEPLOY_WORK_PATH} && ./UpdateBetaContainer.sh")
+
+
 @task
 def deploy(c):
     conn = Connection(
@@ -127,4 +129,4 @@ def deploy(c):
 
     run_restart_script(conn)
 
-    _say_it("deploy finished")
+    say_it("deploy finished")

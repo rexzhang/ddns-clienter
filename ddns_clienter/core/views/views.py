@@ -97,9 +97,10 @@ class TroubleShootingView(DCTemplateView):
 
 
 async def add_more_event(request):
-    from core.runtimes.event import event
     from django.http import HttpResponse
     from django.utils.timezone import now
+
+    from ddns_clienter.core.runtimes.event import event
 
     await event.info(str(now()))
 
@@ -107,8 +108,9 @@ async def add_more_event(request):
 
 
 async def send_reload_event(request):
-    from core.runtimes.helpers import send_sse_event_reload
     from django.http import HttpResponse
+
+    from ddns_clienter.core.runtimes.helpers import send_sse_event_reload
 
     send_sse_event_reload()
     return HttpResponse()

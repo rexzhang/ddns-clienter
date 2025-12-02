@@ -1,11 +1,13 @@
 FROM python:3.13-alpine
 
-ARG BUILD_DEV
-RUN if [ "$BUILD_DEV" = "rex" ]; then echo "Change depends" \
+ARG BUILD_ENV
+ARG IMAGE_VERSION
+
+RUN if [ "$BUILD_ENV" = "rex" ]; then echo "Change depends" \
     && pip config set global.index-url https://proxpi.h.rexzhang.com/index/ \
     && pip config set install.trusted-host proxpi.h.rexzhang.com \
-    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    # && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    # https://mirrors.tuna.tsinghua.edu.cn/help/alpine/
+    && sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories \
     ; fi
 
 COPY ./requirements.d /app/requirements.d
@@ -54,6 +56,7 @@ RUN ./manage.py compilemessages --ignore venv \
 CMD /app/entrypoint.sh
 
 LABEL org.opencontainers.image.title="DDNS Clienter"
+LABEL org.opencontainers.image.version="$IMAGE_VERSION"
 LABEL org.opencontainers.image.authors="Rex Zhang"
 LABEL org.opencontainers.image.url="https://hub.docker.com/r/ray1ex/ddns-clienter"
 LABEL org.opencontainers.image.source="https://github.com/rexzhang/ddns-clienter"

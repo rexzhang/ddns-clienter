@@ -1,11 +1,11 @@
 from logging import getLogger
 
 from asgiref.sync import async_to_sync
-from core.runtimes.crontab import update_crontab_file
-from core.runtimes.event import event
 from django.core import management
 from django.core.management.base import BaseCommand
 
+from ddns_clienter.core.runtimes.crontab import update_crontab_file
+from ddns_clienter.core.runtimes.event import event
 from ddns_clienter.ev import EV
 
 logger = getLogger(__name__)
