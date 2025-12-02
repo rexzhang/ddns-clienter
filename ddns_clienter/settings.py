@@ -109,6 +109,11 @@ STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# https://docs.djangoproject.com/en/6.0/topics/tasks/
+# https://github.com/RealOrangeOne/django-tasks
+TASKS = {"default": {"BACKEND": "django.tasks.backends.immediate.ImmediateBackend"}}
+
+
 # https://docs.djangoproject.com/zh-hans/3.2/topics/logging/
 if DEBUG:
     logging_level = "DEBUG"

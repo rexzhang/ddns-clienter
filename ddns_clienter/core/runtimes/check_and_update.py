@@ -1,4 +1,3 @@
-import asyncio
 from dataclasses import asdict
 from datetime import timedelta
 from logging import getLogger
@@ -22,31 +21,11 @@ from ddns_clienter.core.runtimes.dns_providers import (
     update_address_to_dns_provider,
 )
 from ddns_clienter.core.runtimes.event import event
-from ddns_clienter.core.runtimes.helpers import (
-    send_sse_event,
-    send_sse_event_reload,
-)
 from ddns_clienter.core.runtimes.persistent_data import (
     compare_and_update_config_info_from_dict_to_db,
 )
 
 logger = getLogger(__name__)
-
-_check_and_update_running_lock = asyncio.Lock()
-
-
-async def check_and_update() -> str | None:
-    if _check_and_update_running_lock.locked():
-        return "There are already tasks in progress, please try later"
-
-    send_sse_event("status:check_update", "Check/Update is running")
-    async with _check_and_update_running_lock:
-        await asyncio.sleep(3)
-        await _check_an_update_v2()
-
-    send_sse_event("status:check_update", "")
-    send_sse_event_reload()
-    return None
 
 
 class AddressProcessor:
@@ -68,6 +47,9 @@ class AddressProcessor:
             address_db = await models.Address.objects.filter(
                 name=address_config.name
             ).afirst()
+            if address_db is None:
+                # TODO logging
+                continue
 
             # get IP address
             try:
@@ -149,6 +131,9 @@ class UpdateTaskProcessor:
                 continue
 
             task_db = await models.Task.objects.filter(name=task_config.name).afirst()
+            if task_db is None:
+                # TODO logging
+                continue
 
             # check ip address
             address_info = await self.get_newest_ip_address(task_config.address_name)
