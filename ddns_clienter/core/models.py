@@ -1,10 +1,15 @@
 from django.db import models
-from django_vises.db.model.base import KeyValueAbc, RecordAbc, RecordAbcWithoutIdAbc
+from django_vises.db.model.base import (
+    KeyValueAbc,
+    ObjectWithoutIdAbc,
+    RecordAbc,
+    RecordManager,
+)
 
 from ddns_clienter.core.constants import EventLevel
 
 
-class Address(RecordAbcWithoutIdAbc):
+class Address(ObjectWithoutIdAbc):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
     enable = models.BooleanField(default=True)
@@ -29,11 +34,8 @@ class Address(RecordAbcWithoutIdAbc):
     ipv6_last_address = models.CharField(max_length=45, null=True)
     ipv6_last_change_time = models.DateTimeField(null=True)
 
-    # record's last update datetime
-    time = models.DateTimeField(auto_now=True)
 
-
-class Task(RecordAbcWithoutIdAbc):
+class Task(ObjectWithoutIdAbc):
     # from config
     name = models.CharField(max_length=255, primary_key=True)
     enable = models.BooleanField(default=True)
@@ -56,9 +58,6 @@ class Task(RecordAbcWithoutIdAbc):
     last_update_success = models.BooleanField(default=False)
     last_update_success_time = models.DateTimeField(null=True)
 
-    # record's last update datetime
-    time = models.DateTimeField(auto_now=True)
-
 
 class Status(KeyValueAbc):
     pass
@@ -68,5 +67,4 @@ class Event(RecordAbc):
     level = models.TextField(choices=EventLevel.choices)
     message = models.TextField()
 
-    # timestamp
-    time = models.DateTimeField(auto_now=True)
+    objects = RecordManager()

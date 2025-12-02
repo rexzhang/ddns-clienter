@@ -100,7 +100,9 @@ def _get_addresses_or_tasks_queryset(
         )
 
     if debug:
-        queryset = model.objects.filter(time__gt=(timezone.now() - timedelta(weeks=1)))
+        queryset = model.objects.filter(
+            updated_time__gt=(timezone.now() - timedelta(weeks=1))
+        )
     else:
         queryset = model.objects.filter(name__in=addresses_or_tasks.keys())
 

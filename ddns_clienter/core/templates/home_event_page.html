@@ -1,7 +1,7 @@
 {% load i18n %}
 {% for item in events_page %}
   <tr class="{% if item.level == "WARNING" %}bg-warning-subtle{% elif item.level == "ERROR" %}bg-danger-subtle{% elif item.level == "CRITICAL" %}bg-danger-subtle{% endif %}">
-    <td style="white-space: nowrap;">{{ item.time|date:"DATETIME_FORMAT" }}</td>
+    <td style="white-space: nowrap;">{{ item.created_time|date:"DATETIME_FORMAT" }}</td>
     <td>{{ item.level }}</td>
     <td class="font-monospace">{{ item.message }}</td>
   </tr>

@@ -44,7 +44,7 @@ class HomeView(DCTemplateView):
             app_config = get_config()
         except ConfigException as e:
             messages.add_message(self.request, messages.ERROR, str(e))
-            return None
+            return {}
 
         kwargs = super().get_context_data(**kwargs)
 
@@ -98,7 +98,7 @@ class TroubleShootingView(DCTemplateView):
 
 async def add_more_event(request):
     from core.runtimes.event import event
-    from django.shortcuts import HttpResponse
+    from django.http import HttpResponse
     from django.utils.timezone import now
 
     await event.info(str(now()))
@@ -108,7 +108,7 @@ async def add_more_event(request):
 
 async def send_reload_event(request):
     from core.runtimes.helpers import send_sse_event_reload
-    from django.shortcuts import HttpResponse
+    from django.http import HttpResponse
 
     send_sse_event_reload()
     return HttpResponse()

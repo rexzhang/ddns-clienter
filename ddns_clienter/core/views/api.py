@@ -22,7 +22,7 @@ class EventSchema(ModelSchema):
 
     class Meta:
         model = Event
-        fields = ["id", "level", "message", "time"]
+        fields = ["id", "level", "message", "created_time"]
 
 
 def auth_inside_api(request):
@@ -73,7 +73,7 @@ def _get_pagination_range(page: int) -> tuple[int, int]:
 @api_public.get("/events", response=list[EventSchema])
 @paginate(PageNumberPagination)
 def get_events(request, **kwargs):
-    events = Event.objects.order_by("-time").all()
+    events = Event.objects.order_by("-created_time").all()
     return events
 
 
