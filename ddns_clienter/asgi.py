@@ -13,6 +13,8 @@ from asgi_middleware_static_file import ASGIMiddlewareStaticFile
 from django.conf import settings
 from django.core.asgi import get_asgi_application
 
+from ddns_clienter.ev import EV
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ddns_clienter.settings")
 
 application = get_asgi_application()
@@ -22,7 +24,7 @@ application = ASGIMiddlewareStaticFile(
     static_root_paths=[settings.STATIC_ROOT],
 )
 
-if settings.EV.SENTRY_DSN:
+if EV.SENTRY_DSN:
     from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
     application = SentryAsgiMiddleware(application)

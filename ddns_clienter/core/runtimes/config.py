@@ -5,9 +5,9 @@ from logging import getLogger
 
 from cachetools.func import ttl_cache
 from dataclass_wizard import JSONWizard
-from django.conf import settings
 
 from ddns_clienter.core.constants import CHECK_INTERVALS
+from ddns_clienter.ev import EV
 
 logger = getLogger(__name__)
 
@@ -85,7 +85,7 @@ class Config(JSONWizard):
         return task_dict
 
     def update_from_env(self):
-        self.common.sentry_dsn = settings.EV.SENTRY_DSN
+        self.common.sentry_dsn = EV.SENTRY_DSN
 
 
 def reinit_config_from_dict(data: dict) -> Config:
@@ -117,7 +117,7 @@ def reinit_config_from_file(file_name: str) -> Config:
 @ttl_cache(ttl=60)
 def get_config(config_toml: str | None = None) -> Config:
     if config_toml is None:
-        config_toml = settings.EV.CONFIG_TOML
+        config_toml = EV.CONFIG_TOML
 
     config = reinit_config_from_file(config_toml)
 

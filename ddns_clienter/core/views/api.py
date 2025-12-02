@@ -11,6 +11,7 @@ from ddns_clienter.core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_queryset,
 )
+from ddns_clienter.ev import EV
 
 AddressSchema = create_schema(Address, exclude=[])
 TaskSchema = create_schema(Task, exclude=["provider_auth"])
@@ -29,7 +30,7 @@ def auth_inside_api(request):
     if request.META["REMOTE_ADDR"] == "127.0.0.1":
         return True
 
-    if settings.EV.PBULIC_INSIDE_API:
+    if EV.PBULIC_INSIDE_API:
         return True
 
     return False

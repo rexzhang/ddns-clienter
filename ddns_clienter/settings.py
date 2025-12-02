@@ -10,36 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from dataclasses import dataclass
 from pathlib import Path
 
-from dataclass_wizard import EnvWizard
 from django.utils.translation import gettext_lazy as _
-from django_vises.django_settings.env_var import EnvVarAbc
 from django_vises.django_settings.helpers import parser_database_uri
+
+from ddns_clienter.ev import EV
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-@dataclass
-class EnvVar(EnvVarAbc, EnvWizard):
-    class _(EnvWizard.Meta):
-        env_file = True
-
-    DATABASE_URI: str = "sqlite://db_v2.sqlite3"
-
-    # project base
-    CONFIG_TOML: str = "examples/ddns-clienter.toml"
-    DATA_PATH: str = "."
-
-    # project extra
-    PBULIC_INSIDE_API: bool = True
-    WORK_IN_CONTAINER: bool = False
-    DISABLE_CRON: bool = False
-
-
-EV = EnvVar()
 
 
 # Quick-start development settings - unsuitable for production
