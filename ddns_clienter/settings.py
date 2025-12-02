@@ -14,11 +14,9 @@ from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
 from django_vises.deploy.deploy_stage import DeployStage
+from django_vises.django_settings.helpers import parser_database_uri
 
 from ddns_clienter.ev import EV
-
-# from django_vises.django_settings.helpers import parser_database_uri
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,13 +82,7 @@ WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path(EV.DATA_PATH).joinpath("db2.sqlite3"),
-        # "NAME": ":memory:",
-    }
-}
+DATABASES = {"default": parser_database_uri(EV.DATABASE_URI, base_dir=BASE_DIR)}
 
 
 # Internationalization
