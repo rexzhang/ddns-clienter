@@ -88,18 +88,14 @@ class Config(JSONWizard):
         self.common.sentry_dsn = settings.EV.SENTRY_DSN
 
 
-_config: Config = Config()
-
-
-def reinit_config_from_dict(data: dict):
-    global _config
-
+def reinit_config_from_dict(data: dict) -> Config:
     logger.debug("Load config value from python object(dict)")
-    _config = Config.from_dict(data)
-    _config.update_from_env()
+    config = Config.from_dict(data)
+    config.update_from_env()
+    return config
 
 
-def reinit_config_from_file(file_name: str):
+def reinit_config_from_file(file_name: str) -> Config:
     logger.info(f"Config: Open file {file_name}...")
     try:
         with open(file_name, "rb") as f:
@@ -115,7 +111,7 @@ def reinit_config_from_file(file_name: str):
         logger.critical(message)
         raise ConfigException(message)
 
-    reinit_config_from_dict(data)
+    return reinit_config_from_dict(data)
 
 
 @ttl_cache(ttl=60)
@@ -123,6 +119,6 @@ def get_config(config_toml: str | None = None) -> Config:
     if config_toml is None:
         config_toml = settings.EV.CONFIG_TOML
 
-    reinit_config_from_file(config_toml)
+    config = reinit_config_from_file(config_toml)
 
-    return _config
+    return config
