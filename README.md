@@ -73,8 +73,9 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
-### 1.1.0
+### 1.1.0 - 20251204
 
+- chore: update django to v6.0
 - refactor: integrate django-vises
 - refactor: migrate check_and_update to django tasks system
 
