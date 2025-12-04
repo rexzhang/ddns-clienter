@@ -1,8 +1,8 @@
 # base 3rd package
 
 asgiref
-django==6.0rc1
-django-vises==1.4.0
+django>=6.0
+django-vises~=1.5.0
 django-ninja>=1.4.0
 django-bootstrap5
 django-eventstream
