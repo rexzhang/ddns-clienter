@@ -1,8 +1,8 @@
 #!/bin/sh
 
-chown nobody:nobody -R /data
 ./manage.py migrate
 ./manage.py init
+chown nobody:nobody -R /data
 
 crond
 exec su-exec nobody:nobody \
