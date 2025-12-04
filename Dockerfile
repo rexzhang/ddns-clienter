@@ -43,10 +43,11 @@ ENV PYTHONPATH=/app
 ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
 
+ENV DEPLOY_STAGE="prd"
+ENV DEPLOY_IN_CONTAINER="true"
 ENV DATA_PATH="/data"
 ENV CONFIG_TOML="/etc/ddns-clienter.toml"
 ENV PBULIC_INSIDE_API="true"
-ENV WORK_IN_CONTAINER="true"
 
 ENV SENTRY_DSN=""
 

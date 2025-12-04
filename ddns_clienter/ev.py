@@ -15,7 +15,7 @@ class EnvVar(EnvVarAbc, EnvWizard):
 
     # project extra
     PBULIC_INSIDE_API: bool = True
-    WORK_IN_CONTAINER: bool = False
+    DEPLOY_IN_CONTAINER: bool = False
     DISABLE_CRON: bool = False
 
 

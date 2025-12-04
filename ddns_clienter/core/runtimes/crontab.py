@@ -23,7 +23,7 @@ def get_crontab_next_time(intervals: int):
 
 
 def update_crontab_file():
-    if EV.WORK_IN_CONTAINER:
+    if EV.DEPLOY_IN_CONTAINER:
         filename = "/etc/crontabs/root"
     else:
         filename = "/tmp/dc-crontab"

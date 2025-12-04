@@ -80,9 +80,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ddns_clienter.wsgi.application"
 
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {"default": parser_database_uri(EV.DATABASE_URI, base_dir=BASE_DIR)}
+if EV.DEPLOY_IN_CONTAINER:
+    DATABASES = {
+        "default": parser_database_uri(EV.DATABASE_URI, base_dir=Path(EV.DATA_PATH))
+    }
+else:
+    DATABASES = {"default": parser_database_uri(EV.DATABASE_URI, base_dir=BASE_DIR)}
 
 
 # Internationalization
@@ -196,9 +202,3 @@ match EV.DEPLOY_STAGE:
             "django_browser_reload.middleware.BrowserReloadMiddleware",
             "debug_toolbar.middleware.DebugToolbarMiddleware",
         ]
-
-    case DeployStage.PRD:
-        DATABASES["default"] = {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": Path(EV.DATA_PATH).joinpath("db_v2.sqlite3"),
-        }
