@@ -131,8 +131,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            # "format": "%(levelname)s %(asctime)s %(module)s %(message)s",
-            "format": "%(levelname)s [%(module)s] %(message)s",
+            "format": "%(levelname)s %(asctime)s %(module)s %(message)s",
         },
         "simple": {
             "format": "%(levelname)s: %(message)s",
