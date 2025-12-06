@@ -131,10 +131,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(message)s",
-        },
-        "simple": {
-            "format": "%(levelname)s: %(message)s",
+            "format": "%(asctime)s - %(levelname)s - %(name)s:%(lineno)d - %(message)s",
         },
     },
     "handlers": {
@@ -144,15 +141,17 @@ LOGGING = {
         },
     },
     "loggers": {
+        "urllib3": {
+            "handlers": ["console"],
+            "level": "ERROR",
+        },
         "django": {
             "handlers": ["console"],
             "level": "INFO",
-            "propagate": True,
         },
         "ddns_clienter.core": {
             "handlers": ["console"],
             "level": logging_level,
-            "propagate": True,
         },
     },
 }
