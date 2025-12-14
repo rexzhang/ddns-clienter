@@ -73,6 +73,10 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
+### 1.x
+
+- chore: update python to v3.14
+
 ### 1.1.1 - 20251204
 
 - chore: update django to v6.0

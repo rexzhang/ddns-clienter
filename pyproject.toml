@@ -4,6 +4,15 @@
 requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "ddns-clienter"
+requires-python = "~=3.14"
+
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "ddns_clienter.__version__" }
+
 [tool.pytest.ini_options]
 addopts = "--cov=ddns_clienter --cov-report html"
 asyncio_mode = "auto"
