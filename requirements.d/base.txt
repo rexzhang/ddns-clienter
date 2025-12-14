@@ -11,7 +11,7 @@ httpx
 dns-lexicon[full]
 
 ## Config
-dataclass-wizard[dotenv]
+dataclass-wizard[dotenv]>=0.35.4
 cachetools
 
 ## crontab

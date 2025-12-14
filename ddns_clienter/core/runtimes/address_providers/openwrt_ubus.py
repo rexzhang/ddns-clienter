@@ -99,7 +99,8 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
                 f"Detect IP Address failed, provider:[{self.name}]; message:{e}; detail info please check logging"
             )
 
-        logger.info(f"openwrt ubus response: {ubus_response.text}")
+        logger.debug(f"openwrt ubus response: {ubus_response.text}")
+        logger.info(f"Detect IP Address IPv4{ipv4}, IPv6{ipv6} from openwrt ubus")
         return ipv4, ipv6
 
     async def _get_address(
