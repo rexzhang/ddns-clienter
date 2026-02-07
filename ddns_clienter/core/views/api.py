@@ -4,13 +4,13 @@ from ninja import ModelSchema, NinjaAPI, Router
 from ninja.orm import create_schema
 from ninja.pagination import PageNumberPagination, paginate
 
+from ddns_clienter.core import tasks
 from ddns_clienter.core.constants import EventLevel
 from ddns_clienter.core.models import Address, Event, Status, Task
 from ddns_clienter.core.runtimes.persistent_data import (
     get_addresses_values,
     get_tasks_queryset,
 )
-from ddns_clienter.core.tasks import check_and_update, test_task
 from ddns_clienter.ev import EV
 
 AddressSchema = create_schema(Address, exclude=[])
@@ -85,15 +85,15 @@ else:
 
 
 @api_inside.get("/check_and_update")
-async def api_check_and_update(request):
-    task_result = await check_and_update.aenqueue()
-    return f"{task_result.id}:{task_result.status}"
+def check_and_update(request):
+    tasks.check_and_update.enqueue()
+    return
 
 
 @api_inside.get("/call_test_task")
-async def api_call_test_task(request):
-    task_result = await test_task.aenqueue()
-    return f"{task_result.id}:{task_result.status}"
+def call_test_task(request):
+    tasks.test_task.enqueue()
+    return
 
 
 api = NinjaAPI(title="DDNS Clienter API")

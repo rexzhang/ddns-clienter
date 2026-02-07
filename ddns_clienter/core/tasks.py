@@ -1,32 +1,45 @@
 import asyncio
+from logging import getLogger
 
 from django.tasks import task
 
-from ddns_clienter.core.runtimes.check_and_update import _check_an_update_v2
+from ddns_clienter.core.runtimes.check_and_update import check_an_update_v2
+from ddns_clienter.core.runtimes.event import event
 from ddns_clienter.core.runtimes.helpers import (
     send_sse_event,
     send_sse_event_reload,
 )
 
+logger = getLogger(__name__)
+
 _check_and_update_running_lock = asyncio.Lock()
 
 
 @task
-async def test_task() -> str:
+async def test_task() -> None:
     await asyncio.sleep(1)
-    return "TEST is OK"
+
+    await event.info("TEST is OK")
+    return
 
 
 @task
-async def check_and_update() -> str:
+async def check_and_update() -> None:
     if _check_and_update_running_lock.locked():
-        return "There are already tasks in progress, please try later"
+        message = "There are already tasks in progress, please try later"
+        await event.warning(message)
+        logger.warning(message)
+        return
 
     send_sse_event("status:check_update", "Check/Update is running")
     async with _check_and_update_running_lock:
-        await asyncio.sleep(3)
-        await _check_an_update_v2()
+        await asyncio.sleep(0)
+        await check_an_update_v2()
 
     send_sse_event("status:check_update", "")
     send_sse_event_reload()
-    return ""
+
+    message = "Check/Update is done"
+    await event.warning(message)
+    logger.warning(message)
+    return

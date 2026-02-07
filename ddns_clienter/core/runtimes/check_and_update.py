@@ -231,7 +231,7 @@ class UpdateTaskProcessor:
         return address_info
 
 
-async def _check_an_update_v2():
+async def check_an_update_v2():
     try:
         config = get_config()
     except ConfigException as e:
