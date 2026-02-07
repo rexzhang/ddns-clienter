@@ -85,14 +85,14 @@ else:
 
 
 @api_inside.get("/check_and_update")
-def check_and_update(request):
-    tasks.check_and_update.enqueue()
+async def check_and_update(request):
+    await tasks.check_and_update.aenqueue()
     return
 
 
 @api_inside.get("/call_test_task")
-def call_test_task(request):
-    tasks.test_task.enqueue()
+async def call_test_task(request):
+    await tasks.test_task.aenqueue()
     return
 
 
