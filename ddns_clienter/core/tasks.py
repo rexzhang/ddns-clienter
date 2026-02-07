@@ -33,13 +33,8 @@ async def check_and_update() -> None:
 
     send_sse_event("status:check_update", "Check/Update is running")
     async with _check_and_update_running_lock:
-        await asyncio.sleep(0)
         await check_an_update_v2()
 
     send_sse_event("status:check_update", "")
     send_sse_event_reload()
-
-    message = "Check/Update is done"
-    await event.warning(message)
-    logger.warning(message)
     return
