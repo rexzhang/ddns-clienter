@@ -5,6 +5,7 @@ pytest-cov
 pytest-django
 
 # typing
+django-stubs
 mypy
 
 # lint

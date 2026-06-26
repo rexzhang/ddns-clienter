@@ -73,9 +73,12 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
-### 1.x
+### 1.2.0
 
 - chore: update python to v3.14
+- chore(deps): update python-crontab to 3.3+
+- refactor(tasks): migrate from async task enqueue to sync and update check_and_update logic
+- chore(api): move api into asyncio
 
 ### 1.1.1 - 20251204
 

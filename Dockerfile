@@ -4,10 +4,9 @@ ARG BUILD_ENV
 ARG IMAGE_VERSION
 
 RUN if [ "$BUILD_ENV" = "rex" ]; then echo "Change depends" \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
     && pip config set global.index-url https://proxpi.h.rexzhang.com/index/ \
     && pip config set install.trusted-host proxpi.h.rexzhang.com \
-    # https://mirrors.tuna.tsinghua.edu.cn/help/alpine/
-    && sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories \
     ; fi
 
 COPY ./requirements.d /app/requirements.d

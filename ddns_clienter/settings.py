@@ -115,7 +115,6 @@ STATIC_ROOT = BASE_DIR.joinpath("staticfiles")
 
 
 # https://docs.djangoproject.com/en/6.0/topics/tasks/
-# https://github.com/RealOrangeOne/django-tasks
 TASKS = {"default": {"BACKEND": "django.tasks.backends.immediate.ImmediateBackend"}}
 
 
