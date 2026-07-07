@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 from dataclass_wizard import EnvWizard
 from django_vises.django_settings.env_var import EnvVarAbc
 
 
-@dataclass
-class EnvVar(EnvVarAbc, EnvWizard):
+class EnvVar(EnvVarAbc):
     class _(EnvWizard.Meta):
         env_file = True
 

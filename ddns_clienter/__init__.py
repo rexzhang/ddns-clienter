@@ -5,7 +5,6 @@
 Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 """
 
-
 __name__ = "DDNS Clienter"
 __version__ = "1.1.1"
 

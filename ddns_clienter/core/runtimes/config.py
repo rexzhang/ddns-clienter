@@ -1,10 +1,10 @@
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import field
 from functools import cached_property
 from logging import getLogger
 
 from cachetools.func import ttl_cache
-from dataclass_wizard import JSONWizard
+from dataclass_wizard import DataclassWizard
 
 from ddns_clienter.core.constants import CHECK_INTERVALS
 from ddns_clienter.ev import EV
@@ -18,16 +18,14 @@ class ConfigException(Exception):
     pass
 
 
-@dataclass
-class Common:
+class Common(DataclassWizard):
     check_intervals: int = CHECK_INTERVALS  # minutes
     force_update_intervals: int = 1440  # minutes, 1day
 
     sentry_dsn: str = ""
 
 
-@dataclass
-class AddressProviderConfig:
+class AddressProviderConfig(DataclassWizard):
     name: str
     enable: bool = True
 
@@ -47,8 +45,7 @@ class AddressProviderConfig:
             self.allow_private = True
 
 
-@dataclass
-class TaskConfig:
+class TaskConfig(DataclassWizard):
     name: str
     enable: bool = True
 
@@ -61,8 +58,7 @@ class TaskConfig:
     ipv6: bool = False
 
 
-@dataclass
-class Config(JSONWizard):
+class Config(DataclassWizard):
     common: Common = field(default_factory=Common)
 
     address: list[AddressProviderConfig] = field(default_factory=list)

@@ -5,22 +5,22 @@ repos:
       - id: pyupgrade
         args: [--py314-plus]
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: "1.29.1"
+    rev: "1.31.1"
     hooks:
       - id: django-upgrade
         args: [--target-version, "6.0"]
   - repo: https://github.com/djlint/djLint
-    rev: v1.36.4
+    rev: v1.40.3
     hooks:
       - id: djlint-reformat-django
       - id: djlint-django
   - repo: https://github.com/psf/black
-    rev: 25.12.0
+    rev: 26.5.1
     hooks:
       - id: black
         args: ["--target-version", "py314"]
   - repo: https://github.com/pycqa/isort
-    rev: 7.0.0
+    rev: 9.0.0a3
     hooks:
       - id: isort
         name: isort (python)
