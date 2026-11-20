@@ -5,7 +5,6 @@
 ```shell
 docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   -v $(pwd)/ddns-clienter.toml:/etc/ddns-clienter.toml:ro \
-  -v $(pwd)/data:/data \
   -e TZ=Aisa/Shanghai \
   --name ddns-clienter ray1ex/ddns-clienter
 ```
@@ -72,6 +71,34 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
   - 强制更新周期为 1440 分钟
 
 ## 常见问答集
+
+### Docker 环境无法映射单个文件,导致配置文件无法加载
+
+- 通过环境变量调整配置文件加载的容器内路径, 改为 `/config/ddns-clienter.toml`
+- 将配置文件 `ddns-clienter.toml` 放到目录 `$(pwd)/config`
+- 映射目录(`/config`)到容器
+
+```shell
+docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
+  -v $(pwd)/config:/config:ro \
+  -e TZ=Aisa/Shanghai \
+  -e CONFIG_TOML=/config/ddns-clienter.toml \
+  --name ddns-clienter ray1ex/ddns-clienter
+```
+
+### 因为容器中默认使用 nobody 运行程序导致没有读取配置文件的权限
+
+- 找到有权限读取配置文件的用户的 uid/gid, 例如 1000/1000
+- 通过环境变量(PUID/PGID)调整运行程序的用户
+
+```shell
+docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
+  -v $(pwd)/config:/config:ro \
+  -e TZ=Aisa/Shanghai \
+  -e CONFIG_TOML=/config/ddns-clienter.toml \
+  -e PUID=1000 -e PGID=1000 \
+  --name ddns-clienter ray1ex/ddns-clienter
+```
 
 ### 使用 `hostname` 获取不到地址,或者获取错误
 

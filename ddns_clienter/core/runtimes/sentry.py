@@ -85,7 +85,7 @@ def init_sentry(
         traces_sample_rate = 1.0
     else:
         environment = "release"
-        traces_sample_rate = 0.0
+        traces_sample_rate = 0.1
         auto_rate_limit = True
         announce_at_startup = True
 

@@ -2,8 +2,8 @@
 
 ./manage.py migrate
 ./manage.py init
-chown nobody:nobody -R /data
+chown $PUID:$PGID -R /data
 
 crond
-exec su-exec nobody:nobody \
+exec su-exec $PUID:$PGID \
     /app/runserver.py

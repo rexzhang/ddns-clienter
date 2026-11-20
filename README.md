@@ -7,7 +7,7 @@
 
 Check and update A/AAAA record to dynamic DNS provider, WebUI, support Docker
 
-[中文文档](https://github.com/rexzhang/ddns-clienter/tree/main/docs/zh)
+[中文文档](docs/zh/README.md)
 
 ## Feature
 
@@ -65,11 +65,13 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## Environment Variable
 
-| Name                | Default Value in Docker   | Default Value in CLI |
-| ------------------- | ------------------------- | -------------------- |
-| `CONFIG_TOML`       | `/etc/ddns-clienter.toml` | `ddns-clienter.toml` |
-| `DATA_PATH`         | `/data`                   | `.`                  |
-| `PBULIC_INSIDE_API` | `True`                    |                      |
+| Name                | Default                   | Customizable                       |
+| ------------------- | ------------------------- | ---------------------------------- |
+| `CONFIG_TOML`       | `/etc/ddns-clienter.toml` | like: `/config/ddns-clienter.toml` |
+| `DATA_PATH`         | `/data`                   |                                    |
+| `PBULIC_INSIDE_API` | `True`                    |                                    |
+| `PUID`              | `nobody`                  | like: `1000`                       |
+| `GUID`              | `nobody`                  | like: `1000`                       |
 
 ## History
 

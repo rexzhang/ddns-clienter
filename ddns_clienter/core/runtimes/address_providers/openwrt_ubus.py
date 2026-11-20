@@ -53,7 +53,11 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
                 ],
             }
 
-            login_response = httpx.post(ubus_url, json=login_payload, verify=False)
+            async with httpx.AsyncClient() as client:
+                login_response = await client.post(
+                    ubus_url, json=login_payload, verify=False
+                )
+
             if login_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed.")
 

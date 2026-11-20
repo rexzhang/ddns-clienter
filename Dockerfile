@@ -38,6 +38,9 @@ COPY entrypoint.sh /app
 WORKDIR /app
 EXPOSE 8000
 
+ENV PUID="nobody"
+ENV PGID="nobody"
+
 ENV PYTHONPATH=/app
 ENV TLDEXTRACT_CACHE_PATH=/data/lexicon_tld_set
 ENV DJANGO_SETTINGS_MODULE="ddns_clienter.settings"
