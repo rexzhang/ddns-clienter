@@ -1,7 +1,7 @@
 from logging import getLogger
 from urllib.parse import urlparse
 
-import httpx
+import httpx2
 
 from ddns_clienter.core.runtimes.address_providers.abs import (
     AddressProviderAbs,
@@ -40,44 +40,42 @@ class AddressProviderOpenwrtUbusRpc(AddressProviderAbs):
         try:
             ubus_url = f"http://{self.hostname}/ubus"
 
-            # 获取会话token
-            login_payload = {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "call",
-                "params": [
-                    "00000000000000000000000000000000",
-                    "session",
-                    "login",
-                    {"username": self.username, "password": self.password},
-                ],
-            }
+            async with httpx2.AsyncClient(verify=False) as client:
+                # 获取会话token
+                login_payload = {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "call",
+                    "params": [
+                        "00000000000000000000000000000000",
+                        "session",
+                        "login",
+                        {"username": self.username, "password": self.password},
+                    ],
+                }
 
-            async with httpx.AsyncClient() as client:
-                login_response = await client.post(
-                    ubus_url, json=login_payload, verify=False
-                )
+                login_response = await client.post(ubus_url, json=login_payload)
 
-            if login_response.status_code != 200:
-                raise AddressProviderException("Access openwrt ubus failed.")
+                if login_response.status_code != 200:
+                    raise AddressProviderException("Access openwrt ubus failed.")
 
-            if "access denied" in login_response.text:
-                raise AddressProviderException(
-                    "Access openwrt ubus failed. please check username/password."
-                )
+                if "access denied" in login_response.text:
+                    raise AddressProviderException(
+                        "Access openwrt ubus failed. please check username/password."
+                    )
 
-            login_data = login_response.json()
-            ubus_rpc_session = login_data["result"][1]["ubus_rpc_session"]
+                login_data = login_response.json()
+                ubus_rpc_session = login_data["result"][1]["ubus_rpc_session"]
 
-            # 获取网络信息
-            ubus_payload = {
-                "jsonrpc": "2.0",
-                "id": 2,
-                "method": "call",
-                "params": [ubus_rpc_session, "network.interface", "dump", {}],
-            }
+                # 获取网络信息
+                ubus_payload = {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "call",
+                    "params": [ubus_rpc_session, "network.interface", "dump", {}],
+                }
 
-            ubus_response = httpx.post(ubus_url, json=ubus_payload, verify=False)
+                ubus_response = await client.post(ubus_url, json=ubus_payload)
             if ubus_response.status_code != 200:
                 raise AddressProviderException("Access openwrt ubus failed(2).")
 

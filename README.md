@@ -75,6 +75,10 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 
 ## History
 
+### Next
+
+- chore: update python to v3.15
+
 ### 1.2.0
 
 - chore: update python to v3.14

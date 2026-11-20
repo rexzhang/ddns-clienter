@@ -3,12 +3,12 @@ repos:
     rev: v3.22.0
     hooks:
       - id: pyupgrade
-        args: [--py314-plus]
+        args: [--py315-plus]
   - repo: https://github.com/adamchainz/django-upgrade
     rev: "1.33.0"
     hooks:
       - id: django-upgrade
-        args: [--target-version, "6.0"]
+        args: [--target-version, "6.1"]
   - repo: https://github.com/djlint/djLint
     rev: v1.54.0
     hooks:
@@ -18,7 +18,7 @@ repos:
     rev: 26.10.1
     hooks:
       - id: black
-        args: ["--target-version", "py314"]
+        args: ["--target-version", "py315"]
   - repo: https://github.com/pycqa/isort
     rev: 10.0.0b3
     hooks:

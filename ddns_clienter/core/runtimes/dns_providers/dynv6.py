@@ -1,6 +1,6 @@
 from logging import getLogger
 
-import httpx
+import httpx2
 
 from ddns_clienter.core.runtimes.config import TaskConfig
 
@@ -28,12 +28,12 @@ class CallRestApi:
         self.ipv6_address = ipv6_address
         self.real_update = real_update
 
-        self.headers = httpx.Headers()
+        self.headers = httpx2.Headers()
         self.headers["Accept"] = "application/json"
         self.headers["Authorization"] = f"Bearer {self._c_task.provider_auth}"
 
-    async def _call_rest_api_get(self, url) -> httpx.Response:
-        async with httpx.AsyncClient() as client:
+    async def _call_rest_api_get(self, url) -> httpx2.Response:
+        async with httpx2.AsyncClient() as client:
             r = await client.get(url, headers=self.headers)
         logger.debug(f"{r.status_code} {r.content}")
 
@@ -44,9 +44,9 @@ class CallRestApi:
 
     async def _call_rest_api_add_record(
         self, host: str, record_type: str, ip_address: str
-    ) -> httpx.Response:
+    ) -> httpx2.Response:
         j = {"name": host, "type": record_type, "data": ip_address}
-        async with httpx.AsyncClient() as client:
+        async with httpx2.AsyncClient() as client:
             r = await client.post(
                 f"{_REST_API_URL}/zones/{self.zone_id}/records",
                 headers=self.headers,
@@ -61,9 +61,9 @@ class CallRestApi:
 
     async def _call_rest_api_update_record(
         self, record_id: str, record_type: str, ip_address: str
-    ) -> httpx.Response:
+    ) -> httpx2.Response:
         j = {"type": record_type, "data": ip_address}
-        async with httpx.AsyncClient() as client:
+        async with httpx2.AsyncClient() as client:
             r = await client.patch(
                 f"{_REST_API_URL}/zones/{self.zone_id}/records/{record_id}",
                 headers=self.headers,
@@ -183,13 +183,13 @@ class DDNSProviderDynv6(DDNSProviderAbs):
             return True, ""
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx2.AsyncClient() as client:
                 r = await client.get(_UPDATE_API_URL, params=params)
 
-        except httpx.RequestError as e:
-            return False, f"httpx.RequestError, {e}"
-        except httpx.StreamError as e:
-            return False, f"httpx.StreamError, {e}"
+        except httpx2.RequestError as e:
+            return False, f"httpx2.RequestError, {e}"
+        except httpx2.StreamError as e:
+            return False, f"httpx2.StreamError, {e}"
 
         message = f"code:{r.status_code}, text:{r.text}"
         if 300 > r.status_code >= 200:

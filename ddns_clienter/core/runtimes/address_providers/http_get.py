@@ -2,7 +2,7 @@ import re
 from ipaddress import ip_address as ip_address_string_check
 from logging import getLogger
 
-import httpx
+import httpx2
 
 from ddns_clienter.core.runtimes.address_providers.abs import AddressProviderAbs
 from ddns_clienter.core.runtimes.event import event
@@ -47,9 +47,9 @@ class AddressProviderHttpGetAbs(AddressProviderAbs):
             headers = {"User-Agent": self.user_agent, "Cache-Control": "no-cache"}
 
         try:
-            async with httpx.AsyncClient() as client:
+            async with httpx2.AsyncClient() as client:
                 r = await client.get(url, headers=headers)
-        except httpx.HTTPError as e:
+        except httpx2.HTTPError as e:
             await self._logging_error_message(
                 f"Detect IP Address failed; bad responds; provider:[{self.name}], IPv{ipv}, message:{e}"
             )
