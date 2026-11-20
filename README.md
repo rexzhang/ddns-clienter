@@ -78,6 +78,8 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 ### Next
 
 - chore: update python to v3.15
+- chore(deps): httpx -> httpx2
+- fix(openwrt_ubus): move verify to AsyncClient constructor
 
 ### 1.2.0
 
