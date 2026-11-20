@@ -71,7 +71,7 @@ docker run -dit -p 0.0.0.0:8000:8000 --restart=always \
 | `DATA_PATH`         | `/data`                   |                                    |
 | `PBULIC_INSIDE_API` | `True`                    |                                    |
 | `PUID`              | `nobody`                  | like: `1000`                       |
-| `GUID`              | `nobody`                  | like: `1000`                       |
+| `PGID`              | `nobody`                  | like: `1000`                       |
 
 ## History
 
